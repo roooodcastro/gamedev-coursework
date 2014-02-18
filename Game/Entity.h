@@ -2,20 +2,22 @@
 
 #include <vector>
 #include "Vector3.h"
+#include "Matrix4.h"
 #include "Model.h"
 #include "Shader.h"
 
 class GameApp;
 class Model;
+class Shader;
 
 class Entity {
 public:
 	Entity(void);
-	Entity(Vector3 &position, Vector3 &velocity, Vector3 &rotation);
+	Entity(Vector3 &position, Vector3 &velocity, Vector3 &rotation, Vector3 &scale);
 	~Entity(void);
 
-	void update(unsigned int millisElapsed);
-	void draw(unsigned int millisElapsed);
+	void update(unsigned millisElapsed);
+	void draw(unsigned millisElapsed);
 
 	void setPosition(Vector3 &newPos) { this->position = &newPos; }
 	Vector3 &getPosition() { return *position; }
@@ -23,8 +25,14 @@ public:
 	Vector3 &getVelocity() { return *velocity; }
 	void setRotation(Vector3 &newRot) { this->rotation = &newRot; }
 	Vector3 &getRotation() { return *rotation; }
-
+	void setScale(Vector3 &newSize) { this->scale = &newSize; }
+	Vector3 &getScale() { return *scale; }
 	Entity *getParent() { return parent; }
+	void setCustomShader(Shader *shader) { this->customShader = shader; }
+	Shader *getCustomShader() { return customShader; }
+	Matrix4 getModelMatrix() { return *modelMatrix; }
+	void setModel(Model *model) { this->model = model; }
+	Model *getModel() { return model; }
 
 	/* Adds a new child to this entity */
 	void addChild(Entity *child);
@@ -40,10 +48,22 @@ public:
 
 protected:
 
-	/* Vectors to store this entity's position, velocity and rotation attributes */
+	/*
+	 * Here we get the entity's attributes and calculate the final model matrix.
+	 * If the entity has children, it will update its child's matrices as well.
+	 * To save time, this method will be called once in every tick, instead of
+	 * calling it for every frame (the result will only be different after a tick
+	 * anyway).
+	 */
+	void calculateModelMatrix();
+
+	/* Vectors to store this entity's position, velocity, rotation and size attributes */
 	Vector3 *position;
 	Vector3 *velocity;
 	Vector3 *rotation;
+	Vector3 *scale;
+
+	Matrix4 *modelMatrix;
 
 	/*
 	 * List of child entities for this entity. A child entity can be anything, from an attachment part to spark particles.

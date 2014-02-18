@@ -20,7 +20,7 @@ Model::~Model(void) {
 
 void Model::draw() {
 	glBindVertexArray(vao);
-	glPatchParameteri(GL_PATCH_VERTICES, 4);
+	//glPatchParameteri(GL_PATCH_VERTICES, 4);
 	glDrawArrays(type, 0, numVertices);
 	glBindVertexArray(0);
 }

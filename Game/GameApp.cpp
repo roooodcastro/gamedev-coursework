@@ -34,6 +34,9 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 	if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG){
 		logSDLError(std::cout, "IMG_INIT");
 	}
+	if (glewInit() != GLEW_OK) {
+		std::cout << "OGLRenderer::OGLRenderer(): Cannot initialise GLEW!" << std::endl;
+	}
 
 	// Init and configure OpenGL
 	glShadeModel(GL_SMOOTH);
@@ -41,6 +44,7 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 	glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
 	glViewport(0, 0, windowWidth, windowHeight);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
 	// Enable following line if we get z-fighting problems
@@ -53,6 +57,8 @@ void GameApp::runGame() {
 	startTime = SDL_GetTicks();
 	// Start game timers
 	installTimers();
+	//draw(0);
+	//draw(0);
 	while(gameRunning) {
 		handleUserEvents();
 		SDL_Delay(1); // Just to not overload the processor. We shouldn't need more than 1000 input checks every second anyway
@@ -63,7 +69,9 @@ void GameApp::runGame() {
 
 void GameApp::processGameTick(Uint32 millisElapsed) {
 	Uint32 tickStart = SDL_GetTicks();
-	SDL_Log("Tick interval: %d", millisElapsed);
+	if (currentLevel) {
+		currentLevel->processLevelTick(millisElapsed);
+	}
 	lastTickDuration = SDL_GetTicks() - tickStart;
 }
 

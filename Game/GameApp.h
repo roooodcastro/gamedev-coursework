@@ -46,6 +46,10 @@ public:
 	 */
 	SDL_Window *getWindow() { return window; }
 	SDL_Renderer *getRenderer() { return renderer; }
+	void setDefaultShader(Shader *shader) { this->defaultShader = shader; }
+	Shader *getDefaultShader() { return defaultShader; }
+	void setCurrentLevel(Level *level) { currentLevel = level; }
+	Level *getCurrentLevel() { return currentLevel; }
 
 	/**
 	* Log an SDL error with some error message to the output stream of our choice
@@ -118,5 +122,5 @@ private:
 	Uint32 lastTickDuration; // The amount of time that took to process the last game tick
 	map<string, Level> levels; // A map containing the levels loaded for the game
 	Level *currentLevel; // A pointer indicating the current Level that is being played
-	Shader *defaultShader;
+	Shader *defaultShader; // A default shader to be applied to entities
 };
