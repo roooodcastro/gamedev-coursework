@@ -12,5 +12,10 @@
 *.la
 *.a
 
-Game\Debug\*.*
+Game/Debug/
 *.tlog
+*.obj
+*.log
+*.pdb
+*.ipch
+*.idb
