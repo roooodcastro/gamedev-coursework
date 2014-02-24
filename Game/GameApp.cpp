@@ -23,6 +23,25 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 	if (instance->window == nullptr) {
 		logSDLError(std::cout, "WINDOW_INIT");
 	}
+	instance->windowWidth = windowWidth;
+	instance->windowHeight = windowHeight;
+
+	// Init and configure OpenGL
+	glShadeModel(GL_SMOOTH);
+	glClearDepth(1.0f);
+	glEnable(GL_DEPTH_TEST);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	//glEnable(GL_CULL_FACE);
+	glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+	//glViewport(0, 0, windowWidth, windowHeight);
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+	// Enable following line if we get z-fighting problems
+	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+
 	instance->glContext = SDL_GL_CreateContext(instance->window);
 	if (instance->glContext == nullptr) {
 		logSDLError(std::cout, "OPENGL_CONTEXT_INIT");
@@ -34,21 +53,18 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 	if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG){
 		logSDLError(std::cout, "IMG_INIT");
 	}
+	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) {
 		std::cout << "OGLRenderer::OGLRenderer(): Cannot initialise GLEW!" << std::endl;
 	}
 
-	// Init and configure OpenGL
-	glShadeModel(GL_SMOOTH);
-	glClearDepth(1.0f);
-	glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
-	glViewport(0, 0, windowWidth, windowHeight);
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
-	// Enable following line if we get z-fighting problems
-	//SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
+	GLenum err_code = glGetError();
+	while (GL_NO_ERROR != err_code) {
+		printf("OpenGL Error @ CONTEXT_INIT: %i", err_code);
+		err_code = glGetError();
+	}
+	// We initialize the primitive meshes that will be used by the interface
+	Model::initializePrimitiveMeshes();
 	return instance;
 }
 
@@ -57,8 +73,6 @@ void GameApp::runGame() {
 	startTime = SDL_GetTicks();
 	// Start game timers
 	installTimers();
-	//draw(0);
-	//draw(0);
 	while(gameRunning) {
 		handleUserEvents();
 		SDL_Delay(1); // Just to not overload the processor. We shouldn't need more than 1000 input checks every second anyway
@@ -110,12 +124,47 @@ void GameApp::handleUserEvents() {
 				break;
 			}
 			break;
+		case SDL_MOUSEMOTION:
+			if (currentLevel) {
+				currentLevel->onMouseMoved(Vector2(e.motion.x, e.motion.y), Vector2(e.motion.xrel, e.motion.yrel));
+			}
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			if (currentLevel) {
+				currentLevel->onMouseButtonDown(e.button.button, Vector2(e.button.x, e.button.y));
+			}
+			break;
+		case SDL_MOUSEBUTTONUP:
+			if (currentLevel) {
+				currentLevel->onMouseButtonUp(e.button.button, Vector2(e.button.x, e.button.y));
+				//currentLevel->onMouseClick(e.button.button, Vector2(e.button.x, e.button.y));
+				// TODO: Upgrade to SDL 2.0.2 or higher to be able to detec double clicks like this.
+				// In the meanwhile, double click events will NOT happen, at all.
+				/*if (e.button.clicks >= 2) {
+					currentLevel->onMouseDoubleClick(e.button.button, Vector2(e.button.x, e.button.y));
+				}*/
+			}
+			break;
+			case SDL_MOUSEWHEEL:
+				if (currentLevel) {
+					currentLevel->onMouseWheelScroll(e.wheel.y);
+				}
+				break;
 		case SDL_KEYDOWN:
+			Keyboard::getInstance()->keyDown(e.key.keysym);
+			if (currentLevel) {
+				currentLevel->onKeyDown(e.key.keysym);
+			}
+			break;
+		case SDL_KEYUP:
+			Keyboard::getInstance()->keyUp(e.key.keysym);
+			if (currentLevel) {
+				currentLevel->onKeyUp(e.key.keysym);
+				currentLevel->onKeyPress(e.key.keysym);
+			}
 			break;
 		case SDL_QUIT:
 			gameRunning = false;
-			break;
-		case SDL_MOUSEBUTTONDOWN:
 			break;
 		case SDL_WINDOWEVENT:
 			// Checks if user is still controlling the Game Window. If not, then automatically pauses the game.

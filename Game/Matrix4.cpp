@@ -66,14 +66,13 @@ Matrix4 Matrix4::Perspective(float znear, float zfar, float aspect, float fov) {
 Matrix4 Matrix4::Orthographic(float znear, float zfar,float right, float left, float top, float bottom)	{
 	Matrix4 m;
 
-	m.values[0]	= 2.0f / (right-left);
-	m.values[5]	= 2.0f / (top-bottom);
-	m.values[10]	= -2.0f / (zfar-znear);
-
-	m.values[12]  = -(right+left)/(right-left);
-	m.values[13]  = -(top+bottom)/(top-bottom);
-	m.values[14]  = -(zfar+znear)/(zfar-znear);
-	m.values[15]  = 1.0f;
+	m.values[0] = 2.0f / (right - left);
+	m.values[5] = 2.0f / (top - bottom);
+	m.values[10] = -2.0f / (zfar - znear);
+	m.values[12] = -(right + left) / (right - left);
+	m.values[13] = -(top + bottom) / (top - bottom);
+	m.values[14] = -(zfar + znear) / (zfar - znear);
+	m.values[15] = 1.0f;
 
 	return m;
 }

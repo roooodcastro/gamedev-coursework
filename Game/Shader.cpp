@@ -16,60 +16,39 @@ Shader::Shader(const string &vertex, const string &fragment, const string &geome
 	GLuint vertObject = glCreateShader(GL_VERTEX_SHADER);
 	glShaderSource(vertObject, 1, &vertexChars, NULL);
 	glCompileShader(vertObject);
-	glAttachShader(program, vertObject);
+	GLint vShaderCompiled = GL_FALSE;
+	glGetShaderiv(vertObject, GL_COMPILE_STATUS, &vShaderCompiled);
+	if (vShaderCompiled != GL_TRUE) {
+		printf( "Unable to compile vertex shader %d!\n", vertObject);
+	} else {
+		glAttachShader(program, vertObject);
+		// Create and attach Fragment Shader Object
+		GLuint fragObject = glCreateShader(GL_FRAGMENT_SHADER);
+		glShaderSource(fragObject, 1, &fragChars, NULL);
+		glCompileShader(fragObject);
+		GLint fShaderCompiled = GL_FALSE;
+		glGetShaderiv(fragObject, GL_COMPILE_STATUS, &fShaderCompiled);
+		if (fShaderCompiled != GL_TRUE) {
+			printf( "Unable to compile fragment shader %d!\n", fragObject);
+		} else {
+			glAttachShader(program, fragObject);
+			SetDefaultAttributes();
 
-	// Create and attach Fragment Shader Object
-	GLuint fragObject = glCreateShader(GL_FRAGMENT_SHADER);
-	glShaderSource(fragObject, 1, &fragChars, NULL);
-	glCompileShader(fragObject);
-	glAttachShader(program, fragObject);
-
-	if (geomString != "") {
-		// Create and attach Geometry Shader Object
-		GLuint geomObject = glCreateShader(GL_GEOMETRY_SHADER);
-		glShaderSource(geomObject, 1, &geomChars, NULL);
-		glCompileShader(geomObject);
-		glAttachShader(program, geomObject);
+			glLinkProgram(program);
+			GLint linkStatus;
+			glGetProgramiv(program, GL_LINK_STATUS, &linkStatus);
+			if (linkStatus != GL_TRUE) {
+				char error[2048];
+				glGetProgramInfoLog(program, 2048, NULL, error);
+				cout << string(error) << endl;
+			}
+		}
 	}
-
-	if (tcs != "") {
-		string controlString = loadTextFile(tcs);
-		string evalString = loadTextFile(tes);
-		const char *controlChars = controlString.c_str();
-		const char *evalChars = evalString.c_str();
-
-		GLuint controlObject = glCreateShader(GL_TESS_CONTROL_SHADER);
-		glShaderSource(controlObject, 1, &controlChars, NULL);
-		glCompileShader(controlObject);
-		glAttachShader(program, controlObject);
-
-		GLuint evalObject = glCreateShader(GL_TESS_EVALUATION_SHADER);
-		glShaderSource(evalObject, 1, &evalChars, NULL);
-		glCompileShader(evalObject);
-		glAttachShader(program, evalObject);
-
+	GLenum err_code = glGetError();
+	while (GL_NO_ERROR != err_code) {
+		printf("OpenGL Error @ SHADER_CREATION: %i", err_code);
+		err_code = glGetError();
 	}
-
-	GLint status;
-	glGetShaderiv(fragObject, GL_COMPILE_STATUS, &status);
-
-	if (status != GL_TRUE) {
-		char error[8192];
-		glGetShaderInfoLog(fragObject, 8192, NULL, error);
-		cout << string(error) << endl;
-	}
-
-	glLinkProgram(program);
-
-	/*glGetShaderiv(program, GL_LINK_STATUS, &status);
-
-	if (status != GL_TRUE) {
-		char error[8192];
-		glGetProgramInfoLog(fragObject, 8192, NULL, error);
-		cout << string(error) << endl;
-	}*/
-	
-	SetDefaultAttributes();
 }
 
 Shader::~Shader(void)	{
@@ -100,6 +79,11 @@ void Shader::SetDefaultAttributes()	{
 	glBindAttribLocation(program, COLOUR_BUFFER, "colour");
 	glBindAttribLocation(program, TEXTURE_BUFFER, "texCoord");
 	glBindAttribLocation(program, NORMAL_BUFFER, "normal");
+	GLenum err_code = glGetError();
+	while (GL_NO_ERROR != err_code) {
+		printf("OpenGL Error @ SHADER_SET_DEFAULT_ATTR: %i", err_code);
+		err_code = glGetError();
+	}
 }
 
 string Shader::loadTextFile(string filename) {

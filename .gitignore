@@ -13,9 +13,11 @@
 *.a
 
 Game/Debug/
+Game/Release/
 *.tlog
 *.obj
 *.log
 *.pdb
 *.ipch
 *.idb
+Game/Game.opensdf

@@ -37,13 +37,16 @@
     <Filter Include="Source Files\engine\math">
       <UniqueIdentifier>{3bd718c3-65d4-4d13-8e51-a67031d73c85}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\engine\interface">
+      <UniqueIdentifier>{a0ffa9aa-8240-40b2-b21b-2c80a48aa02e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\interface">
+      <UniqueIdentifier>{1846653c-755d-447d-85f9-a50ffda84e99}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ship.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Image.h">
-      <Filter>Header Files\engine\graphics</Filter>
     </ClInclude>
     <ClInclude Include="GameRenderer.h">
       <Filter>Header Files\engine\graphics</Filter>
@@ -56,12 +59,6 @@
     </ClInclude>
     <ClInclude Include="Entity.h">
       <Filter>Header Files\engine\core</Filter>
-    </ClInclude>
-    <ClInclude Include="UserInterface.h">
-      <Filter>Header Files\engine\graphics</Filter>
-    </ClInclude>
-    <ClInclude Include="InterfaceItem.h">
-      <Filter>Header Files\engine\graphics</Filter>
     </ClInclude>
     <ClInclude Include="Matrix3.h">
       <Filter>Header Files\engine\math</Filter>
@@ -90,6 +87,24 @@
     <ClInclude Include="Shader.h">
       <Filter>Header Files\engine\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="Texture.h">
+      <Filter>Header Files\engine\graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="UserInterface.h">
+      <Filter>Header Files\engine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="InterfaceItem.h">
+      <Filter>Header Files\engine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="ImageItem.h">
+      <Filter>Header Files\engine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="ButtonItem.h">
+      <Filter>Header Files\engine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Keyboard.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -97,9 +112,6 @@
     </ClCompile>
     <ClCompile Include="Ship.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Image.cpp">
-      <Filter>Source Files\engine\graphics</Filter>
     </ClCompile>
     <ClCompile Include="GameRenderer.cpp">
       <Filter>Source Files\engine\graphics</Filter>
@@ -112,12 +124,6 @@
     </ClCompile>
     <ClCompile Include="Entity.cpp">
       <Filter>Source Files\engine\core</Filter>
-    </ClCompile>
-    <ClCompile Include="UserInterface.cpp">
-      <Filter>Source Files\engine\graphics</Filter>
-    </ClCompile>
-    <ClCompile Include="InterfaceItem.cpp">
-      <Filter>Source Files\engine\graphics</Filter>
     </ClCompile>
     <ClCompile Include="Matrix3.cpp">
       <Filter>Source Files\engine\math</Filter>
@@ -133,6 +139,24 @@
     </ClCompile>
     <ClCompile Include="Shader.cpp">
       <Filter>Source Files\engine\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="Texture.cpp">
+      <Filter>Source Files\engine\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="UserInterface.cpp">
+      <Filter>Source Files\engine\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="InterfaceItem.cpp">
+      <Filter>Source Files\engine\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="ImageItem.cpp">
+      <Filter>Source Files\engine\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="ButtonItem.cpp">
+      <Filter>Source Files\engine\interface</Filter>
+    </ClCompile>
+    <ClCompile Include="Keyboard.cpp">
+      <Filter>Source Files\engine\core</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

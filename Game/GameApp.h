@@ -8,10 +8,12 @@
 #include <SDL.h>
 #include <SDL_opengl.h>
 #include <SDL_image.h>
+#include "Vector2.h"
 #include "Level.h"
-#include "Image.h"
+#include "Texture.h"
 #include "Entity.h"
 #include "Shader.h"
+#include "Keyboard.h"
 
 using namespace std;
 
@@ -50,14 +52,24 @@ public:
 	Shader *getDefaultShader() { return defaultShader; }
 	void setCurrentLevel(Level *level) { currentLevel = level; }
 	Level *getCurrentLevel() { return currentLevel; }
+	int getWindowWidth() { return windowWidth; }
+	int getWindowHeight() { return windowHeight; }
 
-	/**
-	* Log an SDL error with some error message to the output stream of our choice
-	* @param os The output stream to write the message too
-	* @param msg The error message to write, format will be msg error: SDL_GetError()
-	*/
+	/*
+	 * Log an SDL error with some error message to the output stream of our choice
+	 * @param os The output stream to write the message too
+	 * @param msg The error message to write, format will be msg error: SDL_GetError()
+	 */
 	static void logSDLError(std::ostream &os, const std::string &msg) {
 		os << msg << " error: " << SDL_GetError() << std::endl;
+	}
+
+	static void logOpenGLError(const string &msg) {
+		GLenum errCode = glGetError();
+		while (GL_NO_ERROR != errCode) {
+			std::cout << "OpenGL Error " << errCode << ": " << msg << std::endl;
+			errCode = glGetError();
+		}
 	}
 
 	/*
