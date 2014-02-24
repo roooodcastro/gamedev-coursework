@@ -16,12 +16,6 @@ Texture::~Texture(void) {
 }
 
 GLuint Texture::loadTexture(char *filename, int &texWidth, int &texHeight) {
-
-	GLenum err_code = glGetError();
-	while (GL_NO_ERROR != err_code) {
-		printf("OpenGL Error @ BEF_TEX_INIT: %i", err_code);
-		err_code = glGetError();
-	}
 	SDL_Surface *surface;
 	int mode;
 	surface = IMG_Load(filename);
@@ -57,7 +51,26 @@ GLuint Texture::loadTexture(char *filename, int &texWidth, int &texHeight) {
 	SDL_FreeSurface(surface);
 	GameApp::logOpenGLError("TEX_LOAD");
 
-return textureId;
+	return textureId;
+}
+
+Texture *Texture::createColourTexture(Uint32 *colour) {
+	Texture *tex = new Texture();
+	tex->texWidth = 1;
+	tex->texHeight = 1;
+	glGenTextures(1, &(tex->textureId));
+
+	// this reads from the sdl surface and puts it into an opengl texture
+	glBindTexture(GL_TEXTURE_2D, tex->textureId);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->texWidth, tex->texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, colour);
+
+	// these affect how this texture is drawn later on...
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+	GameApp::logOpenGLError("TEX_LOAD");
+
+	return tex;
 }
 
 void Texture::bindTexture(Texture *texture, GLuint shaderProgram, TextureSlot slot) {

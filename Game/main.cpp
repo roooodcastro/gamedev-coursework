@@ -16,7 +16,15 @@ int main(int argc, char* argv[]) {
 	UserInterface *gameInterface = new UserInterface();
 	Level *test = new Level(LEVEL_GAME, gameInterface);
 	Shader *testShader = new Shader("shaders/testVert.glsl", "shaders/testFrag.glsl", "", "", "");
-	Texture *tex = new Texture("perlinnoise.png");
+	//Texture *tex = new Texture("perlinnoise.png");
+	Uint32 *colour = new Uint32();
+
+	// Oh yeah, code generated colour textures!
+	// Colours are: 0xALPHA BLUE GREEN RED
+	*colour = 0xAAFF4422;
+	Texture *tex = Texture::createColourTexture(colour);
+
+	//Texture *tex = new Texture("red.bmp");
 	InterfaceItem *item = new ImageItem(Vector2(10, 10), 0, Vector2(1260, 700));
 	ButtonItem *button = new ButtonItem(Vector2(200, 100), 0, Vector2(182, 39), "resources/normal.png", "resources/hovered.png", "resources/pressed.png", "resources/selected.png");
 	item->setTexture(tex);

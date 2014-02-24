@@ -29,12 +29,11 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 	// Init and configure OpenGL
 	glShadeModel(GL_SMOOTH);
 	glClearDepth(1.0f);
-	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	//glEnable(GL_CULL_FACE);
-	glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LEQUAL);
+	//glEnable(GL_DEPTH_TEST);
+    //glDepthFunc(GL_LEQUAL);
 	//glViewport(0, 0, windowWidth, windowHeight);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -93,6 +92,8 @@ void GameApp::draw(Uint32 millisElapsed) {
 	Uint32 frameStart = SDL_GetTicks();
 	// Clear buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	// Draw current level
 	if (currentLevel) {
 		currentLevel->drawLevel(millisElapsed);

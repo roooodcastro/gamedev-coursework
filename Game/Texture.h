@@ -21,6 +21,8 @@ public:
 	 */
 	GLuint loadTexture(char *filename, int &texWidth, int &texHeight);
 
+	static Texture *createColourTexture(Uint32 *colour);
+
 	/*
 	 * Binds an already loaded texture to the specified texture unit.
 	 * Call this function right before rendering a model that uses a texture

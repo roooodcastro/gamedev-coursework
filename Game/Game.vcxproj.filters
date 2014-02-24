@@ -105,6 +105,9 @@
     <ClInclude Include="Keyboard.h">
       <Filter>Header Files\engine\core</Filter>
     </ClInclude>
+    <ClInclude Include="PanelItem.h">
+      <Filter>Header Files\engine\interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -157,6 +160,9 @@
     </ClCompile>
     <ClCompile Include="Keyboard.cpp">
       <Filter>Source Files\engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="PanelItem.cpp">
+      <Filter>Source Files\engine\interface</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
