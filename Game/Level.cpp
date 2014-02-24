@@ -25,6 +25,7 @@ Level::~Level(void) {
 	if (userInterface) {
 		delete userInterface;
 	}
+	entities->clear();
 	delete entities;
 }
 

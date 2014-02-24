@@ -9,6 +9,7 @@ Keyboard::Keyboard(void) {
 
 
 Keyboard::~Keyboard(void) {
+	pressedKeys->clear();
 	delete pressedKeys;
 }
 

@@ -41,6 +41,7 @@ public:
 	/* Calculates is the mouse position provided is inside this interface item */
 	bool isMouseHovering(Vector2 &mousePos);
 
+	/* General getters and setters */
 	InterfaceItemType getType() { return type; }
 	virtual void setTexture(Texture *texture) { this->texture = texture; }
 	virtual Texture *getTexture() { return texture; }
@@ -51,10 +52,15 @@ public:
 	float getRotation() { return rotation; }
 	void setSize(Vector2 &size) { this->size = &size; }
 	Vector2 getSize() { return *size; }
+	void setModelMatrix(Matrix4 &modelMatrix) { this->modelMatrix = modelMatrix; }
+	Matrix4 getModelMatrix() { return modelMatrix; }
 
 	const static float SIZE_NO_RESIZE;
 
 protected:
+
+	/* Returns the actual size, calculating the size in case it is set to some constant, like SIZE_NO_RESIZE */
+	Vector2 getRealSize();
 
 	/* The screen position of this item */
 	Vector2 *position;

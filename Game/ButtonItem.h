@@ -41,12 +41,9 @@ public:
 	bool isNormal() { return state == BUTTON_NORMAL; }
 	bool isHovered() { return state == BUTTON_HOVERED; }
 	bool isPressed() { return state == BUTTON_PRESSED; }
+	virtual void setTexture(Texture *texture);
 
 protected:
-
-	/* Don't allow access to these methods as we're not gonna use the texture variable, but the differente state textures instead */
-	virtual void setTexture(Texture *texture) { this->texture = texture; }
-	virtual Texture *getTexture() { return texture; }
 
 	/*
 	 * The current state of this button. A button can have four states:

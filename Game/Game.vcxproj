@@ -39,8 +39,8 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\glew-1.10.0\include;..\SDL2-2.0.1\include;..\SDL2_image-2.0.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\glew-1.10.0\lib\Release\Win32;..\SDL2-2.0.1\lib\x86;..\SDL2_image-2.0.0\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\SDL2_ttf-2.0.12\include;..\glew-1.10.0\include;..\SDL2-2.0.1\include;..\SDL2_image-2.0.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\SDL2_ttf-2.0.12\lib\x86;..\glew-1.10.0\lib\Release\Win32;..\SDL2-2.0.1\lib\x86;..\SDL2_image-2.0.0\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -58,7 +58,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32s.lib;glu32.lib;opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;glu32.lib;opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -83,6 +83,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="ButtonItem.h" />
+    <ClInclude Include="Colour.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameApp.h" />
@@ -106,6 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="ButtonItem.cpp" />
+    <ClCompile Include="Colour.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="GameRenderer.cpp" />

@@ -54,7 +54,7 @@ GLuint Texture::loadTexture(char *filename, int &texWidth, int &texHeight) {
 	return textureId;
 }
 
-Texture *Texture::createColourTexture(Uint32 *colour) {
+Texture *Texture::createColourTexture(Uint32 colour) {
 	Texture *tex = new Texture();
 	tex->texWidth = 1;
 	tex->texHeight = 1;
@@ -62,7 +62,7 @@ Texture *Texture::createColourTexture(Uint32 *colour) {
 
 	// this reads from the sdl surface and puts it into an opengl texture
 	glBindTexture(GL_TEXTURE_2D, tex->textureId);
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->texWidth, tex->texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, colour);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, tex->texWidth, tex->texHeight, 0, GL_RGBA, GL_UNSIGNED_BYTE, &colour);
 
 	// these affect how this texture is drawn later on...
 	glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
@@ -71,6 +71,10 @@ Texture *Texture::createColourTexture(Uint32 *colour) {
 	GameApp::logOpenGLError("TEX_LOAD");
 
 	return tex;
+}
+
+Texture *Texture::createColourTexture(Colour *colour) {
+	return Texture::createColourTexture(colour->getColour());
 }
 
 void Texture::bindTexture(Texture *texture, GLuint shaderProgram, TextureSlot slot) {
@@ -104,4 +108,47 @@ void Texture::bindTexture(GLuint shaderProgram, TextureSlot slot) {
 		GameApp::logOpenGLError("TEX_BIND");
 	}
 	
+}
+
+Texture *Texture::createFromText(std::string textureText, Colour &textColour, TTF_Font &font) {
+	Texture *texture = new Texture();
+	int mode;
+	//TTF_Font *gFont = TTF_OpenFont("resources/fonts/Arial.ttf", 28);
+	//Render text surface
+	SDL_Color sdlColour = SDL_Color();
+	sdlColour.r = textColour.getRed();
+	sdlColour.g = textColour.getGreen();
+	sdlColour.b = textColour.getBlue();
+	sdlColour.a = textColour.getAlpha();
+	SDL_Surface* textSurface = TTF_RenderText_Blended(&font, textureText.c_str(), textColour);
+	if (textSurface == NULL) {
+		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
+	} else {
+		// Work out what format to tell glTexImage2D to use...
+		if (textSurface->format->BytesPerPixel == 3) { // RGB 24bit
+			mode = GL_RGB;
+		} else if (textSurface->format->BytesPerPixel == 4) { // RGBA 32bit
+			mode = GL_RGBA;
+		} else { // Not a valid image
+			SDL_FreeSurface(textSurface);
+			return 0;
+		}
+		texture->texWidth = textSurface->w;
+		texture->texHeight = textSurface->h;
+		glGenTextures(1, &(texture->textureId));
+
+		// this reads from the sdl surface and puts it into an opengl texture
+		glBindTexture(GL_TEXTURE_2D, texture->textureId);
+		glTexImage2D(GL_TEXTURE_2D, 0, mode, texture->texWidth, texture->texHeight, 0, mode, GL_UNSIGNED_BYTE, textSurface->pixels);
+
+		// these affect how this texture is drawn later on...
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+		glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+
+		// clean up
+		SDL_FreeSurface(textSurface);
+		TTF_CloseFont(gFont);
+		GameApp::logOpenGLError("TEX_LOAD");
+	}
+	return texture;
 }

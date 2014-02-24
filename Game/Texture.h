@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameApp.h"
+#include "Colour.h"
 
 enum TextureSlot {
 	TEXTURE0,
@@ -21,7 +22,15 @@ public:
 	 */
 	GLuint loadTexture(char *filename, int &texWidth, int &texHeight);
 
-	static Texture *createColourTexture(Uint32 *colour);
+	/*
+	 * Creates an OpenGL texture from a colour value.
+	 * This texture will be only 1x1px in size, and should be stretched along
+	 * the whole shape.
+	 */
+	static Texture *createColourTexture(Uint32 colour);
+	static Texture *createColourTexture(Colour *colour);
+
+	static Texture *createFromText(std::string textureText, Colour &textColour, TTF_Font &font);
 
 	/*
 	 * Binds an already loaded texture to the specified texture unit.

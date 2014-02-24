@@ -13,6 +13,10 @@ GameApp::~GameApp() {
 	SDL_DestroyRenderer(renderer);
 	SDL_GL_DeleteContext(glContext);
 	SDL_DestroyWindow(window);
+	if (currentLevel) {
+		delete currentLevel;
+	}
+	delete defaultShader;
 }
 
 GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth, const int windowHeight) {
@@ -48,6 +52,9 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 	instance->renderer = SDL_CreateRenderer(instance->window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (instance->renderer == nullptr) {
 		logSDLError(std::cout, "RENDERER_INIT");
+	}
+	if (TTF_Init() == -1) {
+		logSDLError(std::cout, "TTF_INIT");
 	}
 	if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG){
 		logSDLError(std::cout, "IMG_INIT");

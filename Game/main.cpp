@@ -6,6 +6,8 @@
 #include "Texture.h"
 #include "ImageItem.h"
 #include "ButtonItem.h"
+#include "PanelItem.h"
+#include "Colour.h"
 
 using namespace std;
 
@@ -17,19 +19,31 @@ int main(int argc, char* argv[]) {
 	Level *test = new Level(LEVEL_GAME, gameInterface);
 	Shader *testShader = new Shader("shaders/testVert.glsl", "shaders/testFrag.glsl", "", "", "");
 	//Texture *tex = new Texture("perlinnoise.png");
-	Uint32 *colour = new Uint32();
 
-	// Oh yeah, code generated colour textures!
-	// Colours are: 0xALPHA BLUE GREEN RED
-	*colour = 0xAAFF4422;
-	Texture *tex = Texture::createColourTexture(colour);
+	SDL_Color color = SDL_Color();
+	color.r = 255;
+	color.g = 255;
+	color.b = 255;
+	color.a = 255;
+	Texture *font = Texture::createFromText("Hello World!", color);
 
-	//Texture *tex = new Texture("red.bmp");
-	InterfaceItem *item = new ImageItem(Vector2(10, 10), 0, Vector2(1260, 700));
+	InterfaceItem *item = new ImageItem(Vector2(0, 0), 0, Vector2(1280, 720));
+	//item->setTexture(Texture::createColourTexture(new Colour(0xFFEEEEEE)));
+	item->setTexture(font);
 	ButtonItem *button = new ButtonItem(Vector2(200, 100), 0, Vector2(182, 39), "resources/normal.png", "resources/hovered.png", "resources/pressed.png", "resources/selected.png");
-	item->setTexture(tex);
 	gameInterface->addItem(item);
 	gameInterface->addItem(button);
+
+	PanelItem *panel = new PanelItem(Vector2(0, 300), 0, Vector2(1280, 120));
+	panel->setTexture(Texture::createColourTexture(new Colour(0xAA000000)));
+	ButtonItem *aButton = new ButtonItem(Vector2(100, 30), 0, Vector2(InterfaceItem::SIZE_NO_RESIZE, InterfaceItem::SIZE_NO_RESIZE));
+	aButton->setTexture(new Texture("resources/xbox/buttons/a.png"));
+	ButtonItem *bButton = new ButtonItem(Vector2(400, 30), 0, Vector2(InterfaceItem::SIZE_NO_RESIZE, InterfaceItem::SIZE_NO_RESIZE));
+	bButton->setTexture(new Texture("resources/xbox/buttons/b.png"));
+	panel->addItem(aButton);
+	panel->addItem(bButton);
+
+	gameInterface->addItem(panel);
 
 	gameApp->setDefaultShader(testShader);
 	Model *triangle = Model::getTriangle();
@@ -42,10 +56,10 @@ int main(int argc, char* argv[]) {
 	gameApp->setCurrentLevel(test);
 	gameApp->runGame();
 
-	delete testShader;
+	//delete panel;
+
 	delete triangle;
 	delete testTriangle;
-	delete test;
 	delete gameApp;
 	//delete item;
 	//delete gameInterface;

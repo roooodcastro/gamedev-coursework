@@ -39,8 +39,8 @@ InterfaceItem::~InterfaceItem(void) {
 }
 
 bool InterfaceItem::isMouseHovering(Vector2 &mousePos) {
-	if (mousePos.x >= position->x && mousePos.x <= (position->x + size->x)) {
-		return mousePos.y >= position->y && mousePos.y <= (position->y + size->y);
+	if (mousePos.x >= position->x && mousePos.x <= (position->x + getRealSize().x)) {
+		return mousePos.y >= position->y && mousePos.y <= (position->y + getRealSize().y);
 	}
 	return false;
 }
@@ -90,4 +90,15 @@ void InterfaceItem::draw(unsigned millisElapsed) {
 
 		Model::getQuad()->draw();
 	}
+}
+
+Vector2 InterfaceItem::getRealSize() {
+	Vector2 realSize = Vector2(*size);
+	if (size->x == SIZE_NO_RESIZE && texture != nullptr) {
+		realSize.x = texture->getTextureWidth();
+	}
+	if (size->y == SIZE_NO_RESIZE && texture != nullptr) {
+		realSize.y = texture->getTextureHeight();
+	}
+	return realSize;
 }

@@ -1,6 +1,5 @@
 #include "ButtonItem.h"
 
-
 ButtonItem::ButtonItem(void) : InterfaceItem(ITEM_BUTTON) {
 	state = BUTTON_NORMAL;
 }
@@ -12,6 +11,7 @@ ButtonItem::ButtonItem(Vector2 &position, float rotation, Vector2 &size) : Inter
 ButtonItem::ButtonItem(Vector2 &position, float rotation, Vector2 &size, Texture *normal, Texture *hovered, Texture *pressed, Texture *selected) :
 InterfaceItem(ITEM_BUTTON, position, rotation, size) {
 	this->normalTex = normal;
+	this->texture = this->normalTex;
 	this->hoveredTex = hovered;
 	this->pressedTex = pressed;
 	this->selectedTex = selected;
@@ -19,6 +19,7 @@ InterfaceItem(ITEM_BUTTON, position, rotation, size) {
 
 ButtonItem::ButtonItem(Vector2 &position, float rotation, Vector2 &size, char *normal, char *hovered, char *pressed, char *selected) : InterfaceItem(ITEM_BUTTON, position, rotation, size) {
 	this->normalTex = new Texture(normal);
+	this->texture = this->normalTex;
 	this->hoveredTex = new Texture(hovered);
 	this->pressedTex = new Texture(pressed);
 	this->selectedTex = new Texture(selected);
@@ -84,6 +85,14 @@ void ButtonItem::onKeyDown(SDL_Keysym key) {
 }
 
 void ButtonItem::onKeyUp(SDL_Keysym key) {
+}
+
+void ButtonItem::setTexture(Texture *texture) {
+	this->texture = texture;
+	this->normalTex = texture;
+	this->hoveredTex = texture;
+	this->pressedTex = texture;
+	this->selectedTex = texture;
 }
 
 void ButtonItem::draw(unsigned millisElapsed) {

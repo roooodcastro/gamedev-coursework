@@ -6,7 +6,10 @@ UserInterface::UserInterface(void) {
 
 
 UserInterface::~UserInterface(void) {
-	delete items;
+	if (items) {
+		items->clear();
+		delete items;
+	}
 }
 
 void UserInterface::onMouseMoved(Vector2 &position, Vector2 &amount) {
