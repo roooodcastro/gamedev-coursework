@@ -111,6 +111,9 @@
     <ClInclude Include="Colour.h">
       <Filter>Header Files\engine\graphics</Filter>
     </ClInclude>
+    <ClInclude Include="TextItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -169,6 +172,9 @@
     </ClCompile>
     <ClCompile Include="Colour.cpp">
       <Filter>Source Files\engine\graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="TextItem.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

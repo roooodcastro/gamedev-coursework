@@ -5,8 +5,14 @@ GameApp *GameApp::instance = NULL;
 GameApp::GameApp() {
 	gameRunning = false;
 	gamePaused = false;
-	lastFrameDuration = -1;
+	lastFrameTime = 0;
 	lastTickDuration = -1;
+	numberOfFrames = 0;
+	numberOfTicks = 0;
+	frameIntervalSum = 0;
+	for (int i = 0; i < 60; i++) {
+		frameIntervalList[i] = 0;
+	}
 }
 
 GameApp::~GameApp() {
@@ -93,10 +99,10 @@ void GameApp::processGameTick(Uint32 millisElapsed) {
 		currentLevel->processLevelTick(millisElapsed);
 	}
 	lastTickDuration = SDL_GetTicks() - tickStart;
+	numberOfTicks++;
 }
 
 void GameApp::draw(Uint32 millisElapsed) {
-	Uint32 frameStart = SDL_GetTicks();
 	// Clear buffer
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_BLEND);
@@ -107,7 +113,17 @@ void GameApp::draw(Uint32 millisElapsed) {
 	}
 	// Swap buffers
 	SDL_GL_SwapWindow(window);
-	lastFrameDuration = SDL_GetTicks() - frameStart;
+	// Track fps
+
+
+	Uint32 frameEnd = SDL_GetTicks();
+	Uint32 lastFrameInterval = frameEnd - lastFrameTime;
+	frameIntervalSum -= frameIntervalList[numberOfFrames % TARGET_FPS];
+	frameIntervalSum += lastFrameInterval;
+	frameIntervalList[numberOfFrames % TARGET_FPS] = lastFrameInterval;
+
+	lastFrameTime = frameEnd;
+	numberOfFrames++;
 }
 
 void GameApp::handleUserEvents() {
@@ -186,6 +202,10 @@ void GameApp::handleUserEvents() {
 			break;
 		}
 	}
+}
+
+int GameApp::getFps() {
+	return 1 / ((frameIntervalSum / TARGET_FPS) / 1000.0f);
 }
 
 void GameApp::installTimers() {

@@ -1,7 +1,10 @@
 #include "UserInterface.h"
+#include "TextItem.h"
 
 UserInterface::UserInterface(void) {
 	items = new std::vector<InterfaceItem*>();
+	showFpsCounter = false;
+	fpsCounter = new TextItem(Vector2(5, 5), 0, "0 FPS", 20);
 }
 
 
@@ -10,6 +13,7 @@ UserInterface::~UserInterface(void) {
 		items->clear();
 		delete items;
 	}
+	delete fpsCounter;
 }
 
 void UserInterface::onMouseMoved(Vector2 &position, Vector2 &amount) {
@@ -61,20 +65,37 @@ void UserInterface::onKeyDown(SDL_Keysym key) {
 }
 
 void UserInterface::onKeyUp(SDL_Keysym key) {
+	// The f3 key will be our debug key, showing debug info on screen
+	if (key.sym == SDLK_F3) {
+		setShowFpsCounter(!showFpsCounter);
+	}
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
 		(*it)->onKeyUp(key);
 	}
+}
+
+void UserInterface::setShowFpsCounter(bool showFpsCounter) {
+	this->showFpsCounter = showFpsCounter;
+	((TextItem*) fpsCounter)->setText("0 FPS");
 }
 
 void UserInterface::update(unsigned millisElapsed) {
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
 		(*it)->update(millisElapsed);
 	}
+	if (showFpsCounter && (GameApp::getInstance()->getFramesCount() % (GameApp::TARGET_FPS / 2) == 0)) {
+		float fps = GameApp::getInstance()->getFps();
+		((TextItem*) fpsCounter)->setText(to_string((long double) fps) + " FPS");
+		fpsCounter->update(millisElapsed);
+	}
 }
 
 void UserInterface::draw(unsigned millisElapsed) {
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
 		(*it)->draw(millisElapsed);
+	}
+	if (showFpsCounter) {
+		fpsCounter->draw(millisElapsed);
 	}
 }
 

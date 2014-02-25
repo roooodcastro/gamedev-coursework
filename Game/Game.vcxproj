@@ -91,6 +91,7 @@
     <ClInclude Include="ImageItem.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="PanelItem.h" />
+    <ClInclude Include="TextItem.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="InterfaceItem.h" />
     <ClInclude Include="Level.h" />
@@ -114,6 +115,7 @@
     <ClCompile Include="ImageItem.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="PanelItem.cpp" />
+    <ClCompile Include="TextItem.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="InterfaceItem.cpp" />
     <ClCompile Include="Level.cpp" />

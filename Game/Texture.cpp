@@ -13,6 +13,7 @@ Texture::Texture(char *filename) {
 
 
 Texture::~Texture(void) {
+	glDeleteTextures(1, &textureId);
 }
 
 GLuint Texture::loadTexture(char *filename, int &texWidth, int &texHeight) {
@@ -120,7 +121,7 @@ Texture *Texture::createFromText(std::string textureText, Colour &textColour, TT
 	sdlColour.g = textColour.getGreen();
 	sdlColour.b = textColour.getBlue();
 	sdlColour.a = textColour.getAlpha();
-	SDL_Surface* textSurface = TTF_RenderText_Blended(&font, textureText.c_str(), textColour);
+	SDL_Surface* textSurface = TTF_RenderText_Blended(&font, textureText.c_str(), sdlColour);
 	if (textSurface == NULL) {
 		printf("Unable to render text surface! SDL_ttf Error: %s\n", TTF_GetError());
 	} else {
@@ -147,7 +148,6 @@ Texture *Texture::createFromText(std::string textureText, Colour &textColour, TT
 
 		// clean up
 		SDL_FreeSurface(textSurface);
-		TTF_CloseFont(gFont);
 		GameApp::logOpenGLError("TEX_LOAD");
 	}
 	return texture;

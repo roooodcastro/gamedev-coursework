@@ -29,6 +29,8 @@ public:
 
 	void addItem(InterfaceItem *item);
 	bool removeItem(InterfaceItem *item);
+	void setShowFpsCounter(bool showFps);
+	bool isShowFpsCounter() { return showFpsCounter; }
 
 	// list of interface items, which can be:
 	// backgrounds
@@ -40,8 +42,14 @@ public:
 	// interface will be drawn using orthographic view
 	// entities will be drawn using perspective
 
+protected:
+
 	/*
 	 * The list of interface items included in this interface
 	 */
 	std::vector<InterfaceItem*> *items;
+
+	/* Debug tool to show fps counter on the top left corner of screen */
+	bool showFpsCounter;
+	InterfaceItem *fpsCounter;
 };

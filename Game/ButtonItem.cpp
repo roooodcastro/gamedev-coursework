@@ -96,24 +96,24 @@ void ButtonItem::setTexture(Texture *texture) {
 }
 
 void ButtonItem::draw(unsigned millisElapsed) {
-	Texture chosenTex = *normalTex;
+	Texture *chosenTex = normalTex;
 	switch (state) {
 	//case BUTTON_NORMAL:
 		//break;
 	case BUTTON_HOVERED:
-		chosenTex = *hoveredTex;
+		chosenTex = hoveredTex;
 		break;
 	case BUTTON_PRESSED:
-		chosenTex = *pressedTex;
+		chosenTex = pressedTex;
 		break;
 	case BUTTON_SELECTED:
-		chosenTex = *selectedTex;
+		chosenTex = selectedTex;
 		break;
 	}
 	if (&chosenTex) {
 		GLuint program = GameApp::getInstance()->getDefaultShader()->getShaderProgram();
 		glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, false, (float*) &modelMatrix);
-		chosenTex.bindTexture(program, TEXTURE0);
+		chosenTex->bindTexture(program, TEXTURE0);
 		Model::getQuad()->draw();
 	} else if (normalTex) {
 		// Fallback in case one of the textures wasn't specified

@@ -55,6 +55,9 @@ public:
 	Level *getCurrentLevel() { return currentLevel; }
 	int getWindowWidth() { return windowWidth; }
 	int getWindowHeight() { return windowHeight; }
+	int getFps(); // Returns an average between the last 60 frames
+	Uint32 getTicksCount() { return numberOfTicks; }
+	Uint32 getFramesCount() { return numberOfFrames; }
 
 	/*
 	 * Log an SDL error with some error message to the output stream of our choice
@@ -130,9 +133,15 @@ private:
 	SDL_GLContext glContext; // The OpenGL Context that will be used to do pretty much everything OpenGL related
 	SDL_TimerID tickTimer; // SDL timer to control game ticks
 	SDL_TimerID drawTimer; // SDL timer to control FPS
+
+	/* Framerate control variables */
 	Uint32 startTime; // When the game starts, this variable will hold the number of millisseconds since SDL initialization
-	Uint32 lastFrameDuration; // The amount of time that took to draw the last frame
+	Uint32 lastFrameTime; // The time the last frame started to be rendered
 	Uint32 lastTickDuration; // The amount of time that took to process the last game tick
+	Uint32 numberOfTicks; // Counts the number of ticks processed since the start of the game
+	Uint32 numberOfFrames; // Counts the number of frames rendered sunce the start of the game
+	Uint32 frameIntervalList[TARGET_FPS]; // A list containing the time to render the last 60 frames
+	Uint32 frameIntervalSum; // The sum of the last 60 frames intervals
 	map<string, Level> levels; // A map containing the levels loaded for the game
 	Level *currentLevel; // A pointer indicating the current Level that is being played
 	Shader *defaultShader; // A default shader to be applied to entities

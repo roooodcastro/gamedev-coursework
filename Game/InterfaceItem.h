@@ -10,6 +10,7 @@ enum InterfaceItemType {
 	ITEM_IMAGE, // Just a image
 	ITEM_3D_FRAME, // A frame that can render a perspective 3D model into it
 	ITEM_PANEL, // A panel that can hold child interface items
+	ITEM_TEXT, // Just a text on the screen
 };
 
 class Texture;
@@ -46,7 +47,7 @@ public:
 	virtual void setTexture(Texture *texture) { this->texture = texture; }
 	virtual Texture *getTexture() { return texture; }
 
-	void setPosition(Vector2 &position) { this->position = &position; }
+	void setPosition(Vector2 &position) { this->position->x = position.x; this->position->y = position.y; }
 	Vector2 getPosition() { return *position; }
 	void setRotation(float rotation) { this->rotation = rotation; }
 	float getRotation() { return rotation; }
