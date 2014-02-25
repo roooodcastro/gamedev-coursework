@@ -25,6 +25,7 @@ class Vector3;
 class Matrix4	{
 public:
 	Matrix4(void);
+	Matrix4(const Matrix4 &copy);
 	Matrix4(float elements[16]);
 	~Matrix4(void);
 

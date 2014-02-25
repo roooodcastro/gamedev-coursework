@@ -4,7 +4,14 @@
 UserInterface::UserInterface(void) {
 	items = new std::vector<InterfaceItem*>();
 	showFpsCounter = false;
-	fpsCounter = new TextItem(Vector2(5, 5), 0, "0 FPS", 20);
+	fpsCounter = new TextItem(Vector2(20, 10), 0, "0 FPS", 20);
+}
+
+UserInterface::UserInterface(const UserInterface &copy) {
+	items = new std::vector<InterfaceItem*>();
+	*items = *(copy.items);
+	showFpsCounter = copy.showFpsCounter;
+	fpsCounter = new TextItem(*((TextItem*) copy.fpsCounter));
 }
 
 
@@ -76,16 +83,17 @@ void UserInterface::onKeyUp(SDL_Keysym key) {
 
 void UserInterface::setShowFpsCounter(bool showFpsCounter) {
 	this->showFpsCounter = showFpsCounter;
-	((TextItem*) fpsCounter)->setText("0 FPS");
+	//((TextItem*) fpsCounter)->setText("0 FPS");
 }
 
 void UserInterface::update(unsigned millisElapsed) {
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
 		(*it)->update(millisElapsed);
 	}
-	if (showFpsCounter && (GameApp::getInstance()->getFramesCount() % (GameApp::TARGET_FPS / 2) == 0)) {
-		float fps = GameApp::getInstance()->getFps();
-		((TextItem*) fpsCounter)->setText(to_string((long double) fps) + " FPS");
+	if (GameApp::getInstance()->getFramesCount() % (GameApp::TARGET_FPS / 10) == 0) {
+		int fps = GameApp::getInstance()->getFps();
+		// Don't ask me why I had to put "long long" there, it's just the way it is...
+		((TextItem*) fpsCounter)->setText(to_string((long long) fps) + " FPS");
 		fpsCounter->update(millisElapsed);
 	}
 }
@@ -121,8 +129,15 @@ bool UserInterface::removeItem(InterfaceItem *item) {
 		}
 		// Didn't find the entity in the vector
 		return false;
-	} catch (int &e) {
+	} catch (int &) {
 		// An error occurred while trying toremove the entity
 		return false;
 	}
+}
+
+UserInterface &UserInterface::operator=(const UserInterface &other) {
+	this->items = other.items;
+	this->showFpsCounter = other.showFpsCounter;
+	this->fpsCounter = other.fpsCounter;
+	return *this;
 }

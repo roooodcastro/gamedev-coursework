@@ -19,6 +19,11 @@ public:
 		ToZero();
 	}
 
+	Vector2(Vector2 &copy) {
+		this->x = copy.x;
+		this->y = copy.y;
+	}
+
 	Vector2(const float x, const float y) {
 		this->x = x;
 		this->y = y;
@@ -39,12 +44,17 @@ public:
 		return o;
 	}
 
-	inline Vector2  operator-(const Vector2  &a) const{
-		return Vector2(x - a.x,y - a.y);
+	Vector2 operator=(const Vector2 &other) {
+		this->x = other.x;
+		this->y = other.y;
+		return *this;
 	}
 
-	inline Vector2  operator+(const Vector2  &a) const{
-		return Vector2(x + a.x,y + a.y);
+	inline Vector2 operator-(const Vector2 &a) const {
+		return Vector2(x - a.x, y - a.y);
+	}
+
+	inline Vector2 operator+(const Vector2 &a) const {
+		return Vector2(x + a.x, y + a.y);
 	}
 };
-

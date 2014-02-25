@@ -4,8 +4,12 @@ Matrix4::Matrix4(void)	{
 	ToIdentity();
 }
 
+Matrix4::Matrix4(const Matrix4 &copy) {
+	memcpy(this->values, copy.values, 16 * sizeof(float));
+}
+
 Matrix4::Matrix4( float elements[16] )	{
-	memcpy(this->values,elements,16*sizeof(float));
+	memcpy(this->values, elements, 16 * sizeof(float));
 }
 
 Matrix4::~Matrix4(void)	{

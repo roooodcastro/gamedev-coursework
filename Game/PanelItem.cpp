@@ -87,10 +87,10 @@ void PanelItem::update(unsigned millisElapsed) {
 	int windowHeight = gameApp->getWindowHeight();
 	Vector2 *renderSize = new Vector2(*size);
 	if (size->x == SIZE_NO_RESIZE && texture != nullptr) {
-		renderSize->x = texture->getTextureWidth();
+		renderSize->x = (float) texture->getTextureWidth();
 	}
 	if (size->y == SIZE_NO_RESIZE && texture != nullptr) {
-		renderSize->y = texture->getTextureHeight();
+		renderSize->y = (float) texture->getTextureHeight();
 	}
 	float realPosX = position->x + (renderSize->x / 2.0f);
 	float realPosY = windowHeight - position->y - (renderSize->y / 2.0f);
@@ -107,10 +107,10 @@ void PanelItem::update(unsigned millisElapsed) {
 		// We build the model matrix by applying the position, rotation and size, in this order
 		Vector2 *childRenderSize = new Vector2((*it)->getSize());
 		if ((*it)->getSize().x == SIZE_NO_RESIZE && (*it)->getTexture() != nullptr) {
-			childRenderSize->x = (*it)->getTexture()->getTextureWidth();
+			childRenderSize->x = (float) (*it)->getTexture()->getTextureWidth();
 		}
 		if ((*it)->getSize().y == SIZE_NO_RESIZE && (*it)->getTexture() != nullptr) {
-			childRenderSize->y = (*it)->getTexture()->getTextureHeight();
+			childRenderSize->y = (float) (*it)->getTexture()->getTextureHeight();
 		}
 		float childRealPosX = ((*it)->getPosition().x + position->x) + (childRenderSize->x / 2.0f);
 		float childRealPosY = (windowHeight - ((*it)->getPosition().y + position->y)) - (childRenderSize->y / 2.0f);

@@ -6,6 +6,7 @@ class TextItem : public InterfaceItem {
 public:
 
 	TextItem(void);
+	TextItem(const TextItem &copy);
 	TextItem(string text, int fontSize);
 	TextItem(Vector2 &position, float rotation, string text, int fontSize);
 	TextItem(Vector2 &position, float rotation, Vector2 &size);
@@ -35,9 +36,12 @@ public:
 	void setFontSize(int fontSize);
 	int getFontSize() { return fontSize; }
 
-	/* We set these to Arial 16 */
+	/* We set these to Arial 16, white */
 	static const string defaultFont;
 	static const int defaultFontSize;
+	static const Colour defaultColour;
+
+	virtual TextItem &operator=(const TextItem &other);
 
 protected:
 

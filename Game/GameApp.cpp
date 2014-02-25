@@ -150,17 +150,17 @@ void GameApp::handleUserEvents() {
 			break;
 		case SDL_MOUSEMOTION:
 			if (currentLevel) {
-				currentLevel->onMouseMoved(Vector2(e.motion.x, e.motion.y), Vector2(e.motion.xrel, e.motion.yrel));
+				currentLevel->onMouseMoved(Vector2((float) e.motion.x, (float) e.motion.y), Vector2((float) e.motion.xrel, (float) e.motion.yrel));
 			}
 			break;
 		case SDL_MOUSEBUTTONDOWN:
 			if (currentLevel) {
-				currentLevel->onMouseButtonDown(e.button.button, Vector2(e.button.x, e.button.y));
+				currentLevel->onMouseButtonDown(e.button.button, Vector2((float) e.button.x, (float) e.button.y));
 			}
 			break;
 		case SDL_MOUSEBUTTONUP:
 			if (currentLevel) {
-				currentLevel->onMouseButtonUp(e.button.button, Vector2(e.button.x, e.button.y));
+				currentLevel->onMouseButtonUp(e.button.button, Vector2((float) e.button.x, (float) e.button.y));
 				//currentLevel->onMouseClick(e.button.button, Vector2(e.button.x, e.button.y));
 				// TODO: Upgrade to SDL 2.0.2 or higher to be able to detec double clicks like this.
 				// In the meanwhile, double click events will NOT happen, at all.
@@ -205,7 +205,7 @@ void GameApp::handleUserEvents() {
 }
 
 int GameApp::getFps() {
-	return 1 / ((frameIntervalSum / TARGET_FPS) / 1000.0f);
+	return (int) (1 / ((frameIntervalSum / TARGET_FPS) / 1000.0f));
 }
 
 void GameApp::installTimers() {

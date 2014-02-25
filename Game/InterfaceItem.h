@@ -18,6 +18,7 @@ class Texture;
 class InterfaceItem {
 public:
 	InterfaceItem(void);
+	InterfaceItem(const InterfaceItem &copy);
 	InterfaceItem(InterfaceItemType type);
 	InterfaceItem(InterfaceItemType type, Vector2 &position, float rotation, Vector2 &size);
 	virtual ~InterfaceItem(void);
@@ -55,6 +56,8 @@ public:
 	Vector2 getSize() { return *size; }
 	void setModelMatrix(Matrix4 &modelMatrix) { this->modelMatrix = modelMatrix; }
 	Matrix4 getModelMatrix() { return modelMatrix; }
+
+	virtual InterfaceItem &operator=(const InterfaceItem &other);
 
 	const static float SIZE_NO_RESIZE;
 

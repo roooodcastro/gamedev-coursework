@@ -56,6 +56,8 @@ public:
 		os << msg << " error: " << SDL_GetError() << std::endl;
 	}
 
+	Texture &operator=(const Texture &other);
+
 protected:
 
 	GLuint textureId;

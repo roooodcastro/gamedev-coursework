@@ -9,6 +9,15 @@ InterfaceItem::InterfaceItem(void) {
 	texture = NULL;
 }
 
+InterfaceItem::InterfaceItem(const InterfaceItem &copy) {
+	this->position = new Vector2(*(copy.position));
+	this->rotation = copy.rotation;
+	this->size = new Vector2(*(copy.size));
+	this->type = copy.type;
+	this->texture = new Texture(*(copy.texture));
+	this->modelMatrix = Matrix4(copy.modelMatrix);
+}
+
 InterfaceItem::InterfaceItem(InterfaceItemType type) {
 	position = new Vector2(0, 0);
 	rotation = 0;
@@ -22,7 +31,7 @@ InterfaceItem::InterfaceItem(InterfaceItemType type, Vector2 &position, float ro
 	this->rotation = 0;
 	this->size = new Vector2(SIZE_NO_RESIZE, SIZE_NO_RESIZE);
 	if (&position != nullptr) {
-		this->position = &position;
+		*(this->position) = position;
 	}
 	this->rotation = rotation;
 	if (&size != nullptr) {
@@ -69,10 +78,10 @@ void InterfaceItem::update(unsigned millisElapsed) {
 	int windowHeight = gameApp->getWindowHeight();
 	Vector2 *renderSize = new Vector2(*size);
 	if (size->x == SIZE_NO_RESIZE && texture != nullptr) {
-		renderSize->x = texture->getTextureWidth();
+		renderSize->x = (float) texture->getTextureWidth();
 	}
 	if (size->y == SIZE_NO_RESIZE && texture != nullptr) {
-		renderSize->y = texture->getTextureHeight();
+		renderSize->y = (float) texture->getTextureHeight();
 	}
 	float realPosX = position->x + (renderSize->x / 2.0f);
 	float realPosY = windowHeight - position->y - (renderSize->y / 2.0f);
@@ -95,10 +104,20 @@ void InterfaceItem::draw(unsigned millisElapsed) {
 Vector2 InterfaceItem::getRealSize() {
 	Vector2 realSize = Vector2(*size);
 	if (size->x == SIZE_NO_RESIZE && texture != nullptr) {
-		realSize.x = texture->getTextureWidth();
+		realSize.x = (float) texture->getTextureWidth();
 	}
 	if (size->y == SIZE_NO_RESIZE && texture != nullptr) {
-		realSize.y = texture->getTextureHeight();
+		realSize.y = (float) texture->getTextureHeight();
 	}
 	return realSize;
+}
+
+InterfaceItem &InterfaceItem::operator=(const InterfaceItem &other) {
+	this->position = other.position;
+	this->rotation = other.rotation;
+	this->size = other.size;
+	this->type = other.type;
+	this->texture = other.texture;
+	this->modelMatrix = other.modelMatrix;
+	return *this;
 }

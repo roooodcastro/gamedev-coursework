@@ -10,6 +10,7 @@ class UserInterface {
 public:
 
 	UserInterface(void);
+	UserInterface(const UserInterface &copy);
 	~UserInterface(void);
 
 	/* Mouse events */
@@ -32,15 +33,7 @@ public:
 	void setShowFpsCounter(bool showFps);
 	bool isShowFpsCounter() { return showFpsCounter; }
 
-	// list of interface items, which can be:
-	// backgrounds
-	// buttons
-	// images, or panels, etc
-	// 3d panel, to draw perspective opengl stuff
-	// create one class for each type of interface item
-
-	// interface will be drawn using orthographic view
-	// entities will be drawn using perspective
+	UserInterface &operator=(const UserInterface &other);
 
 protected:
 

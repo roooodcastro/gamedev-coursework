@@ -13,12 +13,12 @@ Level::Level(LevelType type) {
 	levelType = type;
 }
 
-Level::Level(LevelType type, UserInterface *userInterface) {
+Level::Level(LevelType type, UserInterface &userInterface) {
 	entities = new std::vector<Entity*>();
 	projectionMatrix = new Matrix4();
 	cameraMatrix = new Matrix4();
 	levelType = type;
-	this->userInterface = userInterface;
+	this->userInterface = new UserInterface(userInterface);
 }
 
 Level::~Level(void) {
@@ -113,7 +113,7 @@ bool Level::removeEntity(Entity *entity) {
 		}
 		// Didn't find the entity in the vector
 		return false;
-	} catch (int &e) {
+	} catch (int &) {
 		// An error occurred while trying toremove the entity
 		return false;
 	}

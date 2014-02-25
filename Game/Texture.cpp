@@ -152,3 +152,10 @@ Texture *Texture::createFromText(std::string textureText, Colour &textColour, TT
 	}
 	return texture;
 }
+
+Texture &Texture::operator=(const Texture &other) {
+	this->texWidth = other.textureId;
+	this->texWidth = other.texWidth;
+	this->texHeight = other.texHeight;
+	return *this;
+}

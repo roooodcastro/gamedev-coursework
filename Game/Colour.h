@@ -18,6 +18,7 @@ class Colour {
 public:
 
 	Colour(void);
+	Colour(const Colour &copy);
 	Colour(uint32_t colour);
 	Colour(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
 	~Colour(void);
@@ -33,6 +34,8 @@ public:
 	uint8_t getGreen() { return *green; }
 	uint8_t getBlue() { return *blue; }
 	uint8_t getAlpha() { return *alpha; }
+
+	Colour &operator=(const Colour &other);
 
 protected:
 

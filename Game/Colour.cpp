@@ -7,6 +7,13 @@ Colour::Colour(void) {
 	this->alpha = new uint8_t();
 }
 
+Colour::Colour(const Colour &copy) {
+	this->red = new uint8_t(*(copy.red));
+	this->green = new uint8_t(*(copy.green));
+	this->blue = new uint8_t(*(copy.blue));
+	this->alpha = new uint8_t(*(copy.alpha));
+}
+
 Colour::Colour(unsigned int colour) {
 	this->red = new uint8_t();
 	this->green = new uint8_t();
@@ -50,4 +57,12 @@ Colour::~Colour(void) {
 	delete green;
 	delete blue;
 	delete alpha;
+}
+
+Colour &Colour::operator=(const Colour &other) {
+	this->red = new uint8_t(*(other.red));
+	this->green = new uint8_t(*(other.green));
+	this->blue = new uint8_t(*(other.blue));
+	this->alpha = new uint8_t(*(other.alpha));
+	return *this;
 }

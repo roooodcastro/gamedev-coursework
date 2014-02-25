@@ -23,7 +23,7 @@ class Level {
 public:
 
 	Level(LevelType type);
-	Level(LevelType type, UserInterface *userInterface);
+	Level(LevelType type, UserInterface &userInterface);
 	~Level(void);
 
 	/* ==========================================
@@ -78,7 +78,7 @@ public:
 	Entity *getEntity(int index) {
 		try {
 			return entities->at(index);
-		} catch (int &e) {
+		} catch (int &) {
 			return NULL;
 		}
 	}
