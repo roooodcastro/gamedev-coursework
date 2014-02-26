@@ -19,6 +19,19 @@
 #include <iostream>
 #include "Vector3.h"
 #include "Model.h"
+#include "Material.h"
+
+// This structure stores every property of a face
+struct Face {
+	int faceIndex; // Starting from 1
+	bool quad; // True if is a quad, false if is a triangle
+	int vertexIndexes[4]; // Index of the vertices that make up this face, starting from 1
+	int texCoords[4]; // Indexes of the texture coordinates of this face, starting from 1
+	Material *material; // Material used in this face
+	Face(int faceIndex, int v1, int v2, int v3, int t1, int t2, int t3, Material &material);
+	Face(int faceIndex, int v1, int v2, int v3, int v4, int t1, int t2, int t3, int t4, Material &material);
+	~Face(void);
+};
 
 class ModelLoader {
 
@@ -27,9 +40,12 @@ public:
 	static Model *loadObject(const char* filename) {
 		std::vector<std::string*> lines;
 		std::vector<Vector3*> vertices;
-		std::vector<face*> faces;
+		std::vector<Face*> faces;
 		std::vector<Vector3*> normals;
+		std::vector<Vector2*> texCoords;
 		std::ifstream in(filename);
+		std::vector<Material*> materials;
+		Material *currentMaterial = new Material();
 
 		if (!in.is_open()) {
 			std::cout << "Wavefront file couldn't be opened!" << std::endl;
@@ -67,125 +83,149 @@ public:
 					float x, y, z;
 					sscanf(line.c_str(), "v %f %f %f", &x, &y, &z);
 					normals.push_back(new Vector3(x, y, z));
+				} else if (secondChar == 't') {
+					// It's a texture coordinate
+					float x, y;
+					sscanf(line.c_str(), "v %f %f", &x, &y);
+					texCoords.push_back(new Vector2(x, y));
 				}
 				break;
 			case 'f':
 				/*
 				 * It's a face
 				 *
-		//		 * The vi variables represent vertex indexes, the ni represent
-		//		 * normal indexes and ti, texture mapping indexes
-		//		 */
-		//		int viX, viY, viZ, viW, niX, niY, niZ, niW, tiX, tiY, tiZ, tiW;
+				 * The vi variables represent vertex indexes, the ni represent
+				 * normal indexes and ti, texture mapping indexes
+				 */
+				int viX, viY, viZ, viW, niX, niY, niZ, niW, tiX, tiY, tiZ, tiW;
 
-		//		if (count(line.begin(), line.end(), ' ') == 4) {
-		//			// It's a quadrilateral face
-		//			if (line.find("//") != std::string::npos) {
-		//				// If there's a normal vector index
-		//				sscanf(line.c_str(),"f %d//%d %d//%d %d//%d %d//%d", &viX ,&niX, &viY, &niY, &viZ, &niZ, &viW, &niW);
-		//				faces.push_back(new face(b,a,c,d,e,0,0,0,0,curmat));    //and put to the faces, we don't care about the texture coorinate in this case
-		//																																																											//and if there is no material, it doesn't matter, what is curmat
-		//			} else if(coord[i]->find("/")!=std::string::npos)        //if we have texture coorinate and normal vectors
-		//			{
-		//					int t[4];       //texture coorinates
-		//					//read in this form, and put to the end of the vector
-		//					sscanf(coord[i]->c_str(),"f %d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d",&a,&t[0],&b,&c,&t[1],&b,&d,&t[2],&b,&e,&t[3],&b);
-		//					faces.push_back(new face(b,a,c,d,e,t[0],t[1],t[2],t[3],curmat));
-		//			}else{
-		//					//else we don't have normal vectors nor texture coorinate
-		//					sscanf(coord[i]->c_str(),"f %d %d %d %d",&a,&b,&c,&d);
-		//					faces.push_back(new face(-1,a,b,c,d,0,0,0,0,curmat));          
-		//			}
-		//		} else {  //if it's a triangle
-		//										//do the same, except we use one less vertex/texture coorinate/face number
-		//						if(coord[i]->find("//")!=std::string::npos)
-		//						{
-		//								sscanf(coord[i]->c_str(),"f %d//%d %d//%d %d//%d",&a,&b,&c,&b,&d,&b);
-		//								faces.push_back(new face(b,a,c,d,0,0,0,curmat));
-		//						}else if(coord[i]->find("/")!=std::string::npos)
-		//						{
-		//								int t[3];
-		//								sscanf(coord[i]->c_str(),"f %d/%d/%d %d/%d/%d %d/%d/%d",&a,&t[0],&b,&c,&t[1],&b,&d,&t[2],&b);
-		//								faces.push_back(new face(b,a,c,d,t[0],t[1],t[2],curmat));
-		//						}else{
-		//								sscanf(coord[i]->c_str(),"f %d %d %d",&a,&b,&c);
-		//								faces.push_back(new face(-1,a,b,c,0,0,0,curmat));                                      
-		//						}
-		//		}
-
-
-
-		//		int a, b, c, d, e;
-		//		if (count(line.begin(), line.end(), ' ') == 3) {
-		//			// It's a triangle face
-		//			sscanf(coord[i]->c_str(), "f %d//%d %d//%d %d//%d", &a, &b, &c, &b, &d, &b);
-		//			faces.push_back(new face(b, a, c, d)); //read in, and add to the end of the face list
-		//		} else {
-		//			// It's a quadrilateral face
-		//			sscanf(coord[i]->c_str(), "f %d//%d %d//%d %d//%d %d//%d", &a, &b, &c, &b, &d, &b, &e, &b);
-		//			faces.push_back(new face(b, a, c, d, e)); //do the same, except we call another constructor, and we use different pattern
-		//		}
-		//		break;
+				if (count(line.begin(), line.end(), ' ') == 4) {
+					// It's a quadrilateral face
+					if (line.find("//") != std::string::npos) {
+						// If there's a normal vector index
+						sscanf(line.c_str(),"f %d//%d %d//%d %d//%d %d//%d", &viX ,&niX, &viY, &niY, &viZ, &niZ, &viW, &niW);
+						faces.push_back(new Face(niX, viX, viY, viZ, viW, 0, 0, 0, 0, *currentMaterial));
+					} else if (line.find("/") != std::string::npos) {
+						if (count(line.begin(), line.end(), '/') == 8) {
+							// If there's both texture coordinates and normal vector
+							sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d %d/%d/%d", &viX, &tiX, &niX, &viY, &tiY, &niY, &viZ, &tiZ, &niZ, &viW, &tiW, &niW);
+							faces.push_back(new Face(niX, viX, viY, viZ, viW, tiX, tiY, tiZ, tiW, *currentMaterial));
+						} else {
+							// If there's texture coordinate indexes
+							sscanf(line.c_str(), "f %d/%d %d/%d %d/%d %d/%d", &viX, &tiX, &viY, &tiY, &viZ, &tiZ, &viW, &tiW);
+							faces.push_back(new Face(-1, viX, viY, viZ, viW, tiX, tiY, tiZ, tiW, *currentMaterial));
+						}
+					} else {
+						// If we just have vertices, no normals or texture coordinates
+						sscanf(line.c_str(), "f %d %d %d %d", &viX, &viY, &viZ, &viW);
+						faces.push_back(new Face(-1, viX, viY, viZ, viW, 0, 0, 0, 0, *currentMaterial));
+					}
+				} else {
+					// It's a triangle face
+					if (line.find("//") != std::string::npos) {
+						// If there's a normal vector index
+						sscanf(line.c_str(),"f %d//%d %d//%d %d//%d", &viX ,&niX, &viY, &niY, &viZ, &niZ);
+						faces.push_back(new Face(niX, viX, viY, viZ, 0, 0, 0, *currentMaterial));
+					} else if (line.find("/") != std::string::npos) {
+						if (count(line.begin(), line.end(), '/') == 6) {
+							// If there's both texture coordinates and normal vector
+							sscanf(line.c_str(), "f %d/%d/%d %d/%d/%d %d/%d/%d", &viX, &tiX, &niX, &viY, &tiY, &niY, &viZ, &tiZ, &niZ);
+							faces.push_back(new Face(niX, viX, viY, viZ, tiX, tiY, tiZ, *currentMaterial));
+						} else {
+							// If there's texture coordinate indexes
+							sscanf(line.c_str(), "f %d/%d %d/%d %d/%d", &viX, &tiX, &viY, &tiY, &viZ, &tiZ);
+							faces.push_back(new Face(-1, viX, viY, viZ, tiX, tiY, tiZ, *currentMaterial));
+						}
+					} else {
+						// If we just have vertices, no normals or texture coordinates
+						sscanf(line.c_str(), "f %d %d %d", &viX, &viY, &viZ);
+						faces.push_back(new Face(-1, viX, viY, viZ, 0, 0, 0, *currentMaterial));
+					}
+				}
 			}
+		}
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
 
-		//	if (coord[i]->c_str()[0] == '#') //if it is a comment (the first character is #)
-		//		continue; //we don't care about that
-		//	else if (coord[i]->c_str()[0] == 'v' && coord[i]->c_str()[1] == ' ') { // if it is a vector
-		//		float tmpx, tmpy, tmpz;
-		//		sscanf(coord[i]->c_str(), "v %f %f %f", &tmpx, &tmpy, &tmpz); //read in the 3 float Vector3 to tmpx,tmpy,tmpz
-		//		vertex.push_back(new Vector3(tmpx, tmpy, tmpz)); //and then add it to the end of our vertex list
-		//	} else if (coord[i]->c_str()[0] == 'v' && coord[i]->c_str()[1] == 'n') {
-		//		float tmpx, tmpy, tmpz; //do the same thing
-		//		sscanf(coord[i]->c_str(), "vn %f %f %f", &tmpx, &tmpy, &tmpz);
-		//		normals.push_back(new Vector3(tmpx, tmpy, tmpz));
-		//	} else if (coord[i]->c_str()[0] == 'f') {
-		//		int a, b, c, d, e;
-		//		if (count(coord[i]->begin(), coord[i]->end(), ' ') == 3) { //if it is a triangle (it has 3 space in it)
-		//			sscanf(coord[i]->c_str(), "f %d//%d %d//%d %d//%d", &a, &b, &c, &b, &d, &b);
-		//			faces.push_back(new face(b, a, c, d)); //read in, and add to the end of the face list
-		//		} else {
-		//			sscanf(coord[i]->c_str(), "f %d//%d %d//%d %d//%d %d//%d", &a, &b, &c, &b, &d, &b, &e, &b);
-		//			faces.push_back(new face(b, a, c, d, e)); //do the same, except we call another constructor, and we use different pattern
-		//		}
-		//	}
+		for (int i = 0; i < faces.size(); i++) {
+			Face face = *(faces[i]);
+			
 		}
 
-		////raw
-		//int num; //the id for the list
-		//num = glGenLists(1); //generate a uniqe
-		//glNewList(num, GL_COMPILE); //and create it
-		//for (int i = 0; i < faces.size(); i++) {
-		//	if (faces[i]->four) {	//if it's a quad draw a quad
-		//		glBegin(GL_QUADS);
-		//		//basically all I do here, is use the facenum (so the number of the face) as an index for the normal, so the 1st normal owe to the first face
-		//		//I subtract 1 because the index start from 0 in C++
-		//		glNormal3f(normals[faces[i]->facenum-1]->x, normals[faces[i]->facenum-1]->y, normals[faces[i]->facenum-1]->z);
-		//		//draw the faces
-		//		glVertex3f(vertex[faces[i]->faces[0]-1]->x, vertex[faces[i]->faces[0]-1]->y, vertex[faces[i]->faces[0]-1]->z);
-		//		glVertex3f(vertex[faces[i]->faces[1]-1]->x, vertex[faces[i]->faces[1]-1]->y, vertex[faces[i]->faces[1]-1]->z);
-		//		glVertex3f(vertex[faces[i]->faces[2]-1]->x, vertex[faces[i]->faces[2]-1]->y, vertex[faces[i]->faces[2]-1]->z);
-		//		glVertex3f(vertex[faces[i]->faces[3]-1]->x, vertex[faces[i]->faces[3]-1]->y, vertex[faces[i]->faces[3]-1]->z);
-		//		glEnd();
-		//	} else {
-		//		glBegin(GL_TRIANGLES);
-		//		glNormal3f(normals[faces[i]->facenum-1]->x, normals[faces[i]->facenum-1]->y, normals[faces[i]->facenum-1]->z);
-		//		glVertex3f(vertex[faces[i]->faces[0]-1]->x, vertex[faces[i]->faces[0]-1]->y, vertex[faces[i]->faces[0]-1]->z);
-		//		glVertex3f(vertex[faces[i]->faces[1]-1]->x, vertex[faces[i]->faces[1]-1]->y, vertex[faces[i]->faces[1]-1]->z);
-		//		glVertex3f(vertex[faces[i]->faces[2]-1]->x, vertex[faces[i]->faces[2]-1]->y, vertex[faces[i]->faces[2]-1]->z);
-		//		glEnd();
-		//	}
-		//}
-		//glEndList();
-		////delete everything to avoid memory leaks
-		//for (int i = 0; i < coord.size(); i++)
-		//	delete coord[i];
-		//for (int i = 0; i < faces.size(); i++)
-		//	delete faces[i];
-		//for (int i = 0; i < normals.size(); i++)
-		//	delete normals[i];
-		//for (int i = 0; i < vertex.size(); i++)
-		//	delete vertex[i];
-		//return num;	//return with the id
+
+		glGenVertexArrays(1, &vao);
+		glBindVertexArray(vao);
+
+		int index = 0;
+		glGenBuffers(1, &posVbo);
+		glBindBuffer(GL_ARRAY_BUFFER, posVbo);
+		glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(Vector3), &vertices[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(index);
+
+		index = 1;
+		glGenBuffers(1, &colVbo);
+		glBindBuffer(GL_ARRAY_BUFFER, colVbo);
+		glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(Vector4), &colours[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(index, 4, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(index);
+
+		index = 2;
+		glGenBuffers(1, &texVbo);
+		glBindBuffer(GL_ARRAY_BUFFER, texVbo);
+		glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(Vector2), &textureCoords[0], GL_STATIC_DRAW);
+		glVertexAttribPointer(index, 2, GL_FLOAT, GL_FALSE, 0, 0);
+		glEnableVertexAttribArray(index);
+
+		/*generateNormals();
+		if (normals) {
+			index = 3;
+			glGenBuffers(1, &norVbo);
+			glBindBuffer(GL_ARRAY_BUFFER, norVbo);
+			glBufferData(GL_ARRAY_BUFFER, numVertices * sizeof(Vector3), normals, GL_STATIC_DRAW);
+			glVertexAttribPointer(index, 3, GL_FLOAT, GL_FALSE, 0, 0);
+			glEnableVertexAttribArray(index);
+		}*/
+
+		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindVertexArray(0);
+
+		//raw
+		int num; //the id for the list
+		num = glGenLists(1); //generate a uniqe
+		glNewList(num, GL_COMPILE); //and create it
+		for (int i = 0; i < faces.size(); i++) {
+			if (faces[i]->four) {	//if it's a quad draw a quad
+				glBegin(GL_QUADS);
+				//basically all I do here, is use the facenum (so the number of the face) as an index for the normal, so the 1st normal owe to the first face
+				//I subtract 1 because the index start from 0 in C++
+				glNormal3f(normals[faces[i]->facenum-1]->x, normals[faces[i]->facenum-1]->y, normals[faces[i]->facenum-1]->z);
+				//draw the faces
+				glVertex3f(vertex[faces[i]->faces[0]-1]->x, vertex[faces[i]->faces[0]-1]->y, vertex[faces[i]->faces[0]-1]->z);
+				glVertex3f(vertex[faces[i]->faces[1]-1]->x, vertex[faces[i]->faces[1]-1]->y, vertex[faces[i]->faces[1]-1]->z);
+				glVertex3f(vertex[faces[i]->faces[2]-1]->x, vertex[faces[i]->faces[2]-1]->y, vertex[faces[i]->faces[2]-1]->z);
+				glVertex3f(vertex[faces[i]->faces[3]-1]->x, vertex[faces[i]->faces[3]-1]->y, vertex[faces[i]->faces[3]-1]->z);
+				glEnd();
+			} else {
+				glBegin(GL_TRIANGLES);
+				glNormal3f(normals[faces[i]->facenum-1]->x, normals[faces[i]->facenum-1]->y, normals[faces[i]->facenum-1]->z);
+				glVertex3f(vertex[faces[i]->faces[0]-1]->x, vertex[faces[i]->faces[0]-1]->y, vertex[faces[i]->faces[0]-1]->z);
+				glVertex3f(vertex[faces[i]->faces[1]-1]->x, vertex[faces[i]->faces[1]-1]->y, vertex[faces[i]->faces[1]-1]->z);
+				glVertex3f(vertex[faces[i]->faces[2]-1]->x, vertex[faces[i]->faces[2]-1]->y, vertex[faces[i]->faces[2]-1]->z);
+				glEnd();
+			}
+		}
+		glEndList();
+		//delete everything to avoid memory leaks
+		for (int i = 0; i < coord.size(); i++)
+			delete coord[i];
+		for (int i = 0; i < faces.size(); i++)
+			delete faces[i];
+		for (int i = 0; i < normals.size(); i++)
+			delete normals[i];
+		for (int i = 0; i < vertex.size(); i++)
+			delete vertex[i];
+		return num;	//return with the id
 
 
 

@@ -33,11 +33,17 @@ void Level::onMouseMoved(Vector2 &position, Vector2 &amount) {
 	if (userInterface) {
 		userInterface->onMouseMoved(position, amount);
 	}
+	for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
+		(*it)->onMouseMoved(position, amount);
+	}
 }
 
 void Level::onMouseClick(Uint8 button, Vector2 &position) {
 	if (userInterface) {
 		userInterface->onMouseClick(button, position);
+	}
+	for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
+		(*it)->onMouseClick(button, position);
 	}
 }
 
@@ -45,17 +51,26 @@ void Level::onMouseDoubleClick(Uint8 button, Vector2 &position) {
 	if (userInterface) {
 		userInterface->onMouseDoubleClick(button, position);
 	}
+	for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
+		(*it)->onMouseDoubleClick(button, position);
+	}
 }
 
 void Level::onMouseButtonDown(Uint8 button, Vector2 &position) {
 	if (userInterface) {
 		userInterface->onMouseButtonDown(button, position);
 	}
+	for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
+		(*it)->onMouseButtonDown(button, position);
+	}
 }
 
 void Level::onMouseButtonUp(Uint8 button, Vector2 &position) {
 	if (userInterface) {
 		userInterface->onMouseButtonUp(button, position);
+	}
+	for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
+		(*it)->onMouseButtonUp(button, position);
 	}
 }
 
@@ -67,11 +82,17 @@ void Level::onMouseWheelScroll(int amount) {
 	if (userInterface) {
 		userInterface->onMouseWheelScroll(amount);
 	}
+	for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
+		(*it)->onMouseWheelScroll(amount);
+	}
 }
 
 void Level::onKeyPress(SDL_Keysym key) {
 	if (userInterface) {
 		userInterface->onKeyPress(key);
+	}
+	for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
+		(*it)->onKeyPress(key);
 	}
 }
 
@@ -81,6 +102,9 @@ void Level::onKeyDown(SDL_Keysym key) {
 	if (userInterface) {
 		userInterface->onKeyDown(key);
 	}
+	for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
+		(*it)->onKeyDown(key);
+	}
 }
 
 void Level::onKeyUp(SDL_Keysym key) {
@@ -88,6 +112,9 @@ void Level::onKeyUp(SDL_Keysym key) {
 	// Now we propagate this event to the interface items
 	if (userInterface) {
 		userInterface->onKeyUp(key);
+	}
+	for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
+		(*it)->onKeyUp(key);
 	}
 }
 
@@ -129,13 +156,7 @@ void Level::processLevelTick(unsigned int millisElapsed) {
 void Level::drawLevel(unsigned int millisElapsed) {
 	// Should first draw the interface using a ortographic projection,
 	// then switch to a perspective projection and draw all entities
-
-	// Draw Interface
-	GLuint program = GameApp::getInstance()->getDefaultShader()->getShaderProgram();
-	glUseProgram(program);
-	glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, false, (float*) cameraMatrix);
-	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, false, (float*) projectionMatrix);
-	userInterface->draw(millisElapsed);
+	GLuint program;
 
 	// Draw Entities
 	for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
@@ -153,4 +174,11 @@ void Level::drawLevel(unsigned int millisElapsed) {
 		//glUniformMatrix4fv(glGetUniformLocation(program, "textureMatrix"), 1, false, (float*)&textureMatrix);
 		(*it)->draw(millisElapsed);
 	}
+
+	// Draw Interface
+	program = GameApp::getInstance()->getDefaultShader()->getShaderProgram();
+	glUseProgram(program);
+	glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, false, (float*) &(Matrix4::Translation(Vector3(0, 0, 1.0f))));
+	glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, false, (float*) &(Matrix4::Orthographic(-1, 1, 1280.0f, 0, 720, 0)));
+	userInterface->draw(millisElapsed);
 }

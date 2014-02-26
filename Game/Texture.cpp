@@ -7,13 +7,19 @@ Texture::Texture(void) {
 	texHeight = -1;
 }
 
+Texture::Texture(const Texture &copy) {
+	textureId = copy.textureId;
+	texWidth = copy.texWidth;
+	texHeight = copy.texHeight;
+}
+
 Texture::Texture(char *filename) {
 	loadTexture(filename, texWidth, texHeight);
 }
 
 
 Texture::~Texture(void) {
-	glDeleteTextures(1, &textureId);
+	//glDeleteTextures(1, &textureId);
 }
 
 GLuint Texture::loadTexture(char *filename, int &texWidth, int &texHeight) {
@@ -34,8 +40,6 @@ GLuint Texture::loadTexture(char *filename, int &texWidth, int &texHeight) {
 			SDL_FreeSurface(surface);
 			return 0;
 	}
-	texWidth = surface->w;
-	texHeight = surface->h;
 	this->texWidth = surface->w;
 	this->texHeight = surface->h;
 	glGenTextures(1, &textureId);
@@ -106,7 +110,7 @@ void Texture::bindTexture(GLuint shaderProgram, TextureSlot slot) {
 		glActiveTexture(texUnit);
 		//glEnable(GL_TEXTURE_2D);
 		glBindTexture(GL_TEXTURE_2D, textureId);
-		GameApp::logOpenGLError("TEX_BIND");
+		GameApp::logOpenGLError(((string) "TEX_BIND ") + std::to_string((long long) textureId));
 	}
 	
 }
@@ -154,7 +158,7 @@ Texture *Texture::createFromText(std::string textureText, Colour &textColour, TT
 }
 
 Texture &Texture::operator=(const Texture &other) {
-	this->texWidth = other.textureId;
+	this->textureId = other.textureId;
 	this->texWidth = other.texWidth;
 	this->texHeight = other.texHeight;
 	return *this;

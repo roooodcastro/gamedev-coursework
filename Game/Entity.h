@@ -5,6 +5,8 @@
 #include "Matrix4.h"
 #include "Model.h"
 #include "Shader.h"
+#include "GameApp.h"
+#include "Texture.h"
 
 class GameApp;
 class Model;
@@ -13,22 +15,36 @@ class Shader;
 class Entity {
 public:
 	Entity(void);
+	Entity(const Entity &copy);
 	Entity(Vector3 &position, Vector3 &velocity, Vector3 &rotation, Vector3 &scale);
 	~Entity(void);
 
 	void update(unsigned millisElapsed);
 	void draw(unsigned millisElapsed);
 
-	void setPosition(Vector3 &newPos) { this->position = &newPos; }
-	Vector3 &getPosition() { return *position; }
-	void setVelocity(Vector3 &newVel) { this->velocity = &newVel; }
-	Vector3 &getVelocity() { return *velocity; }
-	void setRotation(Vector3 &newRot) { this->rotation = &newRot; }
-	Vector3 &getRotation() { return *rotation; }
-	void setScale(Vector3 &newSize) { this->scale = &newSize; }
-	Vector3 &getScale() { return *scale; }
+	/* Mouse events */
+	virtual void onMouseMoved(Vector2 &position, Vector2 &amount); // Will fire every time the mouse moves
+	virtual void onMouseClick(Uint8 button, Vector2 &position); // Will fire once a mouse button is released
+	virtual void onMouseDoubleClick(Uint8 button, Vector2 &position); // Will fire on a double click
+	virtual void onMouseButtonDown(Uint8 button, Vector2 &position); // Will fire in every tick that a button is down
+	virtual void onMouseButtonUp(Uint8 button, Vector2 &position); // Will fire every time a mouse button is released
+	virtual void onMouseWheelScroll(int amount); // Will fire every time the mouse wheel scrolls
+	/* Keyboard events */
+	virtual void onKeyPress(SDL_Keysym key); // Will fire every time a key is released
+	virtual void onKeyDown(SDL_Keysym key); // Will fire in every tick that a key is down
+	virtual void onKeyUp(SDL_Keysym key); // Will fire every time a key is released
+
+	/* General getters and setters */
+	void setPosition(Vector3 &newPos) { *(this->position) = newPos; }
+	Vector3 getPosition() { return *position; }
+	void setVelocity(Vector3 &newVel) { *(this->velocity) = newVel; }
+	Vector3 getVelocity() { return *velocity; }
+	void setRotation(Vector3 &newRot) { *(this->rotation) = newRot; }
+	Vector3 getRotation() { return *rotation; }
+	void setScale(Vector3 &newSize) { *(this->scale) = newSize; }
+	Vector3 getScale() { return *scale; }
 	Entity *getParent() { return parent; }
-	void setCustomShader(Shader *shader) { this->customShader = shader; }
+	void setCustomShader(Shader &shader);
 	Shader *getCustomShader() { return customShader; }
 	Matrix4 getModelMatrix() { return *modelMatrix; }
 	void setModel(Model *model) { this->model = model; }
@@ -45,6 +61,11 @@ public:
 	 * If you do this, you're a horrible person and belong in hell.
 	 */
 	void makeOrphan();
+
+	Entity &operator=(const Entity &other);
+
+	bool dragging;
+	bool draggingRight;
 
 protected:
 
@@ -71,7 +92,7 @@ protected:
 	 * relative to the world. For example, if and entity is in the position (10, 0, 0), and have a child with the position
 	 * attribute set to (-2, 0, 0), the child's world position will be actually (8, 0, 0).
 	 */
-	std::vector<Entity*> childEntities;
+	std::vector<Entity*> *childEntities;
 
 	/*
 	 * If this entity is the child of another entity, it must know its parent, in order to calculate its world

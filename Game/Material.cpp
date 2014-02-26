@@ -4,7 +4,7 @@ Material::Material(void) {
 	diffuse = new Vector3();
 	ambient = new Vector3();
 	specular = new Vector3();
-	texture = nullptr;
+	texture = new Texture();
 }
 
 Material::Material(const Material &copy) {
@@ -16,6 +16,7 @@ Material::Material(const Material &copy) {
 	this->ns = copy.ns;
 	this->ni = copy.ni;
 	this->illum = copy.illum;
+	this->name = string(copy.name);
 }
 
 Material::Material(const char* name, float alpha, float ns, float ni, Vector3 &diffuse, Vector3 &ambient, Vector3 &specular, int illum, Texture &texture) {
@@ -27,6 +28,7 @@ Material::Material(const char* name, float alpha, float ns, float ni, Vector3 &d
 	this->ns = ns;
 	this->ni = ni;
 	this->illum = illum;
+	this->name = string(name);
 }
 
 Material::~Material(void) {
@@ -41,6 +43,7 @@ Material &Material::operator=(const Material &other) {
 	*(this->ambient) = *(other.ambient);
 	*(this->specular) = *(other.specular);
 	*(this->texture) = *(other.texture);
+	this->name = other.name;
 	this->alpha = other.alpha;
 	this->ns = other.ns;
 	this->ni = other.ni;
@@ -60,7 +63,6 @@ std::vector<Material*> Material::loadMaterialsFromFile(const char *filename) {
 		file.getline(lineBuffer, 200);
 		lines.push_back(lineBuffer);
 	}
-	char texFilename[200];
 	std::vector<Material*> *materials = new std::vector<Material*>();
 	Material *currentMaterial = nullptr;
 
@@ -113,7 +115,8 @@ std::vector<Material*> Material::loadMaterialsFromFile(const char *filename) {
 			sscanf_s(line.c_str(), "illum %d", &(currentMaterial->illum));
 			break;
 		case 'm':
-			sscanf_s(line.c_str(), "map_Kd %s", texFilename);
+			char texFilename[150];
+			sscanf(line.c_str(), "map_Kd %s", &texFilename);
 			currentMaterial->texture = new Texture(texFilename);
 			break;
 		}

@@ -45,14 +45,16 @@ public:
 	static bool fileHasMaterial(const char *filename, const char *materialName);
 
 	/* General getters and setters */
+	void setName(std::string &name) { this->name = name; }
+	std::string getName() { return name; }
 	void setDiffuse(Vector3 &diffuse) { *(this->diffuse) = diffuse; }
-	Vector3 &getDiffuse() { return *diffuse; }
+	Vector3 getDiffuse() { return *diffuse; }
 	void setAmbient(Vector3 &ambient) { *(this->ambient) = ambient; }
-	Vector3 &getAmbient() { return *ambient; }
+	Vector3 getAmbient() { return *ambient; }
 	void setSpecular(Vector3 &specular) { *(this->specular) = specular; }
-	Vector3 &getSpecular() { return *specular; }
-	void setTexture(Texture &texture) { *(this->texture) = texture; }
-	Texture &getTexture() { return *texture; }
+	Vector3 getSpecular() { return *specular; }
+	void setTexture(Texture &texture) { this->texture = &texture; }
+	Texture *getTexture() { return texture; }
 	void setAlpha(float alpha) { this->alpha = alpha; }
 	float getAlpha() { return alpha; }
 	void setNs(float ns) { this->ns = ns; }

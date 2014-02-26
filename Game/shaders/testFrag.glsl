@@ -11,5 +11,5 @@ in Vertex {
 out vec4 gl_FragColor;
 
 void main(void) {
-	gl_FragColor = IN.colour * texture(texture0, IN.texCoord);
+    gl_FragColor = IN.colour * texture(texture0, IN.texCoord);
 }

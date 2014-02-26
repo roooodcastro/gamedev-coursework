@@ -41,9 +41,6 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 	glClearDepth(1.0f);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-	//glEnable(GL_CULL_FACE);
-	//glEnable(GL_DEPTH_TEST);
-    //glDepthFunc(GL_LEQUAL);
 	//glViewport(0, 0, windowWidth, windowHeight);
 	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
@@ -82,6 +79,9 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 
 void GameApp::runGame() {
 	gameRunning = true;
+	glEnable(GL_DEPTH_TEST);
+    glDepthFunc(GL_LEQUAL);
+	//glEnable(GL_CULL_FACE);
 	startTime = SDL_GetTicks();
 	// Start game timers
 	installTimers();
