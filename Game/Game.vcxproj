@@ -91,6 +91,7 @@
     <ClInclude Include="GameRenderer.h" />
     <ClInclude Include="ImageItem.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="Material.h" />
     <ClInclude Include="PanelItem.h" />
     <ClInclude Include="TextItem.h" />
     <ClInclude Include="Texture.h" />
@@ -115,6 +116,7 @@
     <ClCompile Include="GameRenderer.cpp" />
     <ClCompile Include="ImageItem.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="Material.cpp" />
     <ClCompile Include="PanelItem.cpp" />
     <ClCompile Include="TextItem.cpp" />
     <ClCompile Include="Texture.cpp" />

@@ -135,8 +135,8 @@ void Model::generateNormals() {
 			Vector3 &b = vertices[i + 1];
 			Vector3 &c = vertices[i + 2];
 
-			Vector3 normal = Vector3::Cross(b - a, c - a);
-			normal.Normalise();
+			Vector3 normal = Vector3::cross(b - a, c - a);
+			normal.normalise();
 
 			normals[i] = normal;
 			normals[i + 1] = normal;

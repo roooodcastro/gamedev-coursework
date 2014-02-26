@@ -9,6 +9,7 @@
 #include "PanelItem.h"
 #include "TextItem.h"
 #include "Colour.h"
+#include "Material.h"
 
 using namespace std;
 
@@ -21,6 +22,16 @@ int main(int argc, char* argv[]) {
 	Shader *testShader = new Shader("shaders/testVert.glsl", "shaders/testFrag.glsl", "", "", "");
 	gameApp->setDefaultShader(testShader);
 	gameInterface.setShowFpsCounter(true);
+
+	// Testing grounds
+	// Put test lines below here
+
+	// Test material file loading
+	std::vector<Material*> materials = Material::loadMaterialsFromFile("resources/models/example.mtl");
+	bool hasMaterial = Material::fileHasMaterial("resources/models/example.mtl", "Materialf2");
+
+
+	// Don't put test lines below here!
 
 	/*
 	 * Add some interface items to test them

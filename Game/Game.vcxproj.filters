@@ -112,7 +112,10 @@
       <Filter>Header Files\engine\graphics</Filter>
     </ClInclude>
     <ClInclude Include="TextItem.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\engine\interface</Filter>
+    </ClInclude>
+    <ClInclude Include="Material.h">
+      <Filter>Header Files\engine\graphics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -173,8 +176,11 @@
     <ClCompile Include="Colour.cpp">
       <Filter>Source Files\engine\graphics</Filter>
     </ClCompile>
+    <ClCompile Include="Material.cpp">
+      <Filter>Source Files\engine\graphics</Filter>
+    </ClCompile>
     <ClCompile Include="TextItem.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\engine\interface</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
