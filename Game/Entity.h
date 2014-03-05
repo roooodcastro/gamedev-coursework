@@ -17,10 +17,10 @@ public:
 	Entity(void);
 	Entity(const Entity &copy);
 	Entity(Vector3 &position, Vector3 &velocity, Vector3 &rotation, Vector3 &scale);
-	~Entity(void);
+	virtual ~Entity(void);
 
-	void update(unsigned millisElapsed);
-	void draw(unsigned millisElapsed);
+	virtual void update(unsigned millisElapsed);
+	virtual void draw(unsigned millisElapsed);
 
 	/* Mouse events */
 	virtual void onMouseMoved(Vector2 &position, Vector2 &amount); // Will fire every time the mouse moves
@@ -64,9 +64,6 @@ public:
 
 	Entity &operator=(const Entity &other);
 
-	bool dragging;
-	bool draggingRight;
-
 protected:
 
 	/*
@@ -83,6 +80,7 @@ protected:
 	Vector3 *velocity;
 	Vector3 *rotation;
 	Vector3 *scale;
+	Vector3 *acceleration;
 
 	Matrix4 *modelMatrix;
 

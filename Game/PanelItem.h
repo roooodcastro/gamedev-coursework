@@ -1,7 +1,5 @@
 #pragma once
 
-#include <vector>
-#include <algorithm>
 #include "InterfaceItem.h"
 
 /*
@@ -10,17 +8,17 @@
  * except sor the scaling part. The size of the panel does not influentitate on the size of the child items,
  * because as we're calculating sizes in pixels, this wouldn't make sense. The positioning and rotation,
  * however, are relative to the panel.
+ *
+ * Basically, the panel is just a complete implementation of the InterfaceItem that supports nested items, as
+ * the pure InterfaceItem class is abstract and does not implement the input events
  */
+
 class PanelItem : public InterfaceItem {
 public:
 
 	PanelItem(void);
 	PanelItem(Vector2 &position, float rotation, Vector2 &size);
 	virtual ~PanelItem(void);
-
-	/* Gameloop funcions */
-	virtual void update(unsigned millisElapsed);
-	virtual void draw(unsigned millisElapsed);
 	
 	/* Mouse events */
 	void onMouseMoved(Vector2 &position, Vector2 &amount); // Will fire every time the mouse moves
@@ -34,15 +32,5 @@ public:
 	void onKeyPress(SDL_Keysym key); // Will fire every time a key is released
 	void onKeyDown(SDL_Keysym key); // Will fire in every tick that a key is down
 	void onKeyUp(SDL_Keysym key); // Will fire every time a key is released
-
-	/* General getters and setters */
-	void addItem(InterfaceItem *item);
-	void removeItem(InterfaceItem *item);
-	vector<InterfaceItem*> *getInterfaceItems() { return items; }
-
-protected:
-
-	/* A vector containing the interface items inside this panel */
-	vector<InterfaceItem*> *items;
 };
 

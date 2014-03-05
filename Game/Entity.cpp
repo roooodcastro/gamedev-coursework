@@ -5,23 +5,26 @@ Entity::Entity(void) {
 	position = new Vector3(0, 0, 0);
 	velocity = new Vector3(0, 0, 0);
 	rotation = new Vector3(0, 0, 0);
+	acceleration = new Vector3(0, 0, 0);
 	scale = new Vector3(1.0f, 1.0f, 1.0f);
 	modelMatrix = new Matrix4();
 	customShader = NULL;
+	model = NULL;
 	parent = NULL;
-	dragging = false;
-	draggingRight = false;
 }
 
 Entity::Entity(const Entity &copy) {
 	this->position = new Vector3(*(copy.position));
 	this->velocity = new Vector3(*(copy.velocity));
 	this->rotation = new Vector3(*(copy.rotation));
+	this->acceleration = new Vector3(*(copy.acceleration));
 	this->scale = new Vector3(*(copy.scale));
 	this->modelMatrix = new Matrix4(*(copy.modelMatrix));
 	this->customShader = new Shader(*(copy.customShader));
 	this->parent = new Entity(*(copy.parent));
 	this->childEntities = new std::vector<Entity*>(*(copy.childEntities));
+	this->model = new Model(*(copy.model));
+	this->customShader = new Shader(*(copy.customShader));
 }
 
 Entity::Entity(Vector3 &position, Vector3 &velocity, Vector3 &rotation, Vector3 &scale) {
@@ -29,21 +32,24 @@ Entity::Entity(Vector3 &position, Vector3 &velocity, Vector3 &rotation, Vector3 
 	this->position = new Vector3(position);
 	this->velocity = new Vector3(velocity);
 	this->rotation = new Vector3(rotation);
+	this->acceleration = new Vector3(0, 0, 0);
 	this->scale = new Vector3(scale);
 	modelMatrix = new Matrix4();
+	model = NULL;
 	customShader = NULL;
 	parent = NULL;
-	dragging = false;
-	draggingRight = false;
 }
 
 Entity::~Entity(void) {
 	delete position;
 	delete velocity;
 	delete rotation;
+	delete acceleration;
 	delete scale;
 	delete modelMatrix;
 	delete childEntities;
+	delete model;
+	delete customShader;
 }
 
 Entity &Entity::operator=(const Entity &other) {
@@ -51,7 +57,9 @@ Entity &Entity::operator=(const Entity &other) {
 	*(this->velocity) = *(other.velocity);
 	*(this->rotation) = *(other.rotation);
 	*(this->scale) = *(other.scale);
+	*(this->acceleration) = *(other.acceleration);
 	*(this->modelMatrix) = *(other.modelMatrix);
+	*(this->model) = *(other.model);
 	if (customShader != NULL) {
 		if (other.customShader == NULL) {
 			this->customShader = NULL;
@@ -79,13 +87,7 @@ Entity &Entity::operator=(const Entity &other) {
 }
 
 void Entity::onMouseMoved(Vector2 &position, Vector2 &amount) {
-	if (dragging) {
-		this->rotation->y += (amount.x / 4.0f);
-		this->rotation->x += (amount.y / 4.0f);
-	} else if (draggingRight) {
-		this->position->x += (amount.x / 20.0f);
-		this->position->y -= (amount.y / 20.0f);
-	}
+	
 }
 
 void Entity::onMouseClick(Uint8 button, Vector2 &position) {
@@ -95,19 +97,9 @@ void Entity::onMouseDoubleClick(Uint8 button, Vector2 &position) {
 }
 
 void Entity::onMouseButtonDown(Uint8 button, Vector2 &position) {
-	if (button == SDL_BUTTON_MIDDLE) {
-		dragging = true;
-	} else if (button == SDL_BUTTON_RIGHT) {
-		draggingRight = true;
-	}
 }
 
 void Entity::onMouseButtonUp(Uint8 button, Vector2 &position) {
-	if (button == SDL_BUTTON_MIDDLE) {
-		dragging = false;
-	} else if (button == SDL_BUTTON_RIGHT) {
-		draggingRight = false;
-	}
 }
 
 void Entity::onMouseWheelScroll(int amount) {
@@ -166,6 +158,7 @@ void Entity::update(unsigned millisElapsed) {
 	// Apply all logic necessary
 
 	// TODO: apply some logic
+	*position += *velocity * (millisElapsed / 1000.0f);
 
 	/*
 	 * Then we update the model matrix, only if this entity is not a child.
@@ -177,7 +170,7 @@ void Entity::update(unsigned millisElapsed) {
 }
 
 void Entity::draw(unsigned millisElapsed) {
-	if (model) {
+	if (model != NULL) {
 		GLuint program = GameApp::getInstance()->getDefaultShader()->getShaderProgram();
 		Texture *white = Texture::createColourTexture(0xFFFFFFFF);
 		white->bindTexture(program, TEXTURE0);

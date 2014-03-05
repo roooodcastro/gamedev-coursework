@@ -51,13 +51,15 @@ public:
 	SDL_Renderer *getRenderer() { return renderer; }
 	void setDefaultShader(Shader *shader) { this->defaultShader = shader; }
 	Shader *getDefaultShader() { return defaultShader; }
-	void setCurrentLevel(Level *level) { currentLevel = level; }
+	void setCurrentLevel(Level *level);
 	Level *getCurrentLevel() { return currentLevel; }
 	int getWindowWidth() { return windowWidth; }
 	int getWindowHeight() { return windowHeight; }
 	int getFps(); // Returns an average between the last 60 frames
 	Uint32 getTicksCount() { return numberOfTicks; }
 	Uint32 getFramesCount() { return numberOfFrames; }
+	void setGamePaused(bool paused);
+	bool isGamePaused() { return gamePaused; }
 
 	/*
 	 * Log an SDL error with some error message to the output stream of our choice
@@ -101,7 +103,7 @@ public:
 	void draw(Uint32 millisElapsed);
 
 	static const int TARGET_FPS = 60; // Frames per second
-	static const int TARGET_TPS = 50; // Ticks per second
+	static const int TARGET_TPS = 100; // Ticks per second
 	static const int USER_EVENT_TICK = 100;
 	static const int USER_EVENT_DRAW = 101;
 		
@@ -137,6 +139,7 @@ private:
 	/* Framerate control variables */
 	Uint32 startTime; // When the game starts, this variable will hold the number of millisseconds since SDL initialization
 	Uint32 lastFrameTime; // The time the last frame started to be rendered
+	Uint32 lastTickTime; // The time the last tick started to be rendered
 	Uint32 lastTickDuration; // The amount of time that took to process the last game tick
 	Uint32 numberOfTicks; // Counts the number of ticks processed since the start of the game
 	Uint32 numberOfFrames; // Counts the number of frames rendered sunce the start of the game

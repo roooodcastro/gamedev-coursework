@@ -6,6 +6,7 @@ GameApp::GameApp() {
 	gameRunning = false;
 	gamePaused = false;
 	lastFrameTime = 0;
+	lastTickTime = 0;
 	lastTickDuration = -1;
 	numberOfFrames = 0;
 	numberOfTicks = 0;
@@ -13,6 +14,7 @@ GameApp::GameApp() {
 	for (int i = 0; i < 60; i++) {
 		frameIntervalList[i] = 0;
 	}
+	currentLevel = NULL;
 }
 
 GameApp::~GameApp() {
@@ -74,6 +76,8 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 	}
 	// We initialize the primitive meshes that will be used by the interface
 	Model::initializePrimitiveMeshes();
+	instance->defaultShader = new Shader("shaders/vertNormal.glsl", "shaders/fragLight.glsl", "", "", "");
+	//instance->defaultShader = new Shader("shaders/vertUI.glsl", "shaders/fragUI.glsl", "", "", "");
 	return instance;
 }
 
@@ -96,9 +100,10 @@ void GameApp::runGame() {
 void GameApp::processGameTick(Uint32 millisElapsed) {
 	Uint32 tickStart = SDL_GetTicks();
 	if (currentLevel) {
-		currentLevel->processLevelTick(millisElapsed);
+		currentLevel->processLevelTick(tickStart - lastTickTime);
 	}
 	lastTickDuration = SDL_GetTicks() - tickStart;
+	lastTickTime = tickStart;
 	numberOfTicks++;
 }
 
@@ -196,7 +201,7 @@ void GameApp::handleUserEvents() {
 			switch (e.window.event) {
 			case SDL_WINDOWEVENT_FOCUS_LOST:
 				//SDL_Log("Window %d lost keyboard focus", e.window.windowID);
-				gamePaused = true;
+				setGamePaused(true);
 				break;
 			}
 			break;
@@ -231,4 +236,25 @@ Uint32 GameApp::drawLoopTimer(Uint32 interval, void* param) {
     event.user.data1 = (void*) interval;
     SDL_PushEvent(&event);
     return interval;
+}
+
+void GameApp::setGamePaused(bool paused) {
+	this->gamePaused = paused;
+	if (currentLevel) {
+		if (paused) {
+			currentLevel->onPause();
+		} else {
+			currentLevel->onResume();
+		}
+	}
+}
+
+void GameApp::setCurrentLevel(Level *level) {
+	if (currentLevel) {
+		this->currentLevel->onFinish();
+	}
+	this->currentLevel = level;
+	if (currentLevel) {
+		this->currentLevel->onStart();
+	}
 }

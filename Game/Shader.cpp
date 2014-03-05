@@ -19,7 +19,7 @@ Shader::Shader(const string &vertex, const string &fragment, const string &geome
 	GLint vShaderCompiled = GL_FALSE;
 	glGetShaderiv(vertObject, GL_COMPILE_STATUS, &vShaderCompiled);
 	if (vShaderCompiled != GL_TRUE) {
-		printf( "Unable to compile vertex shader %d!\n", vertObject);
+		std::cout << "Unable to compile vertex shader " << vertObject << std::endl;
 	} else {
 		glAttachShader(program, vertObject);
 		// Create and attach Fragment Shader Object
@@ -29,7 +29,7 @@ Shader::Shader(const string &vertex, const string &fragment, const string &geome
 		GLint fShaderCompiled = GL_FALSE;
 		glGetShaderiv(fragObject, GL_COMPILE_STATUS, &fShaderCompiled);
 		if (fShaderCompiled != GL_TRUE) {
-			printf( "Unable to compile fragment shader %d!\n", fragObject);
+			std::cout << "Unable to compile fragment shader " << fragObject << std::endl;
 		} else {
 			glAttachShader(program, fragObject);
 			SetDefaultAttributes();
@@ -46,7 +46,7 @@ Shader::Shader(const string &vertex, const string &fragment, const string &geome
 	}
 	GLenum err_code = glGetError();
 	while (GL_NO_ERROR != err_code) {
-		printf("OpenGL Error @ SHADER_CREATION: %i", err_code);
+		std::cout << "OpenGL Error @ SHADER_CREATION: " << err_code << std::endl;
 		err_code = glGetError();
 	}
 }
@@ -56,7 +56,7 @@ Shader::~Shader(void)	{
 	While probably not strictly necessary for the programs you will be making,
 	it's nevertheless a good idea to delete any OpenGL objects we create.
 	*/
-	glDeleteProgram(program);
+	//glDeleteProgram(program);
 }
 
 /*

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+#include <algorithm>
 #include "Matrix4.h"
 #include "GameApp.h"
 #include "Vector2.h"
@@ -25,7 +27,7 @@ public:
 
 	/* Gameloop funcions */
 	virtual void update(unsigned millisElapsed);
-	virtual void draw(unsigned millisElapsed);
+	virtual void draw(unsigned millisElapsed, GLuint program);
 	
 	/* Mouse events */
 	virtual void onMouseMoved(Vector2 &position, Vector2 &amount) = 0; // Will fire every time the mouse moves
@@ -56,10 +58,17 @@ public:
 	Vector2 getSize() { return *size; }
 	void setModelMatrix(Matrix4 &modelMatrix) { this->modelMatrix = modelMatrix; }
 	Matrix4 getModelMatrix() { return modelMatrix; }
+	void setHidden(bool hidden) { this->hidden = hidden; }
+	bool isHidden() { return hidden; }
+
+	void addInnerItem(InterfaceItem *item);
+	void removeInnerItem(InterfaceItem *item);
+	std::vector<InterfaceItem*> *getInnerItems() { return innerItems; }
 
 	virtual InterfaceItem &operator=(const InterfaceItem &other);
 
-	const static float SIZE_NO_RESIZE;
+	const static float SIZE_NO_RESIZE; // Don't scale the item, make it the same size as its texture
+	const static float POSITION_CENTERED; // Centers the item relative to the window
 
 protected:
 
@@ -78,4 +87,8 @@ protected:
 	Texture *texture;
 	/* The model matrix to be applied to the texture in order to render it. Internal use only */
 	Matrix4 modelMatrix;
+	/* A vector containing items that may be added to this item. Works in a hierarchy similar to the child/parent entities */
+	std::vector<InterfaceItem*> *innerItems;
+	/* Indicates if this item is active or not. When hidden, it won't be rendered nor updated. Defaults to false */
+	bool hidden;
 };

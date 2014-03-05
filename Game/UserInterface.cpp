@@ -5,6 +5,7 @@ UserInterface::UserInterface(void) {
 	items = new std::vector<InterfaceItem*>();
 	showFpsCounter = false;
 	fpsCounter = new TextItem(Vector2(20, 10), 0, "0 FPS", 20);
+	interfaceShader = new Shader("shaders/vertUI.glsl", "shaders/fragUI.glsl", "", "", "");
 }
 
 UserInterface::UserInterface(const UserInterface &copy) {
@@ -12,6 +13,7 @@ UserInterface::UserInterface(const UserInterface &copy) {
 	*items = *(copy.items);
 	showFpsCounter = copy.showFpsCounter;
 	fpsCounter = new TextItem(*((TextItem*) copy.fpsCounter));
+	interfaceShader = new Shader(*(copy.interfaceShader));
 }
 
 
@@ -21,47 +23,62 @@ UserInterface::~UserInterface(void) {
 		delete items;
 	}
 	delete fpsCounter;
+	delete interfaceShader;
 }
 
 void UserInterface::onMouseMoved(Vector2 &position, Vector2 &amount) {
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->onMouseMoved(position, amount);
+		if (!(*it)->isHidden()) {
+			(*it)->onMouseMoved(position, amount);
+		}
 	}
 }
 
 void UserInterface::onMouseClick(Uint8 button, Vector2 &position) {
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->onMouseClick(button, position);
+		if (!(*it)->isHidden()) {
+			(*it)->onMouseClick(button, position);
+		}
 	}
 }
 
 void UserInterface::onMouseDoubleClick(Uint8 button, Vector2 &position) {
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->onMouseDoubleClick(button, position);
+		if (!(*it)->isHidden()) {
+			(*it)->onMouseDoubleClick(button, position);
+		}
 	}
 }
 
 void UserInterface::onMouseButtonDown(Uint8 button, Vector2 &position) {
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->onMouseButtonDown(button, position);
+		if (!(*it)->isHidden()) {
+			(*it)->onMouseButtonDown(button, position);
+		}
 	}
 }
 
 void UserInterface::onMouseButtonUp(Uint8 button, Vector2 &position) {
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->onMouseButtonUp(button, position);
+		if (!(*it)->isHidden()) {
+			(*it)->onMouseButtonUp(button, position);
+		}
 	}
 }
 
 void UserInterface::onMouseWheelScroll(int amount) {
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->onMouseWheelScroll(amount);
+		if (!(*it)->isHidden()) {
+			(*it)->onMouseWheelScroll(amount);
+		}
 	}
 }
 
 void UserInterface::onKeyPress(SDL_Keysym key) {
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->onKeyPress(key);
+		if (!(*it)->isHidden()) {
+			(*it)->onKeyPress(key);
+		}
 	}
 }
 
@@ -77,7 +94,9 @@ void UserInterface::onKeyUp(SDL_Keysym key) {
 		setShowFpsCounter(!showFpsCounter);
 	}
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->onKeyUp(key);
+		if (!(*it)->isHidden()) {
+			(*it)->onKeyUp(key);
+		}
 	}
 }
 
@@ -100,10 +119,10 @@ void UserInterface::update(unsigned millisElapsed) {
 
 void UserInterface::draw(unsigned millisElapsed) {
 	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->draw(millisElapsed);
+		(*it)->draw(millisElapsed, interfaceShader->getShaderProgram());
 	}
 	if (showFpsCounter) {
-		fpsCounter->draw(millisElapsed);
+		fpsCounter->draw(millisElapsed, interfaceShader->getShaderProgram());
 	}
 }
 

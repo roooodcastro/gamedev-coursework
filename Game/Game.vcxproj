@@ -54,6 +54,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;GLEW_STATIC;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../;./</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -93,6 +94,8 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="PanelItem.h" />
+    <ClInclude Include="PauseMenu.h" />
+    <ClInclude Include="RaceLevel.h" />
     <ClInclude Include="TextItem.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="InterfaceItem.h" />
@@ -118,6 +121,8 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="PanelItem.cpp" />
+    <ClCompile Include="PauseMenu.cpp" />
+    <ClCompile Include="RaceLevel.cpp" />
     <ClCompile Include="TextItem.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="InterfaceItem.cpp" />

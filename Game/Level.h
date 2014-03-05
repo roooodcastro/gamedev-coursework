@@ -16,6 +16,14 @@ enum LevelType {
 	LEVEL_GAME, // A game level, to be used when the player is actually playing a level
 };
 
+struct Light {
+	Vector3 position;
+	float radius;
+	Vector3 colour;
+	Light() {};
+	Light(Vector3 position, float radius, Vector3 colour) : position(position), radius(radius), colour(colour) {}
+};
+
 class UserInterface;
 class Entity;
 
@@ -23,8 +31,11 @@ class Level {
 public:
 
 	Level(LevelType type);
+	Level(const Level &copy);
 	Level(LevelType type, UserInterface &userInterface);
 	~Level(void);
+
+	Level &operator=(const Level *other);
 
 	/* ==========================================
 	 * ================= Events =================
@@ -32,22 +43,21 @@ public:
 	 */
 
 	/* Level related events */
-	void load(); // Will fire to load the level and all its entities and interfaces
-	void onStart(); // Will fire when the current level of the game is switched to this
-	void onPause(); // Will fire when the gmae pauses
-	void onResume(); // Will fire when the game restarts from a pause state
-	void onFinish(); // Will fire when the current level of the game is switched to another one
+	virtual void onStart() {} // Will fire when the current level of the game is switched to this
+	virtual void onPause() {} // Will fire when the gmae pauses
+	virtual void onResume() {} // Will fire when the game restarts from a pause state
+	virtual void onFinish() {} // Will fire when the current level of the game is switched to another one
 	/* Mouse events */
-	void onMouseMoved(Vector2 &position, Vector2 &amount); // Will fire every time the mouse moves
-	void onMouseClick(Uint8 button, Vector2 &position); // Will fire once a mouse button is released
-	void onMouseDoubleClick(Uint8 button, Vector2 &position); // Will fire on a double click
-	void onMouseButtonDown(Uint8 button, Vector2 &position); // Will fire in every tick that a button is down
-	void onMouseButtonUp(Uint8 button, Vector2 &position); // Will fire every time a mouse button is released
-	void onMouseWheelScroll(int amount); // Will fire every time the mouse wheel scrolls
+	virtual void onMouseMoved(Vector2 &position, Vector2 &amount); // Will fire every time the mouse moves
+	virtual void onMouseClick(Uint8 button, Vector2 &position); // Will fire once a mouse button is released
+	virtual void onMouseDoubleClick(Uint8 button, Vector2 &position); // Will fire on a double click
+	virtual void onMouseButtonDown(Uint8 button, Vector2 &position); // Will fire in every tick that a button is down
+	virtual void onMouseButtonUp(Uint8 button, Vector2 &position); // Will fire every time a mouse button is released
+	virtual void onMouseWheelScroll(int amount); // Will fire every time the mouse wheel scrolls
 	/* Keyboard events */
-	void onKeyPress(SDL_Keysym key); // Will fire every time a key is released
-	void onKeyDown(SDL_Keysym key); // Will fire in every tick that a key is down
-	void onKeyUp(SDL_Keysym key); // Will fire every time a key is released
+	virtual void onKeyPress(SDL_Keysym key); // Will fire every time a key is released
+	virtual void onKeyDown(SDL_Keysym key); // Will fire in every tick that a key is down
+	virtual void onKeyUp(SDL_Keysym key); // Will fire every time a key is released
 
 	/* ==========================================
 	 * ============ Game loop control ===========
@@ -74,6 +84,13 @@ public:
 	Matrix4 getProjectionMatrix() { return *projectionMatrix; }
 	void setInterface(UserInterface *userInterface) { this->userInterface = userInterface; }
 	UserInterface *getUserInterface() { return userInterface; }
+	void addLightSource(Light &lightSource);
+	void removeLightSource(Light &lightSource);
+	std::vector<Light*> *getLightSources() { return lightSources; }
+	void setCameraPosition(Vector3 &position) {*(this->cameraPos) = position; }
+	Vector3 *getCameraPosition() { return cameraPos; }
+	void setCameraRotation(Vector3 &rotation) {*(this->cameraRotation) = rotation; }
+	Vector3 *getCameraRotation() { return cameraRotation; }
 
 	Entity *getEntity(int index) {
 		try {
@@ -84,14 +101,27 @@ public:
 	}
 	std::vector<Entity*> *getEntities() { return entities; }
 
-private:
+	void applyShaderLight(GLuint program);
+
+
+	bool dragging;
+	bool draggingRight;
+
+protected:
 
 	Level(void);
+	void calculateCameraMatrix() {
+		Matrix4 rotationMatrix = Matrix4::Rotation(cameraRotation->x, Vector3(1, 0, 0)) * Matrix4::Rotation(cameraRotation->y, Vector3(0, 1, 0)) * Matrix4::Rotation(cameraRotation->z, Vector3(0, 0, 1));
+		*cameraMatrix = Matrix4::Translation(*cameraPos) * rotationMatrix;
+	}
 
 	std::vector<Entity*> *entities; // A list with all the entities contained in this level
+	std::vector<Light*> *lightSources; // A list of all light sources contained in this level
 	LevelType levelType; // The type of this level. MUST be set.
 
 	UserInterface *userInterface; // The player interface, may be the manu, or a HUD
+	Vector3 *cameraPos; // The position of the camera
+	Vector3 *cameraRotation; // The direction the camera is facing
 	Matrix4 *cameraMatrix; // The viewMatrix, or the camera
 	Matrix4 *projectionMatrix; // The projectionMatrix. This will be switched all the time to render interface and game
 };

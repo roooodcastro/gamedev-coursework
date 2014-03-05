@@ -4,11 +4,14 @@
 
 ### TODO List:
 
+* Add other types of light source
+* Create static colour textures (basically a texture colour palette)
 * Review all classes and fix them to make sure they are RAII compliant
 * Collision detection
 * Stabilize framerate and tickrate
 * Audio
 * Actually building a game on top of this engine
+* Fix the mouse positioning for rotated interface items
 
 ### Done:
 
@@ -24,3 +27,4 @@
 * Wavefront file (.obj) loader
 * Keyboard and mouse handling
 * Basic shader pipeline
+* Multiple source lighting

@@ -5,6 +5,7 @@
 #include "InterfaceItem.h"
 
 class InterfaceItem;
+class Shader;
 
 class UserInterface {
 public:
@@ -28,10 +29,13 @@ public:
 	void update(unsigned millisElapsed);
 	void draw(unsigned millisElapsed);
 
+	/* General getters and setters */
 	void addItem(InterfaceItem *item);
 	bool removeItem(InterfaceItem *item);
+	std::vector<InterfaceItem*> *getItems() { return items; }
 	void setShowFpsCounter(bool showFps);
 	bool isShowFpsCounter() { return showFpsCounter; }
+	Shader *getInterfaceShader() { return interfaceShader; }
 
 	UserInterface &operator=(const UserInterface &other);
 
@@ -45,4 +49,5 @@ protected:
 	/* Debug tool to show fps counter on the top left corner of screen */
 	bool showFpsCounter;
 	InterfaceItem *fpsCounter;
+	Shader *interfaceShader; // The default shader to be used on the interface. Plain simple shader.
 };

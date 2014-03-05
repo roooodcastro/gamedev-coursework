@@ -1,10 +1,11 @@
 #include "Material.h"
 
 Material::Material(void) {
-	diffuse = new Vector3();
+	diffuse = new Vector3(1, 1, 1);
 	ambient = new Vector3();
 	specular = new Vector3();
 	texture = new Texture();
+	alpha = 1.0f;
 }
 
 Material::Material(const Material &copy) {

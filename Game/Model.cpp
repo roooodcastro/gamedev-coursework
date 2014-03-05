@@ -394,7 +394,7 @@ Model *Model::loadObjFile(const char *filename) {
 		delete vertices[i];
 	for (unsigned i = 0; i < texCoords.size(); i++)
 		delete texCoords[i];
-	for (unsigned i = 0; i < materials.size(); i++)
+	//for (unsigned i = 0; i < materials.size(); i++)
 		//delete materials[i];
 	//delete currentMaterial;
 

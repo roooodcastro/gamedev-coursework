@@ -2,9 +2,9 @@
 
 
 Texture::Texture(void) {
-	textureId = -1;
 	texWidth = -1;
 	texHeight = -1;
+	textureId = -1;
 }
 
 Texture::Texture(const Texture &copy) {

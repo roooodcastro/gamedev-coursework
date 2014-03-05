@@ -95,7 +95,7 @@ void ButtonItem::setTexture(Texture *texture) {
 	this->selectedTex = texture;
 }
 
-void ButtonItem::draw(unsigned millisElapsed) {
+void ButtonItem::draw(unsigned millisElapsed, GLuint program) {
 	Texture *chosenTex = normalTex;
 	switch (state) {
 	//case BUTTON_NORMAL:
@@ -110,16 +110,12 @@ void ButtonItem::draw(unsigned millisElapsed) {
 		chosenTex = selectedTex;
 		break;
 	}
+	glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, false, (float*) &modelMatrix);
 	if (&chosenTex) {
-		GLuint program = GameApp::getInstance()->getDefaultShader()->getShaderProgram();
-		glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, false, (float*) &modelMatrix);
 		chosenTex->bindTexture(program, TEXTURE0);
-		Model::getQuad()->draw();
 	} else if (normalTex) {
 		// Fallback in case one of the textures wasn't specified
-		GLuint program = GameApp::getInstance()->getDefaultShader()->getShaderProgram();
-		glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, false, (float*) &modelMatrix);
 		normalTex->bindTexture(program, TEXTURE0);
-		Model::getQuad()->draw();
 	}
+	Model::getQuad()->draw();
 }
