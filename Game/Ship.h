@@ -27,6 +27,8 @@ public:
 	virtual void onKeyDown(SDL_Keysym key); // Will fire in every tick that a key is down
 	virtual void onKeyUp(SDL_Keysym key); // Will fire every time a key is released
 
+	static const float MAX_SIDE_SPEED;
+
 protected:
 
 	/* Angle measurements for the ship movement */

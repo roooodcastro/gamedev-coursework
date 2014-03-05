@@ -110,7 +110,7 @@ public:
 protected:
 
 	Level(void);
-	void calculateCameraMatrix() {
+	virtual void calculateCameraMatrix() {
 		Matrix4 rotationMatrix = Matrix4::Rotation(cameraRotation->x, Vector3(1, 0, 0)) * Matrix4::Rotation(cameraRotation->y, Vector3(0, 1, 0)) * Matrix4::Rotation(cameraRotation->z, Vector3(0, 0, 1));
 		*cameraMatrix = Matrix4::Translation(*cameraPos) * rotationMatrix;
 	}

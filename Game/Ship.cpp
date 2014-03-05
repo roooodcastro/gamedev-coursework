@@ -1,5 +1,7 @@
 #include "Ship.h"
 
+const float Ship::MAX_SIDE_SPEED = 40.0f;
+
 Ship::Ship(void) : Entity() {
 	model = Model::loadObjFile("resources/models/testShip.obj");
 	roll = 0;
@@ -32,19 +34,21 @@ void Ship::update(unsigned millisElapsed) {
 	const Uint8* keyState = SDL_GetKeyboardState(NULL);
 	Level *level = GameApp::getInstance()->getCurrentLevel();
 
-	// Controls roll
+	// Controls yaw
 	if (keyState[SDL_SCANCODE_A]) {
-		yaw += 3;
+		yaw += 2;
 		if (yaw > 15) {
 			yaw = 15;
 		}
+		velocity->x = MAX_SIDE_SPEED;
 	} else if (keyState[SDL_SCANCODE_D]) {
-		yaw -= 3;
+		yaw -= 2;
 		if (yaw < -15) {
 			yaw = -15;
 		}
+		velocity->x = -MAX_SIDE_SPEED;
 	} else if (abs(yaw) > 0) {
-		yaw /= 1.2f;
+		yaw /= 1.1f;
 		if (abs(yaw) < 1.0f ) {
 			yaw = 0;
 		}
@@ -70,17 +74,19 @@ void Ship::update(unsigned millisElapsed) {
 
 	// Controls pitch
 	if (keyState[SDL_SCANCODE_W]) {
-		pitch += 3;
+		pitch += 2;
 		if (pitch > 15) {
 			pitch = 15;
 		}
+		velocity->y = -MAX_SIDE_SPEED;
 	} else if (keyState[SDL_SCANCODE_S]) {
-		pitch -= 3;
+		pitch -= 2;
 		if (pitch < -15) {
 			pitch = -15;
 		}
+		velocity->y = MAX_SIDE_SPEED;
 	} else if (abs(pitch) > 0) {
-		pitch /= 1.2f;
+		pitch /= 1.1f;
 		if (abs(pitch) < 1.0f ) {
 			pitch = 0;
 		}
@@ -89,8 +95,17 @@ void Ship::update(unsigned millisElapsed) {
 	this->rotation->x = pitch;
 	this->rotation->y = yaw;
 	this->rotation->z = roll;
-	level->setCameraRotation(Vector3(pitch + 10, yaw + 180, -roll / 3.0f));
 	Entity::update(millisElapsed);
+	level->setCameraRotation(Vector3((pitch / 1.2f) + 10, 180 - (yaw / 1.2f), -roll / 2.0f));
+	level->setCameraPosition(*(this->position));
+	velocity->x /= 1.1f;
+	velocity->y /= 1.1f;
+	if (abs(velocity->x) < 0.5f) {
+		velocity->x = 0.0f;
+	}
+	if (abs(velocity->y) < 0.5f) {
+		velocity->y = 0.0f;
+	}
 }
 
 void Ship::draw(unsigned millisElapsed) {

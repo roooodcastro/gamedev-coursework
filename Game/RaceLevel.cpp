@@ -5,8 +5,8 @@ RaceLevel::RaceLevel(void) : Level(LEVEL_GAME, UserInterface()) {
 	addLightSource(*(new Light(Vector3(0, 100, 0), 30, Vector3(1.0f, 1.0f, 1.0f))));
 	addLightSource(*(new Light(Vector3(0, -100, 0), 30, Vector3(1.0f, 1.0f, 1.0f))));
 	setProjectionMatrix(Matrix4::Perspective(1.0f, -100.0f, 1280.0f / 720.0f, 45.0f));
-	*cameraPos = Vector3(0.0f, 1.0f, -30.0f);
-	*cameraRotation = Vector3(10, 180, 0);
+	*cameraPos = Vector3(0.0f, 0.0f, -20.0f);
+	*cameraRotation = Vector3(0, 180, 0);
 }
 
 RaceLevel::~RaceLevel(void) {
@@ -74,4 +74,19 @@ void RaceLevel::onKeyDown(SDL_Keysym key) {
 
 void RaceLevel::onKeyUp(SDL_Keysym key) {
 	Level::onKeyUp(key);
+}
+
+void RaceLevel::processLevelTick(unsigned int millisElapsed) {
+	userInterface->update(millisElapsed);
+	if (!GameApp::getInstance()->isGamePaused()) {
+		for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
+			(*it)->update(millisElapsed);
+		}
+		calculateCameraMatrix();
+	}
+}
+
+void RaceLevel::calculateCameraMatrix() {
+	Matrix4 rotationMatrix = Matrix4::Rotation(cameraRotation->x, Vector3(1, 0, 0)) * Matrix4::Rotation(cameraRotation->y, Vector3(0, 1, 0)) * Matrix4::Rotation(cameraRotation->z, Vector3(0, 0, 1));
+	*cameraMatrix = Matrix4::Translation(Vector3(0, -1.0f, -10.0f)) * rotationMatrix * Matrix4::Translation(-(*cameraPos));
 }
