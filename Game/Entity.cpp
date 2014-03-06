@@ -11,6 +11,7 @@ Entity::Entity(void) {
 	customShader = NULL;
 	model = NULL;
 	parent = NULL;
+	boundingBox = NULL;
 }
 
 Entity::Entity(const Entity &copy) {
@@ -25,6 +26,7 @@ Entity::Entity(const Entity &copy) {
 	this->childEntities = new std::vector<Entity*>(*(copy.childEntities));
 	this->model = new Model(*(copy.model));
 	this->customShader = new Shader(*(copy.customShader));
+	this->boundingBox = new BoundingBox(*(copy.boundingBox));
 }
 
 Entity::Entity(Vector3 &position, Vector3 &velocity, Vector3 &rotation, Vector3 &scale) {
@@ -38,6 +40,7 @@ Entity::Entity(Vector3 &position, Vector3 &velocity, Vector3 &rotation, Vector3 
 	model = NULL;
 	customShader = NULL;
 	parent = NULL;
+	boundingBox = NULL;
 }
 
 Entity::~Entity(void) {
@@ -50,6 +53,7 @@ Entity::~Entity(void) {
 	delete childEntities;
 	delete model;
 	delete customShader;
+	delete boundingBox;
 }
 
 Entity &Entity::operator=(const Entity &other) {
@@ -60,6 +64,7 @@ Entity &Entity::operator=(const Entity &other) {
 	*(this->acceleration) = *(other.acceleration);
 	*(this->modelMatrix) = *(other.modelMatrix);
 	*(this->model) = *(other.model);
+	*(this->boundingBox) = *(other.boundingBox);
 	if (customShader != NULL) {
 		if (other.customShader == NULL) {
 			this->customShader = NULL;
@@ -87,39 +92,69 @@ Entity &Entity::operator=(const Entity &other) {
 }
 
 void Entity::onMouseMoved(Vector2 &position, Vector2 &amount) {
-	
+	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		(*it)->onMouseMoved(position, amount);
+	}
 }
 
 void Entity::onMouseClick(Uint8 button, Vector2 &position) {
+	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		(*it)->onMouseClick(button, position);
+	}
 }
 
 void Entity::onMouseDoubleClick(Uint8 button, Vector2 &position) {
+	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		(*it)->onMouseDoubleClick(button, position);
+	}
 }
 
 void Entity::onMouseButtonDown(Uint8 button, Vector2 &position) {
+	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		(*it)->onMouseButtonDown(button, position);
+	}
 }
 
 void Entity::onMouseButtonUp(Uint8 button, Vector2 &position) {
+	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		(*it)->onMouseButtonUp(button, position);
+	}
 }
 
+/*
+ * The parameter amount is positive when the wheel is scrolled away from the player,
+ * and negative if scrolled toward the player.
+ */
 void Entity::onMouseWheelScroll(int amount) {
-	this->position->z += amount * 2;
+	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		(*it)->onMouseWheelScroll(amount);
+	}
 }
 
 void Entity::onKeyPress(SDL_Keysym key) {
+	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		(*it)->onKeyPress(key);
+	}
 }
 
 void Entity::onKeyDown(SDL_Keysym key) {
+	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		(*it)->onKeyDown(key);
+	}
 }
 
 void Entity::onKeyUp(SDL_Keysym key) {
+	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		(*it)->onKeyUp(key);
+	}
 }
 
+
 void Entity::calculateModelMatrix() {
-	Vector3 *calcPos = this->position;
-	Vector3 *calcVel = this->velocity;
-	Vector3 *calcRot = this->rotation;
-	Vector3 *calcSiz = this->scale;
+	Vector3 *calcPos = new Vector3(*(this->position));
+	Vector3 *calcVel = new Vector3(*(this->velocity));
+	Vector3 *calcRot = new Vector3(*(this->rotation));
+	Vector3 *calcSiz = new Vector3(*(this->scale));
 	/*
 	 * If is a child, we add up the parent's attributes.
 	 *
@@ -147,6 +182,11 @@ void Entity::calculateModelMatrix() {
 	Matrix4 rotationMatrix = Matrix4::Rotation(calcRot->x, Vector3(1, 0, 0)) * Matrix4::Rotation(calcRot->y, Vector3(0, 1, 0)) * Matrix4::Rotation(calcRot->z, Vector3(0, 0, 1));
 	*modelMatrix = Matrix4::Translation(*calcPos) * rotationMatrix * Matrix4::Scale(*calcSiz);
 
+	delete calcPos;
+	delete calcVel;
+	delete calcRot;
+	delete calcSiz;
+
 	// Finally, do the same for the children
 	for(std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
 		// Bad things will happen if two entities are parent and child of each other at the same time, please don't do that.
@@ -167,6 +207,9 @@ void Entity::update(unsigned millisElapsed) {
 	if (parent == nullptr) {
 		calculateModelMatrix();
 	}
+	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		(*it)->update(millisElapsed);
+	}
 }
 
 void Entity::draw(unsigned millisElapsed) {
@@ -178,14 +221,53 @@ void Entity::draw(unsigned millisElapsed) {
 		model->draw();
 		delete white;
 	}
+	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		(*it)->draw(millisElapsed);
+	}
+}
+
+void Entity::setPosition(Vector3 &position) {
+	*(this->position) = position;
+	if (this->boundingBox) {
+		this->boundingBox->setPosition(position);
+	}
+}
+
+void Entity::setRotation(Vector3 &rotation) {
+	*(this->rotation) = rotation;
+	if (this->boundingBox) {
+		this->boundingBox->setRotation(rotation);
+	}
+}
+
+void Entity::setScale(Vector3 &scale) {
+	*(this->scale) = scale;
+	if (this->boundingBox) {
+		this->boundingBox->setSize(*(this->boundingBox->getSize()) * scale);
+	}
 }
 
 void Entity::addChild(Entity *child) {
-	// TODO
+	if (child) {
+		// If we don't have space to store the entity, make some!
+		// I set this if to >= to always have an empty space in the array, just in case
+		if ((childEntities->size() + 1) >= childEntities->capacity()) {
+			childEntities->reserve(childEntities->capacity() + 5);
+		}
+		childEntities->emplace_back(child);
+		child->parent = this;
+	}
 }
 
 void Entity::removeChild(Entity *child) {
-	// TODO
+	if (child) {
+		childEntities->erase(std::remove(childEntities->begin(), childEntities->end(), child), childEntities->end());
+		// If vector becomes too big, shrink it
+		if (childEntities->size() + 10 < childEntities->capacity()) {
+			childEntities->shrink_to_fit();
+		}
+		child->parent = NULL;
+	}
 }
 
 void Entity::makeOrphan() {

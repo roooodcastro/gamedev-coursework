@@ -7,6 +7,7 @@
 #include "Shader.h"
 #include "GameApp.h"
 #include "Texture.h"
+#include "BoundingBox.h"
 
 class GameApp;
 class Model;
@@ -35,13 +36,13 @@ public:
 	virtual void onKeyUp(SDL_Keysym key); // Will fire every time a key is released
 
 	/* General getters and setters */
-	void setPosition(Vector3 &newPos) { *(this->position) = newPos; }
+	void setPosition(Vector3 &newPos);
 	Vector3 getPosition() { return *position; }
 	void setVelocity(Vector3 &newVel) { *(this->velocity) = newVel; }
 	Vector3 getVelocity() { return *velocity; }
-	void setRotation(Vector3 &newRot) { *(this->rotation) = newRot; }
+	void setRotation(Vector3 &newRot);
 	Vector3 getRotation() { return *rotation; }
-	void setScale(Vector3 &newSize) { *(this->scale) = newSize; }
+	void setScale(Vector3 &newSize);
 	Vector3 getScale() { return *scale; }
 	Entity *getParent() { return parent; }
 	void setCustomShader(Shader &shader);
@@ -49,6 +50,8 @@ public:
 	Matrix4 getModelMatrix() { return *modelMatrix; }
 	void setModel(Model *model) { this->model = model; }
 	Model *getModel() { return model; }
+	void setBoundingBox(BoundingBox &boundingBox) { *(this->boundingBox) = boundingBox; }
+	BoundingBox *getBoundingBox() { return boundingBox; }
 
 	/* Adds a new child to this entity */
 	void addChild(Entity *child);
@@ -102,6 +105,12 @@ protected:
 	 * The 3D model for this entity. Notice this CAN be null, the entity could be just a particle, for example
 	 */
 	Model *model;
+
+	/*
+	 * The 3D box that will be used for collision detection. This is used because the cost of calculating it
+	 * pixel perfect for the entire model is too big.
+	 */
+	BoundingBox *boundingBox;
 
 	/*
 	 * This entity's custom shader. This is optional and will be replaced by the default shader loaded in GameApp if not specified.

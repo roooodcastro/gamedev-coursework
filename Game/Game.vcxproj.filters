@@ -43,6 +43,24 @@
     <Filter Include="Source Files\engine\interface">
       <UniqueIdentifier>{1846653c-755d-447d-85f9-a50ffda84e99}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\engine\physics">
+      <UniqueIdentifier>{2ac744ea-a50a-4f67-be7d-d9da182ef8b0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\phyrics">
+      <UniqueIdentifier>{dd1d92fa-e2c5-4f04-a36d-ab7ef2e22bdb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\engine\audio">
+      <UniqueIdentifier>{d57187c6-bbe4-453f-8fb1-d1f5d65d0a75}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\engine\audio">
+      <UniqueIdentifier>{3ec77406-b2f4-48f4-b8c5-4018b1b583ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\track">
+      <UniqueIdentifier>{6b809b3d-f487-4f77-81ef-3f346e90ba0f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\track">
+      <UniqueIdentifier>{2b9c016b-21d2-4484-91dc-21c150a2210a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ship.h">
@@ -123,6 +141,36 @@
     <ClInclude Include="RaceLevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BoundingBox.h">
+      <Filter>Header Files\engine\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="AudioManager.h">
+      <Filter>Header Files\engine\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Sound.h">
+      <Filter>Header Files\engine\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="Music.h">
+      <Filter>Header Files\engine\audio</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionDetector.h">
+      <Filter>Header Files\engine\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="ConfigurationManager.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="Track.h">
+      <Filter>Header Files\track</Filter>
+    </ClInclude>
+    <ClInclude Include="TrackPiece.h">
+      <Filter>Header Files\track</Filter>
+    </ClInclude>
+    <ClInclude Include="Door.h">
+      <Filter>Header Files\track</Filter>
+    </ClInclude>
+    <ClInclude Include="DoorSet.h">
+      <Filter>Header Files\track</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -193,6 +241,36 @@
     </ClCompile>
     <ClCompile Include="RaceLevel.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="BoundingBox.cpp">
+      <Filter>Source Files\engine\phyrics</Filter>
+    </ClCompile>
+    <ClCompile Include="AudioManager.cpp">
+      <Filter>Source Files\engine\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Sound.cpp">
+      <Filter>Source Files\engine\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="Music.cpp">
+      <Filter>Source Files\engine\audio</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionDetector.cpp">
+      <Filter>Source Files\engine\phyrics</Filter>
+    </ClCompile>
+    <ClCompile Include="ConfigurationManager.cpp">
+      <Filter>Source Files\engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Track.cpp">
+      <Filter>Source Files\track</Filter>
+    </ClCompile>
+    <ClCompile Include="TrackPiece.cpp">
+      <Filter>Source Files\track</Filter>
+    </ClCompile>
+    <ClCompile Include="Door.cpp">
+      <Filter>Source Files\track</Filter>
+    </ClCompile>
+    <ClCompile Include="DoorSet.cpp">
+      <Filter>Source Files\track</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

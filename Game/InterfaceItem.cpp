@@ -166,7 +166,7 @@ InterfaceItem &InterfaceItem::operator=(const InterfaceItem &other) {
 
 void InterfaceItem::addInnerItem(InterfaceItem *item) {
 	if (item) {
-		// If we don't have space to store the entity, make some!
+		// If we don't have space to store the item, make some!
 		// I set this if to >= to always have an empty space in the array, just in case
 		if ((innerItems->size() + 1) >= innerItems->capacity()) {
 			innerItems->reserve(innerItems->capacity() + 5);

@@ -84,18 +84,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AudioManager.h" />
+    <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="ButtonItem.h" />
+    <ClInclude Include="CollisionDetector.h" />
     <ClInclude Include="Colour.h" />
     <ClInclude Include="Common.h" />
+    <ClInclude Include="ConfigurationManager.h" />
+    <ClInclude Include="Door.h" />
+    <ClInclude Include="DoorSet.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameApp.h" />
     <ClInclude Include="GameRenderer.h" />
     <ClInclude Include="ImageItem.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Material.h" />
+    <ClInclude Include="Music.h" />
     <ClInclude Include="PanelItem.h" />
     <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="RaceLevel.h" />
+    <ClInclude Include="Sound.h" />
     <ClInclude Include="TextItem.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="InterfaceItem.h" />
@@ -106,23 +114,33 @@
     <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Ship.h" />
+    <ClInclude Include="Track.h" />
+    <ClInclude Include="TrackPiece.h" />
     <ClInclude Include="UserInterface.h" />
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AudioManager.cpp" />
+    <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="ButtonItem.cpp" />
+    <ClCompile Include="CollisionDetector.cpp" />
     <ClCompile Include="Colour.cpp" />
+    <ClCompile Include="ConfigurationManager.cpp" />
+    <ClCompile Include="Door.cpp" />
+    <ClCompile Include="DoorSet.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="GameApp.cpp" />
     <ClCompile Include="GameRenderer.cpp" />
     <ClCompile Include="ImageItem.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Material.cpp" />
+    <ClCompile Include="Music.cpp" />
     <ClCompile Include="PanelItem.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="RaceLevel.cpp" />
+    <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TextItem.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="InterfaceItem.cpp" />
@@ -134,6 +152,8 @@
     <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Ship.cpp" />
+    <ClCompile Include="Track.cpp" />
+    <ClCompile Include="TrackPiece.cpp" />
     <ClCompile Include="UserInterface.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -13,6 +13,7 @@
 #include "PauseMenu.h"
 #include "RaceLevel.h"
 #include "Ship.h"
+#include "TrackPiece.h"
 
 using namespace std;
 
@@ -30,9 +31,7 @@ int main(int argc, char* argv[]) {
 	// Test object file loading
 	Ship *ship = new Ship(Vector3(0, 0, -20.0f), Vector3(0, 0, 0.0f), Vector3(0, 0, 0));
 
-	Model *trackPieceModel = Model::loadObjFile("resources/models/TrackPiece.obj");
-	Entity *trackPiece = new Entity(Vector3(0, 0, -20.0f), Vector3(0, 0, 0), Vector3(0, 90, 0), Vector3(90, 30, 30));
-	trackPiece->setModel(trackPieceModel);
+	TrackPiece *trackPiece = new TrackPiece();
 	
 
 

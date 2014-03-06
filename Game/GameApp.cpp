@@ -78,6 +78,17 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 	Model::initializePrimitiveMeshes();
 	instance->defaultShader = new Shader("shaders/vertNormal.glsl", "shaders/fragLight.glsl", "", "", "");
 	//instance->defaultShader = new Shader("shaders/vertUI.glsl", "shaders/fragUI.glsl", "", "", "");
+
+	if (SDL_NumJoysticks() < 1) {
+		std::cout << "Warning: No joysticks connected!" << std::endl;
+	} else {
+		//Load joystick
+		instance->joystick = SDL_JoystickOpen(0);
+		if (instance->joystick == NULL) {
+			printf("Warning: Unable to open game controller! SDL Error: %s\n", SDL_GetError());
+		}
+	}
+
 	return instance;
 }
 
@@ -94,6 +105,7 @@ void GameApp::runGame() {
 		SDL_Delay(1); // Just to not overload the processor. We shouldn't need more than 1000 input checks every second anyway
 	}
 	// Safely quits SDL
+	SDL_JoystickClose(joystick);
 	SDL_Quit();
 }
 
@@ -191,6 +203,26 @@ void GameApp::handleUserEvents() {
 				currentLevel->onKeyUp(e.key.keysym);
 				currentLevel->onKeyPress(e.key.keysym);
 			}
+			break;
+		case SDL_JOYAXISMOTION:
+            if (e.jaxis.which == 0) {
+                // X axis motion
+                if (e.jaxis.axis == 0) {
+					// Fire axis motion event
+				}
+			}
+			break;
+		case SDL_JOYBUTTONDOWN:
+			// Fire buttond own event
+			break;
+		case SDL_JOYBUTTONUP:
+			// Fire button up event
+			break;	
+		case SDL_JOYDEVICEADDED:
+			// Bind the joystick to the game
+			break;
+		case SDL_JOYDEVICEREMOVED:
+			// Unbind the joystick and warn player
 			break;
 		case SDL_QUIT:
 			gameRunning = false;

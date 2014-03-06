@@ -107,7 +107,7 @@ public:
 	static const int USER_EVENT_TICK = 100;
 	static const int USER_EVENT_DRAW = 101;
 		
-private:
+protected:
 
 	GameApp(void);
 
@@ -135,6 +135,7 @@ private:
 	SDL_GLContext glContext; // The OpenGL Context that will be used to do pretty much everything OpenGL related
 	SDL_TimerID tickTimer; // SDL timer to control game ticks
 	SDL_TimerID drawTimer; // SDL timer to control FPS
+	SDL_Joystick *joystick; // An optional joystick that can be used to play
 
 	/* Framerate control variables */
 	Uint32 startTime; // When the game starts, this variable will hold the number of millisseconds since SDL initialization

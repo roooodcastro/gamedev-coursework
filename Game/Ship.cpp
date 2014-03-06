@@ -3,7 +3,7 @@
 const float Ship::MAX_SIDE_SPEED = 40.0f;
 
 Ship::Ship(void) : Entity() {
-	model = Model::loadObjFile("resources/models/testShip.obj");
+	model = Model::loadObjFile("resources/models/testShip.mdl");
 	roll = 0;
 	pitch = 0;
 	yaw = 0;
@@ -14,7 +14,7 @@ Ship::Ship(const Ship &copy) : Entity(copy) {
 }
 
 Ship::Ship(Vector3 &position, Vector3 &velocity, Vector3 &rotation) : Entity(position, velocity, rotation, Vector3(1, 1, 1)) {
-	model = Model::loadObjFile("resources/models/testShip.obj");
+	model = Model::loadObjFile("resources/models/testShip.mdl");
 	roll = 0;
 	pitch = 0;
 	yaw = 0;
@@ -31,17 +31,17 @@ Ship &Ship::operator=(const Ship &other) {
 }
 
 void Ship::update(unsigned millisElapsed) {
-	const Uint8* keyState = SDL_GetKeyboardState(NULL);
 	Level *level = GameApp::getInstance()->getCurrentLevel();
+	Keyboard *keyboard = Keyboard::getInstance();
 
 	// Controls yaw
-	if (keyState[SDL_SCANCODE_A]) {
+	if (keyboard->isKeyPressed(SDLK_a)) {
 		yaw += 2;
 		if (yaw > 15) {
 			yaw = 15;
 		}
 		velocity->x = MAX_SIDE_SPEED;
-	} else if (keyState[SDL_SCANCODE_D]) {
+	} else if (keyboard->isKeyPressed(SDLK_d)) {
 		yaw -= 2;
 		if (yaw < -15) {
 			yaw = -15;
@@ -55,12 +55,12 @@ void Ship::update(unsigned millisElapsed) {
 	}
 
 	// Controls roll
-	if (keyState[SDL_SCANCODE_Q]) {
+	if (keyboard->isKeyPressed(SDLK_q)) {
 		roll -= 9;
 		if (roll < -90) {
 			roll = -90;
 		}
-	} else if (keyState[SDL_SCANCODE_E]) {
+	} else if (keyboard->isKeyPressed(SDLK_e)) {
 		roll += 9;
 		if (roll > 90) {
 			roll = 90;
@@ -73,13 +73,13 @@ void Ship::update(unsigned millisElapsed) {
 	}
 
 	// Controls pitch
-	if (keyState[SDL_SCANCODE_W]) {
+	if (keyboard->isKeyPressed(SDLK_w)) {
 		pitch += 2;
 		if (pitch > 15) {
 			pitch = 15;
 		}
 		velocity->y = -MAX_SIDE_SPEED;
-	} else if (keyState[SDL_SCANCODE_S]) {
+	} else if (keyboard->isKeyPressed(SDLK_s)) {
 		pitch -= 2;
 		if (pitch < -15) {
 			pitch = -15;
