@@ -135,8 +135,8 @@ void InterfaceItem::draw(unsigned millisElapsed, GLuint program) {
 		if (texture) {
 			glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, false, (float*) &modelMatrix);
 			texture->bindTexture(program, TEXTURE0);
-			Model::getQuad()->draw();
-		}
+			Model::getQuadMesh()->draw();
+		}	
 		for (std::vector<InterfaceItem*>::iterator it = innerItems->begin(); it != innerItems->end(); ++it) {
 			(*it)->draw(millisElapsed, program);
 		}

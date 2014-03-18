@@ -16,7 +16,7 @@ public:
 	ButtonItem(void);
 	ButtonItem(Vector2 &position, float rotation, Vector2 &size);
 	ButtonItem(Vector2 &position, float rotation, Vector2 &size, Texture *normal, Texture *hovered, Texture *pressed, Texture *selected);
-	ButtonItem(Vector2 &position, float rotation, Vector2 &size, char *normal, char *hovered, char *pressed, char *selected);
+	ButtonItem(Vector2 &position, float rotation, Vector2 &size, const char *resourceName, const char *normal, const char *hovered, const char *pressed, const char *selected);
 	virtual ~ButtonItem(void);
 
 	virtual void draw(unsigned millisElapsed, GLuint program);

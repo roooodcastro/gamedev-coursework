@@ -26,6 +26,7 @@
 #include "Vector4.h"
 #include "GameApp.h"
 #include "Material.h"
+#include "ResourcesManager.h"
 
 class GameApp;
 class Material;
@@ -40,28 +41,53 @@ struct Face {
 	int *normals; // Indexes of the texture coordinates of this face, starting from 1
 	Material *material; // Material used in this face
 	Face(int v1, int v2, int v3, int t1, int t2, int t3, int n1, int n2, int n3, Material &material);
+	Face(const Face &copy);
 	Face(int v1, int v2, int v3, int v4, int t1, int t2, int t3, int t4, int n1, int n2, int n3, int n4, Material &material);
 	~Face(void);
 };
 
-class Model {
+class Model : public Resource {
 public:
 	Model(void);
-	~Model(void);
+	Model(const Model &copy);
+	Model(const char *fileName, const char *name);
+	virtual ~Model(void);
 
 	virtual void draw();
 
+	/* This method should load the specific resource into memory */
+	virtual void load();
+
+	/* This method should destroy the resource, unloading and releasing it from memory */
+	virtual void unload();
+
+	/*
+	 * Functions to create some primitive models/meshes.
+	 * This is similar to the Graphics coursework functions,
+	 * and creates a point, a triangle and a quad mesh, with
+	 * the resource names "MESH_POINT", "MESH_TRI", and "MESH_QUAD".
+	 */
 	static void initializePrimitiveMeshes();
 
-	static Model *loadObjFile(const char *filename);
+	/* Methods to retrieve the primitive meshes */
+	static Model *getTriangleMesh();
+	static Model *getQuadMesh();
 
-	//static Model *getPoint() { return simplePoint; }
-	static Model *getTriangle() { return Model::generateTriangle(); }
-	static Model *getQuad() { return simpleQuad; }
+	/*
+	 * This function tries to retrieve the requested model from the
+	 * resource manager, and if it fails, creates and returns a new model.
+	 */
+	static Model *getOrCreate(const char *name, const char *fileName);
 
+	static const char *meshTriangleName;
+	static const char *meshQuadName;
 protected:
+
 	void bufferData();
 	void generateNormals();
+
+	static Model *generateTriangle();
+	static Model *generateQuad();
 
 	GLuint vao;
 	GLuint posVbo;
@@ -70,23 +96,11 @@ protected:
 	GLuint norVbo;
 
 	int numVertices;
+	const char *fileName;
 
 	Vector3 *vertices;
 	Vector4 *colours;
 	Vector2 *textureCoords;
 	Vector3 *normals;
 	std::vector<Face*> *faces;
-
-	/* Fixed meshes to be used by the interface to draw 3D stuff on screed */
-	//static Model *simplePoint;
-	//static Model *simpleTri;
-	static Model *simpleQuad;
-
-	/*
-	 * Functions to create some primitive models/meshes.
-	 * These are similar to the Graphics coursework functions.
-	 */
-	static Model *generatePoint();
-	static Model *generateTriangle();
-	static Model *generateQuad();
 };

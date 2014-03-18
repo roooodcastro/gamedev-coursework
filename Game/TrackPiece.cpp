@@ -1,7 +1,7 @@
 #include "TrackPiece.h"
 
 TrackPiece::TrackPiece(void) : Entity() {
-	this->model = Model::loadObjFile("resources/models/TrackPiece.mdl");
+	this->model = Model::getOrCreate("TRACK_PIECE_1", "resources/models/TrackPiece.mdl");
 	this->setRotation(Vector3(0, 90, 0));
 	this->setScale(Vector3(90, 30, 30));
 	this->doorSets = new std::vector<DoorSet*>();
@@ -9,7 +9,7 @@ TrackPiece::TrackPiece(void) : Entity() {
 }
 
 TrackPiece::TrackPiece(Vector3 &position) : Entity() {
-	this->model = Model::loadObjFile("resources/models/TrackPiece.mdl");
+	this->model = Model::getOrCreate("TRACK_PIECE_1", "resources/models/TrackPiece.mdl");
 	this->setRotation(Vector3(0, 90, 0));
 	this->setScale(Vector3(90, 30, 30));
 	this->setPosition(position);
@@ -36,5 +36,5 @@ TrackPiece &TrackPiece::operator=(const TrackPiece &other) {
 
 void TrackPiece::generateDoorSets() {
 	DoorSet *doorSet = new DoorSet(this, 80);
-	doorSets->push_back(doorSet);
+	doorSets->emplace_back(doorSet);
 }

@@ -3,30 +3,32 @@
 const float Ship::MAX_SIDE_SPEED = 40.0f;
 
 Ship::Ship(void) : Entity() {
-	model = Model::loadObjFile("resources/models/testShip.mdl");
+	model = Model::getOrCreate("SHIP_MESH", "resources/models/testShip.mdl");
 	roll = 0;
 	pitch = 0;
 	yaw = 0;
 }
 
 Ship::Ship(const Ship &copy) : Entity(copy) {
-
+	this->pitch = copy.pitch;
+	this->roll = copy.roll;
+	this->yaw = copy.yaw;
 }
 
 Ship::Ship(Vector3 &position, Vector3 &velocity, Vector3 &rotation) : Entity(position, velocity, rotation, Vector3(1, 1, 1)) {
-	model = Model::loadObjFile("resources/models/testShip.mdl");
+	model = Model::getOrCreate("SHIP_MESH", "resources/models/testShip.mdl");
 	roll = 0;
 	pitch = 0;
 	yaw = 0;
 }
 
-Ship::~Ship(void) {
-
-}
+Ship::~Ship(void) {}
 
 Ship &Ship::operator=(const Ship &other) {
 	static_cast<Entity&>(*this) = other;
-
+	this->pitch = other.pitch;
+	this->roll = other.roll;
+	this->yaw = other.yaw;
 	return *this;
 }
 
@@ -116,7 +118,6 @@ void Ship::onKeyPress(SDL_Keysym key) {
 }
 
 void Ship::onKeyDown(SDL_Keysym key) {
-
 }
 
 void Ship::onKeyUp(SDL_Keysym key) {

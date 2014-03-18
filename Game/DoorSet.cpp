@@ -32,6 +32,6 @@ void DoorSet::createDoors(const char *pattern) {
 	for (unsigned i = 0; i < 6; i++) {
 		Door *door = new Door(this, i, 0);
 		trackPiece->addChild(door);
-		doors->push_back(door);
+		doors->emplace_back(door);
 	}
 }

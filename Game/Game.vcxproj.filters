@@ -93,9 +93,6 @@
     <ClInclude Include="Vector4.h">
       <Filter>Header Files\engine\math</Filter>
     </ClInclude>
-    <ClInclude Include="ModelLoader.h">
-      <Filter>Header Files\engine\graphics</Filter>
-    </ClInclude>
     <ClInclude Include="Common.h">
       <Filter>Header Files\engine\math</Filter>
     </ClInclude>
@@ -171,6 +168,12 @@
     <ClInclude Include="DoorSet.h">
       <Filter>Header Files\track</Filter>
     </ClInclude>
+    <ClInclude Include="ResourcesManager.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -196,9 +199,6 @@
     </ClCompile>
     <ClCompile Include="Matrix4.cpp">
       <Filter>Source Files\engine\math</Filter>
-    </ClCompile>
-    <ClCompile Include="ModelLoader.cpp">
-      <Filter>Source Files\engine\graphics</Filter>
     </ClCompile>
     <ClCompile Include="Model.cpp">
       <Filter>Source Files\engine\graphics</Filter>
@@ -271,6 +271,9 @@
     </ClCompile>
     <ClCompile Include="DoorSet.cpp">
       <Filter>Source Files\track</Filter>
+    </ClCompile>
+    <ClCompile Include="ResourcesManager.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

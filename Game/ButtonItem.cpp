@@ -17,12 +17,13 @@ InterfaceItem(ITEM_BUTTON, position, rotation, size) {
 	this->selectedTex = selected;
 }
 
-ButtonItem::ButtonItem(Vector2 &position, float rotation, Vector2 &size, char *normal, char *hovered, char *pressed, char *selected) : InterfaceItem(ITEM_BUTTON, position, rotation, size) {
-	this->normalTex = new Texture(normal);
-	this->texture = this->normalTex;
-	this->hoveredTex = new Texture(hovered);
-	this->pressedTex = new Texture(pressed);
-	this->selectedTex = new Texture(selected);
+ButtonItem::ButtonItem(Vector2 &position, float rotation, Vector2 &size, const char *resourceName, const char *normal, const char *hovered, const char *pressed, const char *selected) :
+	InterfaceItem(ITEM_BUTTON, position, rotation, size) {
+		this->normalTex = Texture::getOrCreate(resourceName, normal);
+		this->texture = this->normalTex;
+		this->hoveredTex = Texture::getOrCreate(resourceName, hovered);
+		this->pressedTex = Texture::getOrCreate(resourceName, pressed);
+		this->selectedTex = Texture::getOrCreate(resourceName, selected);
 }
 
 ButtonItem::~ButtonItem(void) {
@@ -117,5 +118,5 @@ void ButtonItem::draw(unsigned millisElapsed, GLuint program) {
 		// Fallback in case one of the textures wasn't specified
 		normalTex->bindTexture(program, TEXTURE0);
 	}
-	Model::getQuad()->draw();
+	Model::getQuadMesh()->draw();
 }

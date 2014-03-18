@@ -113,8 +113,6 @@ Matrix4 Matrix4::Rotation(float degrees, const Vector3 &inaxis)	 {
 
 	Vector3 axis = inaxis;
 
-	axis.normalise();
-
 	float c = cos((float)DegToRad(degrees));
 	float s = sin((float)DegToRad(degrees));
 

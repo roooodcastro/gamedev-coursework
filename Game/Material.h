@@ -53,7 +53,7 @@ public:
 	Vector3 getAmbient() { return *ambient; }
 	void setSpecular(Vector3 &specular) { *(this->specular) = specular; }
 	Vector3 getSpecular() { return *specular; }
-	void setTexture(Texture &texture) { this->texture = &texture; }
+	void setTexture(Texture &texture);
 	Texture *getTexture() { return texture; }
 	void setAlpha(float alpha) { this->alpha = alpha; }
 	float getAlpha() { return alpha; }

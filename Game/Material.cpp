@@ -4,7 +4,7 @@ Material::Material(void) {
 	diffuse = new Vector3(1, 1, 1);
 	ambient = new Vector3();
 	specular = new Vector3();
-	texture = new Texture();
+	texture = Texture::getColourWhite();
 	alpha = 1.0f;
 }
 
@@ -36,7 +36,6 @@ Material::~Material(void) {
 	delete diffuse;
 	delete ambient;
 	delete specular;
-	delete texture;
 }
 
 Material &Material::operator=(const Material &other) {
@@ -62,7 +61,7 @@ std::vector<Material*> Material::loadMaterialsFromFile(const char *filename) {
 	char lineBuffer[200];
 	while(!file.eof()) {
 		file.getline(lineBuffer, 200);
-		lines.push_back(lineBuffer);
+		lines.emplace_back(lineBuffer);
 	}
 	std::vector<Material*> *materials = new std::vector<Material*>();
 	Material *currentMaterial = nullptr;
@@ -118,11 +117,18 @@ std::vector<Material*> Material::loadMaterialsFromFile(const char *filename) {
 		case 'm':
 			char texFilename[150];
 			sscanf(line.c_str(), "map_Kd %s", &texFilename);
-			currentMaterial->texture = new Texture(texFilename);
+			currentMaterial->texture = Texture::getOrCreate(currentMaterial->name.c_str(), texFilename);
 			break;
 		}
 	}
 	if (currentMaterial != nullptr) {
+		// If the current material doesn't have a texture, use the diffuse colour as a colour texture
+		if (!currentMaterial->getTexture()->isTextureValid()) {
+			Vector3 *colourVec = currentMaterial->diffuse;
+			Colour colour = Colour((uint8_t) (colourVec->x * 255), (uint8_t) (colourVec->y * 255), (uint8_t) (colourVec->z * 255), 255);
+			Texture *diffuseTexture = Texture::getOrCreate(currentMaterial->name.c_str(), colour);
+			currentMaterial->setTexture(*diffuseTexture);
+		}
 		materials->emplace_back(currentMaterial);
 	}
 	return *materials;
@@ -139,7 +145,7 @@ bool Material::fileHasMaterial(const char *filename, const char *materialName) {
 	bool hasMaterial = false;
 	while(!file.eof()) {
 		file.getline(lineBuffer, 200);
-		lines.push_back(lineBuffer);
+		lines.emplace_back(lineBuffer);
 	}
 	for (unsigned i = 0; i < lines.size(); i++) {
 		string line = lines[i];
@@ -161,3 +167,7 @@ bool Material::fileHasMaterial(const char *filename, const char *materialName) {
 	}
 	return hasMaterial;
 }
+
+ void Material::setTexture(Texture &texture) {
+	 *(this->texture) = texture;
+ }

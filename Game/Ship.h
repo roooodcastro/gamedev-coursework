@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Entity.h"
+#include "ResourcesManager.h"
 
 class Ship : public Entity {
 

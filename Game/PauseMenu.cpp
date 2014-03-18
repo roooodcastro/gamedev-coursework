@@ -4,7 +4,7 @@ PauseMenu::PauseMenu(void) : PanelItem() {
 	GameApp *app = GameApp::getInstance();
 	pauseText = new TextItem(Vector2(POSITION_CENTERED, 100), 0, "Game Paused", 72);
 	addInnerItem(pauseText);
-	this->texture = Texture::createColourTexture(0xAA000000);
+	this->texture = Texture::getOrCreate("0xAA000000", Colour(0xAA000000));
 	this->position = new Vector2(0, 0);
 	this->size = new Vector2((float) app->getWindowWidth(), (float) app->getWindowHeight());
 	this->hidden = true;

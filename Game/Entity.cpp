@@ -215,11 +215,8 @@ void Entity::update(unsigned millisElapsed) {
 void Entity::draw(unsigned millisElapsed) {
 	if (model != NULL) {
 		GLuint program = GameApp::getInstance()->getDefaultShader()->getShaderProgram();
-		Texture *white = Texture::createColourTexture(0xFFFFFFFF);
-		white->bindTexture(program, TEXTURE0);
 		glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, false, (float*) modelMatrix);
 		model->draw();
-		delete white;
 	}
 	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
 		(*it)->draw(millisElapsed);

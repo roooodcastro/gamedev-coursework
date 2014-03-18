@@ -1,7 +1,7 @@
 # Blender MTL File: 'None'
 # Material Count: 1
 
-newmtl Material.001
+newmtl TrackPieceMaterial
 Ns 194.117647
 Ka 0.000000 0.000000 0.000000
 Kd 0.640000 0.379305 0.159095

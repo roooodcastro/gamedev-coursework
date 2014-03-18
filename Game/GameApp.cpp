@@ -14,6 +14,7 @@ GameApp::GameApp() {
 	for (int i = 0; i < 60; i++) {
 		frameIntervalList[i] = 0;
 	}
+	joystick = NULL;
 	currentLevel = NULL;
 }
 
@@ -74,6 +75,7 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 		printf("OpenGL Error @ CONTEXT_INIT: %i", err_code);
 		err_code = glGetError();
 	}
+	ResourcesManager::initializate();
 	// We initialize the primitive meshes that will be used by the interface
 	Model::initializePrimitiveMeshes();
 	instance->defaultShader = new Shader("shaders/vertNormal.glsl", "shaders/fragLight.glsl", "", "", "");
@@ -105,7 +107,9 @@ void GameApp::runGame() {
 		SDL_Delay(1); // Just to not overload the processor. We shouldn't need more than 1000 input checks every second anyway
 	}
 	// Safely quits SDL
-	SDL_JoystickClose(joystick);
+	if (joystick != NULL) {
+		SDL_JoystickClose(joystick);
+	}
 	SDL_Quit();
 }
 

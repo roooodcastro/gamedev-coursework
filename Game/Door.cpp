@@ -3,7 +3,7 @@
 const float Door::CLOSING_TIME = 2000.0f;
 
 Door::Door(void) : Entity() {
-	this->model = Model::loadObjFile("resources/models/Door.mdl");
+	this->model = Model::getOrCreate("TRACK_DOOR_MESH", "resources/models/Door.mdl");
 	this->targetOpenness = 100;
 	this->openness = 100;
 	this->active = false;
@@ -11,14 +11,14 @@ Door::Door(void) : Entity() {
 }
 
 Door::Door(DoorSet *doorSet, int index, float targetOpenness) : Entity() {
-	this->model = Model::loadObjFile("resources/models/Door.mdl");
+	this->model = Model::getOrCreate("TRACK_DOOR_MESH", "resources/models/Door.mdl");
 	this->targetOpenness = targetOpenness;
 	this->openness = 100;
 	this->active = false;
 	this->doorIndex = index;
 	this->doorSet = doorSet;
 	// TODO: Improve the position calculation, making it automatic and getting rid of the switch
-	this->setRotation(Vector3(0, -90, 60 * index));
+	this->setRotation(Vector3(0, -90, 60.0f * index));
 	this->setScale(Vector3(0.193f, 0.58f, 0.58f));
 	updateDoorPosition();
 }

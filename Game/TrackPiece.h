@@ -16,6 +16,7 @@
 #include <vector>
 #include "DoorSet.h"
 #include "Entity.h"
+#include "ResourcesManager.h"
 
 class DoorSet;
 

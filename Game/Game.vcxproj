@@ -103,6 +103,8 @@
     <ClInclude Include="PanelItem.h" />
     <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="RaceLevel.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="ResourcesManager.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="TextItem.h" />
     <ClInclude Include="Texture.h" />
@@ -111,7 +113,6 @@
     <ClInclude Include="Matrix3.h" />
     <ClInclude Include="Matrix4.h" />
     <ClInclude Include="Model.h" />
-    <ClInclude Include="ModelLoader.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="Ship.h" />
     <ClInclude Include="Track.h" />
@@ -140,6 +141,7 @@
     <ClCompile Include="PanelItem.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="RaceLevel.cpp" />
+    <ClCompile Include="ResourcesManager.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TextItem.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -149,7 +151,6 @@
     <ClCompile Include="Matrix3.cpp" />
     <ClCompile Include="Matrix4.cpp" />
     <ClCompile Include="Model.cpp" />
-    <ClCompile Include="ModelLoader.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="Ship.cpp" />
     <ClCompile Include="Track.cpp" />

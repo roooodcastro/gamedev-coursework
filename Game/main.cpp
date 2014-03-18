@@ -39,11 +39,11 @@ int main(int argc, char* argv[]) {
 
 	// Get a panel with some buttons
 	PanelItem *panel = new PanelItem(Vector2(0, 660), 0, Vector2(1280, 60));
-	panel->setTexture(Texture::createColourTexture(new Colour(0xAA000000)));
+	panel->setTexture(Texture::getOrCreate("0xAA000000", Colour(0xAA000000)));
 	ButtonItem *aButton = new ButtonItem(Vector2(100, -2), 0, Vector2(InterfaceItem::SIZE_NO_RESIZE, InterfaceItem::SIZE_NO_RESIZE));
-	aButton->setTexture(new Texture("resources/xbox/buttons/a.png"));
+	aButton->setTexture(Texture::getOrCreate("XBOX_A_BUTTON", "resources/xbox/buttons/a.png"));
 	ButtonItem *bButton = new ButtonItem(Vector2(400, -2), 0, Vector2(InterfaceItem::SIZE_NO_RESIZE, InterfaceItem::SIZE_NO_RESIZE));
-	bButton->setTexture(new Texture("resources/xbox/buttons/b.png"));
+	bButton->setTexture(Texture::getOrCreate("XBOX_B_BUTTON", "resources/xbox/buttons/b.png"));
 	TextItem *aText = new TextItem(Vector2(170, 16), 0, "Confirm", 26);
 	TextItem *bText = new TextItem(Vector2(470, 16), 0, "Back", 26);
 	panel->addInnerItem(aButton);
