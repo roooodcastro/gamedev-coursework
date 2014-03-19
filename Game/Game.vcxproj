@@ -86,6 +86,7 @@
   <ItemGroup>
     <ClInclude Include="AudioManager.h" />
     <ClInclude Include="BoundingBox.h" />
+    <ClInclude Include="BroadphaseDetector.h" />
     <ClInclude Include="ButtonItem.h" />
     <ClInclude Include="CollisionDetector.h" />
     <ClInclude Include="Colour.h" />
@@ -95,16 +96,18 @@
     <ClInclude Include="DoorSet.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameApp.h" />
-    <ClInclude Include="GameRenderer.h" />
+    <ClInclude Include="GameTimer.h" />
     <ClInclude Include="ImageItem.h" />
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Music.h" />
     <ClInclude Include="PanelItem.h" />
     <ClInclude Include="PauseMenu.h" />
+    <ClInclude Include="PhysicalBody.h" />
     <ClInclude Include="RaceLevel.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourcesManager.h" />
+    <ClInclude Include="Simulation.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="TextItem.h" />
     <ClInclude Include="Texture.h" />
@@ -121,10 +124,12 @@
     <ClInclude Include="Vector2.h" />
     <ClInclude Include="Vector3.h" />
     <ClInclude Include="Vector4.h" />
+    <ClInclude Include="WorldPartitioning.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="BoundingBox.cpp" />
+    <ClCompile Include="BroadphaseDetector.cpp" />
     <ClCompile Include="ButtonItem.cpp" />
     <ClCompile Include="CollisionDetector.cpp" />
     <ClCompile Include="Colour.cpp" />
@@ -133,15 +138,17 @@
     <ClCompile Include="DoorSet.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="GameApp.cpp" />
-    <ClCompile Include="GameRenderer.cpp" />
+    <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="ImageItem.cpp" />
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Music.cpp" />
     <ClCompile Include="PanelItem.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
+    <ClCompile Include="PhysicalBody.cpp" />
     <ClCompile Include="RaceLevel.cpp" />
     <ClCompile Include="ResourcesManager.cpp" />
+    <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TextItem.cpp" />
     <ClCompile Include="Texture.cpp" />
@@ -156,6 +163,7 @@
     <ClCompile Include="Track.cpp" />
     <ClCompile Include="TrackPiece.cpp" />
     <ClCompile Include="UserInterface.cpp" />
+    <ClCompile Include="WorldPartitioning.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

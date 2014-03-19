@@ -46,9 +46,6 @@
     <Filter Include="Header Files\engine\physics">
       <UniqueIdentifier>{2ac744ea-a50a-4f67-be7d-d9da182ef8b0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\engine\phyrics">
-      <UniqueIdentifier>{dd1d92fa-e2c5-4f04-a36d-ab7ef2e22bdb}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\engine\audio">
       <UniqueIdentifier>{d57187c6-bbe4-453f-8fb1-d1f5d65d0a75}</UniqueIdentifier>
     </Filter>
@@ -61,13 +58,13 @@
     <Filter Include="Source Files\track">
       <UniqueIdentifier>{2b9c016b-21d2-4484-91dc-21c150a2210a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\engine\physics">
+      <UniqueIdentifier>{dd1d92fa-e2c5-4f04-a36d-ab7ef2e22bdb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Ship.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="GameRenderer.h">
-      <Filter>Header Files\engine\graphics</Filter>
     </ClInclude>
     <ClInclude Include="GameApp.h">
       <Filter>Header Files\engine\core</Filter>
@@ -168,11 +165,26 @@
     <ClInclude Include="DoorSet.h">
       <Filter>Header Files\track</Filter>
     </ClInclude>
-    <ClInclude Include="ResourcesManager.h">
-      <Filter>Header Files</Filter>
+    <ClInclude Include="BroadphaseDetector.h">
+      <Filter>Header Files\engine\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="WorldPartitioning.h">
+      <Filter>Header Files\engine\physics</Filter>
     </ClInclude>
     <ClInclude Include="Resource.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourcesManager.h">
+      <Filter>Header Files\engine\core</Filter>
+    </ClInclude>
+    <ClInclude Include="PhysicalBody.h">
+      <Filter>Header Files\engine\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="Simulation.h">
+      <Filter>Header Files\engine\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="GameTimer.h">
+      <Filter>Header Files\engine\physics</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -181,9 +193,6 @@
     </ClCompile>
     <ClCompile Include="Ship.cpp">
       <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GameRenderer.cpp">
-      <Filter>Source Files\engine\graphics</Filter>
     </ClCompile>
     <ClCompile Include="GameApp.cpp">
       <Filter>Source Files\engine\core</Filter>
@@ -243,7 +252,7 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="BoundingBox.cpp">
-      <Filter>Source Files\engine\phyrics</Filter>
+      <Filter>Source Files\engine\physics</Filter>
     </ClCompile>
     <ClCompile Include="AudioManager.cpp">
       <Filter>Source Files\engine\audio</Filter>
@@ -255,7 +264,7 @@
       <Filter>Source Files\engine\audio</Filter>
     </ClCompile>
     <ClCompile Include="CollisionDetector.cpp">
-      <Filter>Source Files\engine\phyrics</Filter>
+      <Filter>Source Files\engine\physics</Filter>
     </ClCompile>
     <ClCompile Include="ConfigurationManager.cpp">
       <Filter>Source Files\engine\core</Filter>
@@ -272,8 +281,23 @@
     <ClCompile Include="DoorSet.cpp">
       <Filter>Source Files\track</Filter>
     </ClCompile>
+    <ClCompile Include="BroadphaseDetector.cpp">
+      <Filter>Source Files\engine\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="PhysicalBody.cpp">
+      <Filter>Source Files\engine\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="WorldPartitioning.cpp">
+      <Filter>Source Files\engine\physics</Filter>
+    </ClCompile>
     <ClCompile Include="ResourcesManager.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\engine\core</Filter>
+    </ClCompile>
+    <ClCompile Include="Simulation.cpp">
+      <Filter>Source Files\engine\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="GameTimer.cpp">
+      <Filter>Source Files\engine\physics</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

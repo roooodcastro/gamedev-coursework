@@ -15,6 +15,7 @@
 #include "Entity.h"
 #include "Shader.h"
 #include "Keyboard.h"
+#include "Simulation.h"
 
 using namespace std;
 
@@ -102,8 +103,8 @@ public:
 	 */
 	void draw(Uint32 millisElapsed);
 
-	static const int TARGET_FPS = 60; // Frames per second
-	static const int TARGET_TPS = 100; // Ticks per second
+	static const int TARGET_FPS; // Frames per second
+	static const int TARGET_TPS; // Ticks per second
 	static const int USER_EVENT_TICK = 100;
 	static const int USER_EVENT_DRAW = 101;
 		
@@ -144,7 +145,7 @@ protected:
 	Uint32 lastTickDuration; // The amount of time that took to process the last game tick
 	Uint32 numberOfTicks; // Counts the number of ticks processed since the start of the game
 	Uint32 numberOfFrames; // Counts the number of frames rendered sunce the start of the game
-	Uint32 frameIntervalList[TARGET_FPS]; // A list containing the time to render the last 60 frames
+	Uint32 *frameIntervalList; // A list containing the time to render the last 60 frames
 	Uint32 frameIntervalSum; // The sum of the last 60 frames intervals
 	map<string, Level> levels; // A map containing the levels loaded for the game
 	Level *currentLevel; // A pointer indicating the current Level that is being played

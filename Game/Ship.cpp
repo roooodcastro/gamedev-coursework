@@ -7,6 +7,8 @@ Ship::Ship(void) : Entity() {
 	roll = 0;
 	pitch = 0;
 	yaw = 0;
+	physicalBody->setMass(100.0f);
+	physicalBody->setDragFactor(0.2f);
 }
 
 Ship::Ship(const Ship &copy) : Entity(copy) {
@@ -20,6 +22,8 @@ Ship::Ship(Vector3 &position, Vector3 &velocity, Vector3 &rotation) : Entity(pos
 	roll = 0;
 	pitch = 0;
 	yaw = 0;
+	physicalBody->setMass(100.0f);
+	physicalBody->setDragFactor(0.2f);
 }
 
 Ship::~Ship(void) {}
@@ -35,20 +39,21 @@ Ship &Ship::operator=(const Ship &other) {
 void Ship::update(unsigned millisElapsed) {
 	Level *level = GameApp::getInstance()->getCurrentLevel();
 	Keyboard *keyboard = Keyboard::getInstance();
-
+	Vector3 currentVel = physicalBody->getVelocity(millisElapsed);
+	physicalBody->setForce(Vector3());
 	// Controls yaw
 	if (keyboard->isKeyPressed(SDLK_a)) {
 		yaw += 2;
 		if (yaw > 15) {
 			yaw = 15;
 		}
-		velocity->x = MAX_SIDE_SPEED;
+		physicalBody->addForce(Vector3((MAX_SIDE_SPEED - currentVel.x) * 50.0f, 0, 0));
 	} else if (keyboard->isKeyPressed(SDLK_d)) {
 		yaw -= 2;
 		if (yaw < -15) {
 			yaw = -15;
 		}
-		velocity->x = -MAX_SIDE_SPEED;
+		physicalBody->addForce(Vector3((-MAX_SIDE_SPEED - currentVel.x) * 50.0f, 0, 0));
 	} else if (abs(yaw) > 0) {
 		yaw /= 1.1f;
 		if (abs(yaw) < 1.0f ) {
@@ -80,13 +85,13 @@ void Ship::update(unsigned millisElapsed) {
 		if (pitch > 15) {
 			pitch = 15;
 		}
-		velocity->y = -MAX_SIDE_SPEED;
+		physicalBody->addForce(Vector3(0, (-MAX_SIDE_SPEED - currentVel.y) * 50.0f, 0));
 	} else if (keyboard->isKeyPressed(SDLK_s)) {
 		pitch -= 2;
 		if (pitch < -15) {
 			pitch = -15;
 		}
-		velocity->y = MAX_SIDE_SPEED;
+		physicalBody->addForce(Vector3(0, (MAX_SIDE_SPEED - currentVel.y) * 50.0f, 0));
 	} else if (abs(pitch) > 0) {
 		pitch /= 1.1f;
 		if (abs(pitch) < 1.0f ) {
@@ -94,20 +99,18 @@ void Ship::update(unsigned millisElapsed) {
 		}
 	}
 
-	this->rotation->x = pitch;
-	this->rotation->y = yaw;
-	this->rotation->z = roll;
+	this->getPhysicalBody()->setRotation(Vector3(pitch, yaw, roll));
 	Entity::update(millisElapsed);
 	level->setCameraRotation(Vector3((pitch / 1.2f) + 10, 180 - (yaw / 1.2f), -roll / 2.0f));
-	level->setCameraPosition(*(this->position));
-	velocity->x /= 1.1f;
-	velocity->y /= 1.1f;
-	if (abs(velocity->x) < 0.5f) {
+	level->setCameraPosition(*(this->getPhysicalBody()->getPosition()));
+	//velocity->x /= 1.1f;
+	//velocity->y /= 1.1f;
+	/*if (abs(velocity->x) < 0.5f) {
 		velocity->x = 0.0f;
 	}
 	if (abs(velocity->y) < 0.5f) {
 		velocity->y = 0.0f;
-	}
+	}*/
 }
 
 void Ship::draw(unsigned millisElapsed) {

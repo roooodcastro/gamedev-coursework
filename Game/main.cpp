@@ -24,6 +24,7 @@ int main(int argc, char* argv[]) {
 	GameApp *gameApp = GameApp::getInstance();
 	UserInterface gameInterface = UserInterface();
 	gameInterface.setShowFpsCounter(true);
+	Simulation::getInstance()->setGravity(Simulation::GRAVITY_ZERO);
 
 	// Testing grounds
 	// Put test lines below here

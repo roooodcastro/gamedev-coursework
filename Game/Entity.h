@@ -8,10 +8,12 @@
 #include "GameApp.h"
 #include "Texture.h"
 #include "BoundingBox.h"
+#include "PhysicalBody.h"
 
 class GameApp;
 class Model;
 class Shader;
+class PhysicalBody;
 
 class Entity {
 public:
@@ -36,22 +38,14 @@ public:
 	virtual void onKeyUp(SDL_Keysym key); // Will fire every time a key is released
 
 	/* General getters and setters */
-	void setPosition(Vector3 &newPos);
-	Vector3 getPosition() { return *position; }
-	void setVelocity(Vector3 &newVel) { *(this->velocity) = newVel; }
-	Vector3 getVelocity() { return *velocity; }
-	void setRotation(Vector3 &newRot);
-	Vector3 getRotation() { return *rotation; }
-	void setScale(Vector3 &newSize);
-	Vector3 getScale() { return *scale; }
 	Entity *getParent() { return parent; }
 	void setCustomShader(Shader &shader);
 	Shader *getCustomShader() { return customShader; }
 	Matrix4 getModelMatrix() { return *modelMatrix; }
 	void setModel(Model *model) { this->model = model; }
 	Model *getModel() { return model; }
-	void setBoundingBox(BoundingBox &boundingBox) { *(this->boundingBox) = boundingBox; }
-	BoundingBox *getBoundingBox() { return boundingBox; }
+	void setPhysicalBody(PhysicalBody &body);
+	PhysicalBody *getPhysicalBody() { return physicalBody; }
 
 	/* Adds a new child to this entity */
 	void addChild(Entity *child);
@@ -78,13 +72,6 @@ protected:
 	 */
 	void calculateModelMatrix();
 
-	/* Vectors to store this entity's position, velocity, rotation and size attributes */
-	Vector3 *position;
-	Vector3 *velocity;
-	Vector3 *rotation;
-	Vector3 *scale;
-	Vector3 *acceleration;
-
 	Matrix4 *modelMatrix;
 
 	/*
@@ -107,14 +94,12 @@ protected:
 	Model *model;
 
 	/*
-	 * The 3D box that will be used for collision detection. This is used because the cost of calculating it
-	 * pixel perfect for the entire model is too big.
-	 */
-	BoundingBox *boundingBox;
-
-	/*
 	 * This entity's custom shader. This is optional and will be replaced by the default shader loaded in GameApp if not specified.
 	 */
 	Shader *customShader;
 
+	/*
+	 * The physical body of this entity
+	 */
+	PhysicalBody *physicalBody;
 };

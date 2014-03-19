@@ -49,6 +49,19 @@ public:
 		}
 	}
 
+	Vector3 normalised() {
+		Vector3 normalised = Vector3(*this);
+		float length = getLength();
+
+		if (length != 0.0f) {
+			length = 1.0f / length;
+			normalised.x = x * length;
+			normalised.y = y * length;
+			normalised.z = z * length;
+		}
+		return normalised;
+	}
+
 	void toZero() {
 		x = y = z = 0.0f;
 	}

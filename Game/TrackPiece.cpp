@@ -2,17 +2,17 @@
 
 TrackPiece::TrackPiece(void) : Entity() {
 	this->model = Model::getOrCreate("TRACK_PIECE_1", "resources/models/TrackPiece.mdl");
-	this->setRotation(Vector3(0, 90, 0));
-	this->setScale(Vector3(90, 30, 30));
+	this->getPhysicalBody()->setRotation(Vector3(0, 90, 0));
+	this->getPhysicalBody()->setScale(Vector3(90, 30, 30));
 	this->doorSets = new std::vector<DoorSet*>();
 	this->generateDoorSets();
 }
 
 TrackPiece::TrackPiece(Vector3 &position) : Entity() {
 	this->model = Model::getOrCreate("TRACK_PIECE_1", "resources/models/TrackPiece.mdl");
-	this->setRotation(Vector3(0, 90, 0));
-	this->setScale(Vector3(90, 30, 30));
-	this->setPosition(position);
+	this->getPhysicalBody()->setRotation(Vector3(0, 90, 0));
+	this->getPhysicalBody()->setScale(Vector3(90, 30, 30));
+	this->getPhysicalBody()->setPosition(position);
 	this->doorSets = new std::vector<DoorSet*>();
 	this->generateDoorSets();
 }

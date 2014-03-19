@@ -18,8 +18,8 @@ Door::Door(DoorSet *doorSet, int index, float targetOpenness) : Entity() {
 	this->doorIndex = index;
 	this->doorSet = doorSet;
 	// TODO: Improve the position calculation, making it automatic and getting rid of the switch
-	this->setRotation(Vector3(0, -90, 60.0f * index));
-	this->setScale(Vector3(0.193f, 0.58f, 0.58f));
+	//this->setRotation(Vector3(0, -90, 60.0f * index));
+	//this->setScale(Vector3(0.193f, 0.58f, 0.58f));
 	updateDoorPosition();
 }
 
@@ -69,7 +69,7 @@ void Door::onKeyUp(SDL_Keysym key) {
 }
 
 void Door::updateDoorPosition() {
-	float factor = (openness / 100.0f);
+	/*float factor = (openness / 100.0f);
 	switch (doorIndex) {
 	case 0:
 		this->setPosition(Vector3(0, -17.4f - factor * 26.2f, -45.0f + doorSet->getPosition()));
@@ -89,5 +89,5 @@ void Door::updateDoorPosition() {
 	case 5:
 		this->setPosition(Vector3(-15.0f - factor * 22.69f, -8.68f - factor * 13.1f, -45.0f + doorSet->getPosition()));
 		break;
-	}
+	}*/
 }

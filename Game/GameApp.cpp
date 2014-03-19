@@ -1,6 +1,8 @@
 #include "GameApp.h"
 
 GameApp *GameApp::instance = NULL;
+const int GameApp::TARGET_TPS = 100;
+const int GameApp::TARGET_FPS = 60;
 
 GameApp::GameApp() {
 	gameRunning = false;
@@ -11,6 +13,7 @@ GameApp::GameApp() {
 	numberOfFrames = 0;
 	numberOfTicks = 0;
 	frameIntervalSum = 0;
+	frameIntervalList = new Uint32[TARGET_FPS];
 	for (int i = 0; i < 60; i++) {
 		frameIntervalList[i] = 0;
 	}
@@ -102,6 +105,8 @@ void GameApp::runGame() {
 	startTime = SDL_GetTicks();
 	// Start game timers
 	installTimers();
+	// Start simulation
+	Simulation::getInstance()->startSimulation();
 	while(gameRunning) {
 		handleUserEvents();
 		SDL_Delay(1); // Just to not overload the processor. We shouldn't need more than 1000 input checks every second anyway
@@ -237,7 +242,7 @@ void GameApp::handleUserEvents() {
 			switch (e.window.event) {
 			case SDL_WINDOWEVENT_FOCUS_LOST:
 				//SDL_Log("Window %d lost keyboard focus", e.window.windowID);
-				setGamePaused(true);
+				//setGamePaused(true);
 				break;
 			}
 			break;
@@ -276,6 +281,7 @@ Uint32 GameApp::drawLoopTimer(Uint32 interval, void* param) {
 
 void GameApp::setGamePaused(bool paused) {
 	this->gamePaused = paused;
+	Simulation::getInstance()->setPaused(paused);
 	if (currentLevel) {
 		if (paused) {
 			currentLevel->onPause();
