@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdlib.h>
+#include <map>
 #include <vector>
 #include "InterfaceItem.h"
 
@@ -30,12 +31,15 @@ public:
 	void draw(unsigned millisElapsed);
 
 	/* General getters and setters */
-	void addItem(InterfaceItem *item);
-	bool removeItem(InterfaceItem *item);
-	std::vector<InterfaceItem*> *getItems() { return items; }
+	void addItem(InterfaceItem *item, std::string name);
+	bool removeItem(InterfaceItem *item, std::string name);
+	InterfaceItem *getItem(std::string name);
+	std::map<std::string, InterfaceItem*> *getItems() { return items; }
 	void setShowFpsCounter(bool showFps);
 	bool isShowFpsCounter() { return showFpsCounter; }
 	Shader *getInterfaceShader() { return interfaceShader; }
+	/* Returns true if a named item has been added to this interface */
+	bool isItemInInterface(std::string name);
 
 	UserInterface &operator=(const UserInterface &other);
 
@@ -44,7 +48,7 @@ protected:
 	/*
 	 * The list of interface items included in this interface
 	 */
-	std::vector<InterfaceItem*> *items;
+	std::map<std::string, InterfaceItem*> *items;
 
 	/* Debug tool to show fps counter on the top left corner of screen */
 	bool showFpsCounter;

@@ -12,7 +12,7 @@ Track::~Track(void) {
 TrackPiece *Track::generateNextPiece(Vector3 shipPos) {
 	TrackPiece *last = pieces->at(pieces->size() - 1);
 	Vector3 *lastPos = last->getPhysicalBody()->getPosition();
-	if (lastPos->z - shipPos.z <= 720.0f) {
+	if (lastPos->z - shipPos.z <= 1080.0f) {
 		TrackPiece *next = new TrackPiece(Vector3(0, 0, lastPos->z + 180));
 		pieces->emplace_back(next);
 		return next;

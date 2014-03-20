@@ -49,13 +49,17 @@ void Simulation::timerCallback(double millisElapsed) {
 		std::map<std::string, Entity*> *entities = GameApp::getInstance()->getCurrentLevel()->getEntities();
 		std::vector<PhysicalBody*> *physicalBodies = new std::vector<PhysicalBody*>();
 		// Get all physical bodies from the current level
-		for (auto it = entities->begin(); it != entities->end(); ++it) {
-			Entity *currEntity = (*it).second;
-			int childIndex = 0;
-			// Add all children entities as well
-			std::vector<Entity*> children = Entity::getAllChildren(currEntity);
-			for (unsigned i = 0; i < children.size(); i++) {
-				physicalBodies->emplace_back(children[i]->getPhysicalBody());
+		unsigned numEntities = entities->size();
+		for (unsigned i = 0; i < numEntities; i++) {
+			if (i < entities->size()) {
+				auto it = entities->begin();
+				std::advance(it, i);
+				int childIndex = 0;
+				// Add all children entities as well
+				std::vector<Entity*> children = Entity::getAllChildren((*it).second);
+				for (unsigned i = 0; i < children.size(); i++) {
+					physicalBodies->emplace_back(children[i]->getPhysicalBody());
+				}
 			}
 		}
 		if (!simulation->isPaused()) {

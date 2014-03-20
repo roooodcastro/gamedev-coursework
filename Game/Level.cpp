@@ -210,7 +210,7 @@ bool Level::removeEntity(std::string name) {
 void Level::processLevelTick(unsigned int millisElapsed) {
 	userInterface->update(millisElapsed);
 	if (!GameApp::getInstance()->isGamePaused()) {
-		int numEntities = entities->size();
+		unsigned numEntities = entities->size();
 		for (unsigned i = 0; i < numEntities; i++) {
 			if (i < entities->size()) {
 				auto it = entities->begin();

@@ -36,7 +36,7 @@ int main(int argc, char* argv[]) {
 
 
 	// Get a panel with some buttons
-	PanelItem *panel = new PanelItem(Vector2(0, 660), 0, Vector2(1280, 60));
+	/*PanelItem *panel = new PanelItem(Vector2(0, 660), 0, Vector2(1280, 60));
 	panel->setTexture(Texture::getOrCreate("0xAA000000", Colour(0xAA000000)));
 	ButtonItem *aButton = new ButtonItem(Vector2(100, -2), 0, Vector2(InterfaceItem::SIZE_NO_RESIZE, InterfaceItem::SIZE_NO_RESIZE));
 	aButton->setTexture(Texture::getOrCreate("XBOX_A_BUTTON", "resources/xbox/buttons/a.png"));
@@ -48,7 +48,7 @@ int main(int argc, char* argv[]) {
 	panel->addInnerItem(bButton);
 	panel->addInnerItem(aText);
 	panel->addInnerItem(bText);
-	gameInterface.addItem(panel);
+	gameInterface.addItem(panel);*/
 
 	// Create a level and run the game
 	RaceLevel *testLevel = new RaceLevel();

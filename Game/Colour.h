@@ -25,23 +25,23 @@ public:
 
 	void setColour(uint32_t colour);
 	void setColour(uint8_t red, uint8_t green, uint8_t blue, uint8_t alpha);
-	void setRed(uint8_t red) { *(this->red) = red; }
-	void setGreen(uint8_t green) { *(this->green) = green; }
-	void setBlue(uint8_t blue) { *(this->blue) = blue; }
-	void setAlpha(uint8_t alpha) { *(this->alpha) = alpha; }
+	void setRed(uint8_t red) { this->red = red; }
+	void setGreen(uint8_t green) { this->green = green; }
+	void setBlue(uint8_t blue) { this->blue = blue; }
+	void setAlpha(uint8_t alpha) { this->alpha = alpha; }
 	uint32_t getColour();
-	uint8_t getRed() { return *red; }
-	uint8_t getGreen() { return *green; }
-	uint8_t getBlue() { return *blue; }
-	uint8_t getAlpha() { return *alpha; }
+	uint8_t getRed() { return red; }
+	uint8_t getGreen() { return green; }
+	uint8_t getBlue() { return blue; }
+	uint8_t getAlpha() { return alpha; }
 
 	Colour &operator=(const Colour &other);
 
 protected:
 
-	uint8_t *red;
-	uint8_t *green;
-	uint8_t *blue;
-	uint8_t *alpha;
+	uint8_t red;
+	uint8_t green;
+	uint8_t blue;
+	uint8_t alpha;
 };
 

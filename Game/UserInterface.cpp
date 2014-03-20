@@ -2,89 +2,93 @@
 #include "TextItem.h"
 
 UserInterface::UserInterface(void) {
-	items = new std::vector<InterfaceItem*>();
+	items = new std::map<std::string, InterfaceItem*>();
 	showFpsCounter = false;
 	fpsCounter = new TextItem(Vector2(20, 10), 0, "0 FPS", 20);
 	interfaceShader = new Shader("shaders/vertUI.glsl", "shaders/fragUI.glsl", "", "", "");
 }
 
 UserInterface::UserInterface(const UserInterface &copy) {
-	items = new std::vector<InterfaceItem*>();
-	*items = *(copy.items);
+	items = new std::map<std::string, InterfaceItem*>(*(copy.items));
 	showFpsCounter = copy.showFpsCounter;
 	fpsCounter = new TextItem(*((TextItem*) copy.fpsCounter));
 	interfaceShader = new Shader(*(copy.interfaceShader));
 }
 
-
 UserInterface::~UserInterface(void) {
-	if (items) {
-		items->clear();
-		delete items;
-	}
+	items->clear();
+	delete items;
 	delete fpsCounter;
 	delete interfaceShader;
 }
 
+UserInterface &UserInterface::operator=(const UserInterface &other) {
+	*(this->items) = *(other.items);
+	this->showFpsCounter = other.showFpsCounter;
+	*(this->fpsCounter) = *(other.fpsCounter);
+	*(this->interfaceShader) = *(other.interfaceShader);
+	return *this;
+}
+
 void UserInterface::onMouseMoved(Vector2 &position, Vector2 &amount) {
-	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		if (!(*it)->isHidden()) {
-			(*it)->onMouseMoved(position, amount);
+	for (auto it = items->begin(); it != items->end(); ++it) {
+		if (!(*it).second->isHidden()) {
+			(*it).second->onMouseMoved(position, amount);
 		}
 	}
 }
 
 void UserInterface::onMouseClick(Uint8 button, Vector2 &position) {
-	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		if (!(*it)->isHidden()) {
-			(*it)->onMouseClick(button, position);
+	for (auto it = items->begin(); it != items->end(); ++it) {
+		if (!(*it).second->isHidden()) {
+			(*it).second->onMouseClick(button, position);
 		}
 	}
 }
 
 void UserInterface::onMouseDoubleClick(Uint8 button, Vector2 &position) {
-	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		if (!(*it)->isHidden()) {
-			(*it)->onMouseDoubleClick(button, position);
+	for (auto it = items->begin(); it != items->end(); ++it) {
+		if (!(*it).second->isHidden()) {
+			(*it).second->onMouseDoubleClick(button, position);
 		}
 	}
 }
 
 void UserInterface::onMouseButtonDown(Uint8 button, Vector2 &position) {
-	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		if (!(*it)->isHidden()) {
-			(*it)->onMouseButtonDown(button, position);
+	for (auto it = items->begin(); it != items->end(); ++it) {
+		if (!(*it).second->isHidden()) {
+			(*it).second->onMouseButtonDown(button, position);
 		}
 	}
 }
 
 void UserInterface::onMouseButtonUp(Uint8 button, Vector2 &position) {
-	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		if (!(*it)->isHidden()) {
-			(*it)->onMouseButtonUp(button, position);
+	for (auto it = items->begin(); it != items->end(); ++it) {
+		if (!(*it).second->isHidden()) {
+			(*it).second->onMouseButtonUp(button, position);
 		}
 	}
 }
 
 void UserInterface::onMouseWheelScroll(int amount) {
-	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		if (!(*it)->isHidden()) {
-			(*it)->onMouseWheelScroll(amount);
+	for (auto it = items->begin(); it != items->end(); ++it) {
+		if (!(*it).second->isHidden()) {
+			(*it).second->onMouseWheelScroll(amount);
 		}
 	}
 }
 
 void UserInterface::onKeyPress(SDL_Keysym key) {
-	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		if (!(*it)->isHidden()) {
-			(*it)->onKeyPress(key);
+	for (auto it = items->begin(); it != items->end(); ++it) {
+		if (!(*it).second->isHidden()) {
+			(*it).second->onKeyPress(key);
 		}
 	}
 }
 
 void UserInterface::onKeyDown(SDL_Keysym key) {
-	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->onKeyDown(key);
+	for (auto it = items->begin(); it != items->end(); ++it) {
+		(*it).second->onKeyDown(key);
 	}
 }
 
@@ -93,9 +97,9 @@ void UserInterface::onKeyUp(SDL_Keysym key) {
 	if (key.sym == SDLK_F3) {
 		setShowFpsCounter(!showFpsCounter);
 	}
-	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		if (!(*it)->isHidden()) {
-			(*it)->onKeyUp(key);
+	for (auto it = items->begin(); it != items->end(); ++it) {
+		if (!(*it).second->isHidden()) {
+			(*it).second->onKeyUp(key);
 		}
 	}
 }
@@ -106,8 +110,8 @@ void UserInterface::setShowFpsCounter(bool showFpsCounter) {
 }
 
 void UserInterface::update(unsigned millisElapsed) {
-	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->update(millisElapsed);
+	for (auto it = items->begin(); it != items->end(); ++it) {
+		(*it).second->update(millisElapsed);
 	}
 	if (GameApp::getInstance()->getFramesCount() % (GameApp::TARGET_FPS / 10) == 0) {
 		int fps = GameApp::getInstance()->getFps();
@@ -118,45 +122,34 @@ void UserInterface::update(unsigned millisElapsed) {
 }
 
 void UserInterface::draw(unsigned millisElapsed) {
-	for (std::vector<InterfaceItem*>::iterator it = items->begin(); it != items->end(); ++it) {
-		(*it)->draw(millisElapsed, interfaceShader->getShaderProgram());
+	for (auto it = items->begin(); it != items->end(); ++it) {
+		(*it).second->draw(millisElapsed, interfaceShader->getShaderProgram());
 	}
 	if (showFpsCounter) {
 		fpsCounter->draw(millisElapsed, interfaceShader->getShaderProgram());
 	}
 }
 
-void UserInterface::addItem(InterfaceItem *item) {
-	if (item) {
-		// If we don't have space to store the item, make some!
-		// I set this if to >= to always have an empty space in the array, just in case
-		if ((items->size() + 1) >= items->capacity()) {
-			items->reserve(items->capacity() + 10);
-		}
-		items->emplace_back(item);
+void UserInterface::addItem(InterfaceItem *item, std::string name) {
+	if (item && name != "") {
+		items->insert(std::pair<std::string, InterfaceItem*>(name, item));
 	}
 }
 
-bool UserInterface::removeItem(InterfaceItem *item) {
-	try {
-		for (auto it = items->begin(); it != items->end();) {
-			if((*it) == item) {
-				// Found the entity. Remove it from vector and return true
-				items->erase(it);
-				return true;
-			} else { ++it; }
-		}
-		// Didn't find the entity in the vector
-		return false;
-	} catch (int &) {
-		// An error occurred while trying toremove the entity
-		return false;
+bool UserInterface::removeItem(InterfaceItem *item, std::string name) {
+	if (isItemInInterface(name)) {
+		return items->erase(name) > 0;
 	}
+	return false;
 }
 
-UserInterface &UserInterface::operator=(const UserInterface &other) {
-	this->items = other.items;
-	this->showFpsCounter = other.showFpsCounter;
-	this->fpsCounter = other.fpsCounter;
-	return *this;
+InterfaceItem *UserInterface::getItem(std::string name) {
+	if (isItemInInterface(name)) {
+		return items->at(name);
+	}
+	return NULL;
+}
+
+bool UserInterface::isItemInInterface(std::string name) {
+	return items->find(name) != items->end();
 }

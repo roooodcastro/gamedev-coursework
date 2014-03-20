@@ -47,7 +47,7 @@ void TrackPiece::update(unsigned millisElapsed) {
 		DoorSet *doorSet = (*doorSets)[i];
 		Vector3 shipPos = Vector3(*(GameApp::getInstance()->getCurrentLevel()->getEntity("Ship")->getPhysicalBody()->getPosition()));
 		float doorZ = getPhysicalBody()->getPosition()->z + doorSet->getPosition();
-		if (doorZ - shipPos.z <= 360.0f) {
+		if (doorZ - shipPos.z <= 540.0f) {
 			doorSet->closeDoors();
 		}
 	}

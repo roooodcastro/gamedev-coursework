@@ -39,7 +39,7 @@ Ship &Ship::operator=(const Ship &other) {
 void Ship::update(unsigned millisElapsed) {
 	Level *level = GameApp::getInstance()->getCurrentLevel();
 	Keyboard *keyboard = Keyboard::getInstance();
-	Vector3 currentVel = physicalBody->getVelocity(millisElapsed);
+	Vector3 currentVel = physicalBody->getVelocity((float) millisElapsed);
 	Vector3 *force = physicalBody->getForce();
 
 	// Controls yaw (left-right movement)
