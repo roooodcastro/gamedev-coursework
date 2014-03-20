@@ -29,10 +29,7 @@ int main(int argc, char* argv[]) {
 	// Testing grounds
 	// Put test lines below here
 
-	// Test object file loading
-	Ship *ship = new Ship(Vector3(0, 0, -20.0f), Vector3(0, 0, 0.0f), Vector3(0, 0, 0));
-
-	TrackPiece *trackPiece = new TrackPiece();
+	
 	
 
 
@@ -55,9 +52,6 @@ int main(int argc, char* argv[]) {
 
 	// Create a level and run the game
 	RaceLevel *testLevel = new RaceLevel();
-	testLevel->setCameraMatrix(Matrix4::Translation(Vector3(0, 0, -10.0f)));
-	testLevel->addEntity(ship);
-	testLevel->addEntity(trackPiece);
 
 	gameApp->setCurrentLevel(testLevel);
 	gameApp->runGame();

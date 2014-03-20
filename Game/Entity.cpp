@@ -34,7 +34,6 @@ Entity::Entity(Vector3 &position, Vector3 &velocity, Vector3 &rotation, Vector3 
 Entity::~Entity(void) {
 	delete modelMatrix;
 	delete childEntities;
-	delete model;
 	delete customShader;
 	delete physicalBody;
 }
@@ -129,53 +128,46 @@ void Entity::onKeyUp(SDL_Keysym key) {
 
 
 void Entity::calculateModelMatrix() {
-	//Vector3 *calcPos = new Vector3(*(this->position));
-	//Vector3 *calcVel = new Vector3(*(this->velocity));
-	//Vector3 *calcRot = new Vector3(*(this->rotation));
-	//Vector3 *calcSiz = new Vector3(*(this->scale));
-	///*
-	// * If is a child, we add up the parent's attributes.
-	// *
-	// * TODO: This method won't work if we have an entity that is a child of a child.
-	// * In this case, the "grandson" will have its attributes relative to the first child,
-	// * but the first child's attributes will be considered global, instead of relative
-	// * to the parent's.
-	// * Example: e3 is child of e2. e2 is child of e1.
-	// * e1 pos: 10, 0, 0
-	// * e2 pos: -2, 0, 0
-	// * e3 pos: 5, 0, 0
-	// * e3 final position will erroneous be 3, 0, 0, because the function doesn't check
-	// * if the parent has a parent, and so on.
-	// * In the unlikely event that my game has such complex entity relationship,
-	// * I may or may not try to fix this.
-	// */
-	//if (parent != NULL) {
-	//	*calcPos = *calcPos + *(parent->position);
-	//	*calcVel = *calcVel + *(parent->velocity);
-	//	*calcRot = *calcRot + *(parent->rotation);
-	//	*calcSiz = *calcSiz * *(parent->scale);
-	//}
+	Vector3 calcPos = Vector3(*(this->getPhysicalBody()->getPosition()));
+	Vector3 calcRot = Vector3(*(this->getPhysicalBody()->getRotation()));
+	Vector3 calcSiz = Vector3(*(this->getPhysicalBody()->getScale()));
+	/*
+	 * If is a child, we add up the parent's attributes.
+	 *
+	 * TODO: This method won't work if we have an entity that is a child of a child.
+	 * In this case, the "grandson" will have its attributes relative to the first child,
+	 * but the first child's attributes will be considered global, instead of relative
+	 * to the parent's.
+	 * Example: e3 is child of e2. e2 is child of e1.
+	 * e1 pos: 10, 0, 0
+	 * e2 pos: -2, 0, 0
+	 * e3 pos: 5, 0, 0
+	 * e3 final position will erroneous be 3, 0, 0, because the function doesn't check
+	 * if the parent has a parent, and so on.
+	 * In the unlikely event that my game has such complex entity relationship,
+	 * I may or may not try to fix this.
+	 */
+	if (parent != NULL) {
+		calcPos = calcPos + *(parent->getPhysicalBody()->getPosition());
+		calcRot = calcRot + *(parent->getPhysicalBody()->getRotation());
+		calcSiz = calcSiz * *(parent->getPhysicalBody()->getScale());
+	}
 
-	//// Now that we calculated the final attributes, build the matrix
-	//Matrix4 rotationMatrix = Matrix4::Rotation(calcRot->x, Vector3(1, 0, 0)) * Matrix4::Rotation(calcRot->y, Vector3(0, 1, 0)) * Matrix4::Rotation(calcRot->z, Vector3(0, 0, 1));
-	//*modelMatrix = Matrix4::Translation(*calcPos) * rotationMatrix * Matrix4::Scale(*calcSiz);
+	// Now that we calculated the final attributes, build the matrix
+	Matrix4 rotationMatrix = Matrix4::Rotation(calcRot.x, Vector3(1, 0, 0)) * Matrix4::Rotation(calcRot.y, Vector3(0, 1, 0)) * Matrix4::Rotation(calcRot.z, Vector3(0, 0, 1));
+	*modelMatrix = Matrix4::Translation(calcPos) * rotationMatrix * Matrix4::Scale(calcSiz);
 
-	//delete calcPos;
-	//delete calcVel;
-	//delete calcRot;
-	//delete calcSiz;
+	// Finally, do the same for the children
+	for(std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
+		// Bad things will happen if two entities are parent and child of each other at the same time, please don't do that.
+		(*it)->calculateModelMatrix();
+	}
 
-	//// Finally, do the same for the children
-	//for(std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
-	//	// Bad things will happen if two entities are parent and child of each other at the same time, please don't do that.
-	//	(*it)->calculateModelMatrix();
-	//}
-
-	Matrix4 rotX = Matrix4::Rotation(this->physicalBody->getRotation()->x, Vector3(1, 0, 0));
+	/*Matrix4 rotX = Matrix4::Rotation(this->physicalBody->getRotation()->x, Vector3(1, 0, 0));
 	Matrix4 rotY = Matrix4::Rotation(this->physicalBody->getRotation()->y, Vector3(0, 1, 0));
 	Matrix4 rotZ = Matrix4::Rotation(this->physicalBody->getRotation()->z, Vector3(0, 0, 1));
 	Matrix4 rotationMatrix = rotX * rotY * rotZ;
-	*modelMatrix = Matrix4::Translation(*(this->physicalBody->getPosition())) * rotationMatrix * Matrix4::Scale(*(this->physicalBody->getScale()));
+	*modelMatrix = Matrix4::Translation(*(this->physicalBody->getPosition())) * rotationMatrix * Matrix4::Scale(*(this->physicalBody->getScale()));*/
 }
 
 void Entity::update(unsigned millisElapsed) {
@@ -243,4 +235,14 @@ void Entity::setCustomShader(Shader &customShader) {
 
 void Entity::setPhysicalBody(PhysicalBody &body) {
 	*(this->physicalBody) = body;
+}
+
+std::vector<Entity*> Entity::getAllChildren(Entity *entity) {
+	std::vector<Entity*> children = std::vector<Entity*>();
+	children.emplace_back(entity);
+	for (unsigned i = 0; i < entity->childEntities->size(); i++) {
+		std::vector<Entity*> grandChildren = Entity::getAllChildren((*(entity->childEntities))[i]);
+		children.insert(children.end(), grandChildren.begin(), grandChildren.end());
+	}
+	return children;
 }

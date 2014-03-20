@@ -1,4 +1,5 @@
 #include "Simulation.h"
+#include "WorldPartitioning.h"
 
 const float Simulation::GRAVITY_EARTH = -9.78f;
 const float Simulation::GRAVITY_MOON = -1.62f;
@@ -45,11 +46,17 @@ void Simulation::timerCallback(double millisElapsed) {
 	Simulation *simulation = Simulation::getInstance();
 	if (GameApp::getInstance()->getCurrentLevel() != NULL) {
 		// Only try to simulate physics if there's an active level to get the entities from
-		std::vector<Entity*> *entities = GameApp::getInstance()->getCurrentLevel()->getEntities();
+		std::map<std::string, Entity*> *entities = GameApp::getInstance()->getCurrentLevel()->getEntities();
 		std::vector<PhysicalBody*> *physicalBodies = new std::vector<PhysicalBody*>();
 		// Get all physical bodies from the current level
-		for (unsigned i = 0; i < entities->size(); i++) {
-			physicalBodies->emplace_back((*entities)[i]->getPhysicalBody());
+		for (auto it = entities->begin(); it != entities->end(); ++it) {
+			Entity *currEntity = (*it).second;
+			int childIndex = 0;
+			// Add all children entities as well
+			std::vector<Entity*> children = Entity::getAllChildren(currEntity);
+			for (unsigned i = 0; i < children.size(); i++) {
+				physicalBodies->emplace_back(children[i]->getPhysicalBody());
+			}
 		}
 		if (!simulation->isPaused()) {
 			// Update physics

@@ -26,9 +26,11 @@ public:
 	TrackPiece(void);
 	TrackPiece(const TrackPiece &copy);
 	TrackPiece(Vector3 &position);
-	~TrackPiece(void);
+	virtual ~TrackPiece(void);
 
 	TrackPiece &operator=(const TrackPiece &other);
+
+	virtual void update(unsigned millisElapsed);
 
 	std::vector<DoorSet*> *getDoorSets() { return doorSets; }
 

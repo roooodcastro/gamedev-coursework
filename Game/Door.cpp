@@ -4,23 +4,24 @@ const float Door::CLOSING_TIME = 2000.0f;
 
 Door::Door(void) : Entity() {
 	this->model = Model::getOrCreate("TRACK_DOOR_MESH", "resources/models/Door.mdl");
-	this->targetOpenness = 100;
-	this->openness = 100;
+	this->targetOpenness = 1.0f;
+	this->openness = 1.0f;
 	this->active = false;
 	this->doorIndex = 0;
+	this->physicalBody->setMass(10.0f);
 }
 
 Door::Door(DoorSet *doorSet, int index, float targetOpenness) : Entity() {
 	this->model = Model::getOrCreate("TRACK_DOOR_MESH", "resources/models/Door.mdl");
 	this->targetOpenness = targetOpenness;
-	this->openness = 100;
+	this->openness = 1.0f;
 	this->active = false;
 	this->doorIndex = index;
 	this->doorSet = doorSet;
-	// TODO: Improve the position calculation, making it automatic and getting rid of the switch
-	//this->setRotation(Vector3(0, -90, 60.0f * index));
-	//this->setScale(Vector3(0.193f, 0.58f, 0.58f));
-	updateDoorPosition();
+	this->getPhysicalBody()->setRotation(Vector3(0, 90, 60.0f * index));
+	this->getPhysicalBody()->setScale(Vector3(0.193f, 0.58f, 0.58f));
+	this->physicalBody->setMass(10.0f);
+	setInitialDoorPosition();
 }
 
 Door::Door(const Door &copy) : Entity(copy) {
@@ -44,16 +45,25 @@ Door &Door::operator=(const Door &other) {
 }
 
 void Door::update(unsigned millisElapsed) {
-	if (openness > targetOpenness && active) {
-		// If it's more opened than it should be, close it
-		openness -= (millisElapsed / CLOSING_TIME) * 100;
-		if (openness <= targetOpenness) {
-			openness = targetOpenness;
-			active = false;
-		}
-		updateDoorPosition();
-	} else if (openness <= targetOpenness && active) {
+	// The direction vector that the door will move along
+	Vector3 direction = Vector3(-sin((60.0f * PI / 180) * doorIndex), cos((60.0f * PI / 180) * doorIndex), 0);
+	// Set velocity values in case door is active or not
+	if (active) {
+		physicalBody->setVelocity(direction * 15.0f, millisElapsed);
+	} else {
+		physicalBody->setVelocity(Vector3(0, 0, 0), millisElapsed);
+	}
+	// The distance from the door to the center of the doorset
+	float distance = sqrt((pow(physicalBody->getPosition()->x, 2)) + (pow(physicalBody->getPosition()->y, 2)));
+	// 17.4f is the distance from the center of the doorset in which a door will be fully closed,
+	// and 43.4f is the distance in which the door will be completely opened. The distance between
+	// these distances is 26
+	openness = (distance - 17.4f) / 26.0f;
+
+	if (openness <= targetOpenness) {
+		openness = targetOpenness;
 		active = false;
+		physicalBody->setVelocity(Vector3(0, 0, 0), millisElapsed);
 	}
 	Entity::update(millisElapsed);
 }
@@ -63,31 +73,14 @@ void Door::onKeyUp(SDL_Keysym key) {
 		active = true;
 	}
 	if (key.sym == SDLK_r) {
-		openness = 100;
-		updateDoorPosition();
+		openness = 1.0;
+		setInitialDoorPosition();
 	}
 }
 
-void Door::updateDoorPosition() {
-	/*float factor = (openness / 100.0f);
-	switch (doorIndex) {
-	case 0:
-		this->setPosition(Vector3(0, -17.4f - factor * 26.2f, -45.0f + doorSet->getPosition()));
-		break;
-	case 1:
-		this->setPosition(Vector3(15.0f + factor * 22.69f, -8.68f - factor * 13.1f, -45.0f + doorSet->getPosition()));
-		break;
-	case 2:
-		this->setPosition(Vector3(15.0f + factor * 22.69f, 8.68f + factor * 13.1f, -45.0f + doorSet->getPosition()));
-		break;
-	case 3:
-		this->setPosition(Vector3(0, 17.4f + (openness / 100.0f) * 26.2f, -45.0f + doorSet->getPosition()));
-		break;
-	case 4:
-		this->setPosition(Vector3(-15.0f - factor * 22.69f, 8.68f + factor * 13.1f, -45.0f + doorSet->getPosition()));
-		break;
-	case 5:
-		this->setPosition(Vector3(-15.0f - factor * 22.69f, -8.68f - factor * 13.1f, -45.0f + doorSet->getPosition()));
-		break;
-	}*/
+void Door::setInitialDoorPosition() {
+	float sinX = sin((60.0f * PI / 180) * doorIndex);
+	float cosY = cos((60.0f * PI / 180) * doorIndex);
+	physicalBody->setPosition(Vector3(43.4f * sinX, -43.4f * cosY, -45.0f + doorSet->getPosition()));
+	physicalBody->setVelocity(Vector3(0, 0, 0), 1);
 }

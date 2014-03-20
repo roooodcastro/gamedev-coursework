@@ -1,7 +1,7 @@
 #include "GameApp.h"
 
 GameApp *GameApp::instance = NULL;
-const int GameApp::TARGET_TPS = 100;
+const int GameApp::TARGET_TPS = 200;
 const int GameApp::TARGET_FPS = 60;
 
 GameApp::GameApp() {

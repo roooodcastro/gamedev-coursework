@@ -1,7 +1,7 @@
 #include "Level.h"
 
 Level::Level() {
-	entities = new std::vector<Entity*>();
+	entities = new std::map<std::string, Entity*>();
 	projectionMatrix = new Matrix4();
 	cameraMatrix = new Matrix4();
 	lightSources = new std::vector<Light*>();
@@ -15,7 +15,7 @@ Level::Level(const Level &copy) {
 	this->cameraPos = new Vector3(*(copy.cameraPos));
 	this->cameraRotation = new Vector3(*(copy.cameraRotation));
 	this->cameraMatrix = new Matrix4(*(copy.cameraMatrix));
-	this->entities = new std::vector<Entity*>(*(copy.entities));
+	this->entities = new std::map<std::string, Entity*>(*(copy.entities));
 	this->levelType = copy.levelType;
 	this->lightSources = new std::vector<Light*>(*(copy.lightSources));
 	this->projectionMatrix = new Matrix4(*(copy.projectionMatrix));
@@ -23,7 +23,7 @@ Level::Level(const Level &copy) {
 }
 
 Level::Level(LevelType type) {
-	entities = new std::vector<Entity*>();
+	entities = new std::map<std::string, Entity*>();
 	projectionMatrix = new Matrix4();
 	cameraMatrix = new Matrix4();
 	levelType = type;
@@ -35,7 +35,7 @@ Level::Level(LevelType type) {
 }
 
 Level::Level(LevelType type, UserInterface &userInterface) {
-	entities = new std::vector<Entity*>();
+	entities = new std::map<std::string, Entity*>();
 	projectionMatrix = new Matrix4();
 	cameraMatrix = new Matrix4();
 	levelType = type;
@@ -63,8 +63,8 @@ void Level::onMouseMoved(Vector2 &position, Vector2 &amount) {
 		userInterface->onMouseMoved(position, amount);
 	}
 	if (!GameApp::getInstance()->isGamePaused()) {
-		for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
-			(*it)->onMouseMoved(position, amount);
+		for (auto it = entities->begin(); it != entities->end(); ++it) {
+			(*it).second->onMouseMoved(position, amount);
 		}
 	}
 
@@ -82,8 +82,8 @@ void Level::onMouseClick(Uint8 button, Vector2 &position) {
 		userInterface->onMouseClick(button, position);
 	}
 	if (!GameApp::getInstance()->isGamePaused()) {
-		for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
-			(*it)->onMouseClick(button, position);
+		for (auto it = entities->begin(); it != entities->end(); ++it) {
+			(*it).second->onMouseClick(button, position);
 		}
 	}
 }
@@ -93,8 +93,8 @@ void Level::onMouseDoubleClick(Uint8 button, Vector2 &position) {
 		userInterface->onMouseDoubleClick(button, position);
 	}
 	if (!GameApp::getInstance()->isGamePaused()) {
-		for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
-			(*it)->onMouseDoubleClick(button, position);
+		for (auto it = entities->begin(); it != entities->end(); ++it) {
+			(*it).second->onMouseDoubleClick(button, position);
 		}
 	}
 }
@@ -104,8 +104,8 @@ void Level::onMouseButtonDown(Uint8 button, Vector2 &position) {
 		userInterface->onMouseButtonDown(button, position);
 	}
 	if (!GameApp::getInstance()->isGamePaused()) {
-		for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
-			(*it)->onMouseButtonDown(button, position);
+		for (auto it = entities->begin(); it != entities->end(); ++it) {
+			(*it).second->onMouseButtonDown(button, position);
 		}
 	}
 
@@ -121,8 +121,8 @@ void Level::onMouseButtonUp(Uint8 button, Vector2 &position) {
 		userInterface->onMouseButtonUp(button, position);
 	}
 	if (!GameApp::getInstance()->isGamePaused()) {
-		for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
-			(*it)->onMouseButtonUp(button, position);
+		for (auto it = entities->begin(); it != entities->end(); ++it) {
+			(*it).second->onMouseButtonUp(button, position);
 		}
 	}
 
@@ -142,8 +142,8 @@ void Level::onMouseWheelScroll(int amount) {
 		userInterface->onMouseWheelScroll(amount);
 	}
 	if (!GameApp::getInstance()->isGamePaused()) {
-		for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
-			(*it)->onMouseWheelScroll(amount);
+		for (auto it = entities->begin(); it != entities->end(); ++it) {
+			(*it).second->onMouseWheelScroll(amount);
 		}
 	}
 }
@@ -153,8 +153,8 @@ void Level::onKeyPress(SDL_Keysym key) {
 		userInterface->onKeyPress(key);
 	}
 	if (!GameApp::getInstance()->isGamePaused()) {
-		for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
-			(*it)->onKeyPress(key);
+		for (auto it = entities->begin(); it != entities->end(); ++it) {
+			(*it).second->onKeyPress(key);
 		}
 	}
 	if (levelType == LEVEL_GAME) {
@@ -171,8 +171,8 @@ void Level::onKeyDown(SDL_Keysym key) {
 		userInterface->onKeyDown(key);
 	}
 	if (!GameApp::getInstance()->isGamePaused()) {
-		for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
-			(*it)->onKeyDown(key);
+		for (auto it = entities->begin(); it != entities->end(); ++it) {
+			(*it).second->onKeyDown(key);
 		}
 	}
 }
@@ -184,45 +184,39 @@ void Level::onKeyUp(SDL_Keysym key) {
 		userInterface->onKeyUp(key);
 	}
 	if (!GameApp::getInstance()->isGamePaused()) {
-		for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
-			(*it)->onKeyUp(key);
+		for (auto it = entities->begin(); it != entities->end(); ++it) {
+			(*it).second->onKeyUp(key);
 		}
 	}
 }
 
-void Level::addEntity(Entity *entity) {
-	if (entity) {
-		// If we don't have space to store the entity, make some!
-		// I set this if to >= to always have an empty space in the array, just in case
-		if ((entities->size() + 1) >= entities->capacity()) {
-			entities->reserve(entities->capacity() + 10);
-		}
-		entities->emplace_back(entity);
+bool Level::isEntityInLevel(std::string name) {
+	return entities->find(name) != entities->end();
+}
+
+void Level::addEntity(Entity *entity, std::string name) {
+	if (entity && name != "") {
+		entities->insert(std::pair<std::string, Entity*>(name, entity));
 	}
 }
 
-bool Level::removeEntity(Entity *entity) {
-	try {
-		for (auto it = entities->begin(); it != entities->end();) {
-			if((*it) == entity) {
-				// Found the entity. Remove it from vector and return true
-				entities->erase(it);
-				return true;
-			} else { ++it; }
-		}
-		// Didn't find the entity in the vector
-		return false;
-	} catch (int &) {
-		// An error occurred while trying toremove the entity
-		return false;
+bool Level::removeEntity(std::string name) {
+	if (isEntityInLevel(name)) {
+		return entities->erase(name) > 0;
 	}
+	return false;
 }
 
 void Level::processLevelTick(unsigned int millisElapsed) {
 	userInterface->update(millisElapsed);
 	if (!GameApp::getInstance()->isGamePaused()) {
-		for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
-			(*it)->update(millisElapsed);
+		int numEntities = entities->size();
+		for (unsigned i = 0; i < numEntities; i++) {
+			if (i < entities->size()) {
+				auto it = entities->begin();
+				std::advance(it, i);
+				(*it).second->update(millisElapsed);
+			}
 		}
 		calculateCameraMatrix();
 	}
@@ -234,11 +228,12 @@ void Level::drawLevel(unsigned int millisElapsed) {
 	GLuint program;
 
 	// Draw Entities
-	for (std::vector<Entity*>::iterator it = entities->begin(); it != entities->end(); ++it) {
+	for (auto it = entities->begin(); it != entities->end(); ++it) {
 		// We first get the right shader to use with this entity
+		Entity *entity = (*it).second;
 		Shader shader = *(GameApp::getInstance()->getDefaultShader());
-		if ((*it)->getCustomShader()) {
-			shader = *((*it)->getCustomShader());
+		if (entity->getCustomShader()) {
+			shader = *(entity->getCustomShader());
 		}
 		program = shader.getShaderProgram();
 		if (glIsProgram(program) != GL_TRUE) {
@@ -248,12 +243,11 @@ void Level::drawLevel(unsigned int millisElapsed) {
 		}
 		GameApp::logOpenGLError("USE_PROGRAM @ RENDER_ENTITY");
 		// Then we update the shader matrices
-		glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, false, (float*) &((*it)->getModelMatrix()));
+		glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, false, (float*) &(entity->getModelMatrix()));
 		glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, false, (float*) cameraMatrix);
 		glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, false, (float*) projectionMatrix);
 		applyShaderLight(program);
-		//glUniformMatrix4fv(glGetUniformLocation(program, "textureMatrix"), 1, false, (float*)&textureMatrix);
-		(*it)->draw(millisElapsed);
+		entity->draw(millisElapsed);
 	}
 
 	// Draw Interface
@@ -295,8 +289,10 @@ void Level::applyShaderLight(GLuint program) {
 
 		GLuint n1 = glGetUniformLocation(program, "lightColour[]");
 		glUniform3fv(n1, lightSources->size(), (float*) colours);
+		GLuint n2 = glGetUniformLocation(program, "lightPos[]");
 		glUniform3fv(glGetUniformLocation(program, "lightPos[]"), lightSources->size(), (float*) positions);
 		glUniform1fv(glGetUniformLocation(program, "lightRadius[]"), lightSources->size(), (float*) radii);
+		glUniform3fv(glGetUniformLocation(program, "cameraPos"), 1, (float*) cameraPos);
 
 		delete[] positions;
 		delete[] colours;

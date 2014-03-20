@@ -1,7 +1,16 @@
+/*
+ * Author: Rodrigo Castro Azevedo
+ *
+ * Description: This is the main race level. It contains the ship, the race track,
+ * a pause menu and the HUD.
+ */
+
 #pragma once
 
 #include "Level.h"
 #include "PauseMenu.h"
+#include "Track.h"
+#include "Ship.h"
 
 class RaceLevel : public Level {
 public:
@@ -27,12 +36,20 @@ public:
 	virtual void onKeyDown(SDL_Keysym key); // Will fire in every tick that a key is down
 	virtual void onKeyUp(SDL_Keysym key); // Will fire every time a key is released
 
-	void processLevelTick(unsigned int millisElapsed);
+	virtual void processLevelTick(unsigned int millisElapsed);
 
 protected:
 
 	virtual void calculateCameraMatrix();
 
+	/* A pause menu */
 	PauseMenu *pauseMenu;
-};
 
+	/* The race track, containing all track pieces and generating and deleting track pieces as necessary*/
+	Track *track;
+
+	/* Internal counters to control track pieces names */
+	int lastPieceDeleted;
+	int lastPieceAdded;
+
+};

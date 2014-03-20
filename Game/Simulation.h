@@ -13,11 +13,10 @@
 #include <vector>
 #include "GameApp.h"
 #include "GameTimer.h"
-#include "BroadphaseDetector.h"
-#include "WorldPartitioning.h"
+#include "PhysicalBody.h"
 
-class PhysicalBody;
 class BroadphaseDetector;
+class PhysicalBody;
 
 class Simulation {
 public:

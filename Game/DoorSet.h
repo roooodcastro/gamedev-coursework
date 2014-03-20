@@ -28,6 +28,9 @@ public:
 	float getPosition() { return position; }
 	std::vector<Door*> *getDoors() { return doors; }
 
+	/* Causes the doors in this doorset to start closing, is they are opened */
+	void closeDoors();
+
 protected:
 
 	void createDoors(const char *pattern);

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <map>
 #include <vector>
 #include <algorithm>
 #include "UserInterface.h"
@@ -64,8 +65,8 @@ public:
 	 * ==========================================
 	 */
 
-	void processLevelTick(unsigned int millisElapsed);
-	void drawLevel(unsigned int millisElapsed);
+	virtual void processLevelTick(unsigned int millisElapsed);
+	virtual void drawLevel(unsigned int millisElapsed);
 
 	/* ==========================================
 	 * =============== Other stuff ==============
@@ -73,9 +74,9 @@ public:
 	 */
 
 	// Adds a new entity to this level
-	void addEntity(Entity *entity);
+	void addEntity(Entity *entity, std::string name);
 	// Removes a entity from this level
-	bool removeEntity(Entity *entity);
+	bool removeEntity(std::string name);
 
 	// General getters and setters
 	void setCameraMatrix(Matrix4 &cameraMatrix) { (*this->cameraMatrix) = cameraMatrix; }
@@ -92,14 +93,18 @@ public:
 	void setCameraRotation(Vector3 &rotation) {*(this->cameraRotation) = rotation; }
 	Vector3 *getCameraRotation() { return cameraRotation; }
 
-	Entity *getEntity(int index) {
+	/* Checks if the entity with the provided name has been added to this level */
+	bool isEntityInLevel(std::string name);
+
+	Entity *getEntity(std::string name) {
 		try {
-			return entities->at(index);
+			return entities->at(name);
 		} catch (int &) {
 			return NULL;
 		}
 	}
-	std::vector<Entity*> *getEntities() { return entities; }
+
+	std::map<std::string, Entity*> *getEntities() { return entities; }
 
 	void applyShaderLight(GLuint program);
 
@@ -115,7 +120,7 @@ protected:
 		*cameraMatrix = Matrix4::Translation(*cameraPos) * rotationMatrix;
 	}
 
-	std::vector<Entity*> *entities; // A list with all the entities contained in this level
+	std::map<std::string, Entity*> *entities; // A list with all the entities contained in this level
 	std::vector<Light*> *lightSources; // A list of all light sources contained in this level
 	LevelType levelType; // The type of this level. MUST be set.
 

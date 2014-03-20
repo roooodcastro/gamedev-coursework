@@ -96,7 +96,10 @@ void PhysicalBody::integrateNextFrame(float millisElapsed) {
 bool PhysicalBody::isAtRest(float millisElapsed) {
 	float totalVel = getVelocity(millisElapsed).getLength();
 	float totalAccel = getTotalAcceleration(millisElapsed).getLength();
-	//return (totalVel <= 0.1f) && (totalAccel < 0.1f);
+	if ((totalVel <= 0.05f) && (totalAccel < 0.05f)) {
+		setVelocity(Vector3(0, 0, 0), millisElapsed);
+		return true;
+	}
 	return false;
 }
 
@@ -119,11 +122,21 @@ Vector3 PhysicalBody::getAcceleration() {
 Vector3 PhysicalBody::getTotalAcceleration(float millisElapsed) {
 	// Calculates gravity force
 	Vector3 gravityForce = Vector3(0, Simulation::getInstance()->getGravity(), 0);
+	if (gravityForce.getLength() < 0.01f) {
+		gravityForce = Vector3(0, 0, 0);
+	}
 	// Calculates drag force
 	Vector3 dragForce = getVelocity(millisElapsed) * mass * dragFactor;
+	if (dragForce.getLength() < 0.01f) {
+		dragForce = Vector3(0, 0, 0);
+	}
 	dragForce.invert(); // Invert it so it slows the body down instead of accelerating it
 	// Calculates and returns total force acting on this body
-	return Vector3(*force + gravityForce + dragForce);
+	Vector3 outForce = Vector3(*force);
+	if (outForce.getLength() < 0.01f) {
+		outForce = Vector3(0, 0, 0);
+	}
+	return Vector3(outForce + gravityForce + dragForce);
 }
 
 void PhysicalBody::checkCollision(PhysicalBody *body1, PhysicalBody *body2, float deltaT) {

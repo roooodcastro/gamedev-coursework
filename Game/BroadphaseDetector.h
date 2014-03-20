@@ -9,8 +9,9 @@
 #pragma once
 
 #include <vector>
-#include "PhysicalBody.h"
+#include "Simulation.h"
 
+class Simulation;
 class PhysicalBody;
 
 class BroadphaseDetector {

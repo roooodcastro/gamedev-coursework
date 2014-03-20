@@ -1,13 +1,11 @@
 /*
  * Author: Rodrigo Castro Azevedo
  *
- * Description: This is the main race track of the game. It reads track piece configurations from files and randomly
- * set them up one after the other, offering the player a dynamic, random and challenging track. The track pieces used
- * will vary accordingly with the distance ran, the farther the player goes, the harder it gets and harder track pieces
- * will be chosen much more frequently than easier ones. For each track piece the player passes, an old one will be
- * unloaded behind him, and a new one will be loaded ahead, in a way that the player won't notice that the track isn't
- * actually infinite.
- * 
+ * Description: This class contains the track pieces for the race track. It also detects
+ * where the ship is, and generates more track pieces to place ahead of the ship, indefinitely.
+ * When the ship passes though a piece, it gets deletes when it reaches a certain distance behind
+ * the ship, to conserve memory. Each new track piece is randomized, generating a new piece
+ * design for every new track piece. This process continues until the player crashes and dies.
  */
 
 #pragma once
@@ -20,6 +18,29 @@ public:
 
 	Track(void);
 	~Track(void);
+
+	std::vector<TrackPiece*> *getTrackPieces() { return pieces; }
+
+	/*
+	 * This method checks if the player reached a certain distance from
+	 * the last piece loaded, and if he is close enough to that last
+	 * track piece, generates a new one ahead of it, to keep the game
+	 * going, until the player dies.
+	 */
+	TrackPiece *generateNextPiece(Vector3 shipPos);
+
+	/*
+	 * This method checks if the player already passed through the first
+	 * track piece. If so, it will delete that piece, releasing its memory
+	 * so the game can create more pieces ahead.
+	 */
+	TrackPiece *deleteOldPiece(Vector3 shipPos);
+
+	/*
+	 * This method generates the first set of track pieces, which are just
+	 * doorless track, to allow the player to get used to the environment.
+	 */
+	void generateStarterPieces();
 
 protected:
 

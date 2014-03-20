@@ -34,14 +34,15 @@ void main(void) {
 		float lambert = max(0.0, dot(incident, IN.normal));
 
 		float rFactor = max(0.0, dot(halfDir, IN.normal));
-		float sFactor = pow(rFactor, 50.0);
+		float sFactor = pow(rFactor, 2.0) * 0.5;
 
-		vec3 ambient = texCol.rgb * lightColour[i] * 0.1;
+		vec3 ambient = texCol.rgb * lightColour[i] * 0.02;
 		vec3 diffuse = texCol.rgb * lightColour[i] * lambert * atten;
 		vec3 specular = lightColour[i] * sFactor * atten;
 		
 		finalColour += vec3(ambient + diffuse + specular);
 	}
-	
+    //gl_FragColor = vec4(1, 1, 1.0 - clamp(length(lightPos[0] - IN.worldPos) / (lightRadius[0] * lightRadius[0]), 0.0, 1.0), texCol.w);
+	//gl_FragColor = vec4(lightPos[0] / 100.0, texCol.w);
 	gl_FragColor = vec4(finalColour, texCol.w);
 }

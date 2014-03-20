@@ -47,6 +47,12 @@ public:
 	void setPhysicalBody(PhysicalBody &body);
 	PhysicalBody *getPhysicalBody() { return physicalBody; }
 
+	/*
+	 * This functions returns all the children, grandchildren, etc of an entity, recursively.
+	 * Notice that the function also includes the parameter Entity in the list
+	 */
+	static std::vector<Entity*> getAllChildren(Entity *entity);
+
 	/* Adds a new child to this entity */
 	void addChild(Entity *child);
 
@@ -55,7 +61,6 @@ public:
 
 	/*
 	 * Makes this entity an orphan, removing it from its parent's child list, if this entity is a child.
-	 * If you do this, you're a horrible person and belong in hell.
 	 */
 	void makeOrphan();
 

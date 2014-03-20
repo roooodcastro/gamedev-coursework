@@ -97,8 +97,8 @@ public:
 		return Vector3(x + a.x,y + a.y, z + a.z);
 	}
 
-	inline Vector3 operator-(const Vector3 &a) const {
-		return Vector3(x - a.x,y - a.y, z - a.z);
+	inline Vector3 operator-(const Vector3 a) const {
+		return Vector3(x - a.x, y - a.y, z - a.z);
 	}
 
 	inline Vector3 operator-() const {

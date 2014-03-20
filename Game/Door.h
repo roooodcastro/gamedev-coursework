@@ -21,7 +21,7 @@ public:
 	Door(void);
 	Door(DoorSet *doorSet, int index, float targetOpenness);
 	Door(const Door &copy);
-	~Door(void);
+	virtual ~Door(void);
 
 	Door &operator=(const Door &other);
 
@@ -34,6 +34,7 @@ public:
 	void setTargetOpenness(float targetOpenness) { this->targetOpenness = targetOpenness; }
 	float getTargetOpenness() { return targetOpenness; }
 	void setActive(bool active) { this->active = active; }
+	void setDoorSet(DoorSet *doorSet) { this->doorSet = doorSet; }
 	bool isActive() { return active; }
 
 	// The total time a door should spend from fully opened to fully closed
@@ -41,10 +42,10 @@ public:
 
 protected:
 
-	/* Updates the door position based on the current openness */
-	void updateDoorPosition();
+	/* Positions the door just outside the doorset, to enable it to close gradually from there */
+	void setInitialDoorPosition();
 
-	/* The "openness" of the door, ie. the percentage of the door that is opened, 0 being fully closed to the player, and 100 being fully opened */
+	/* The "openness" of the door, ie. the percentage of the door that is opened, 0.0f being fully closed to the player, and 1.0f being fully opened */
 	float openness;
 	/* While the openness stores the current state of the door, every door can be opening or closing. */
 	float targetOpenness;
