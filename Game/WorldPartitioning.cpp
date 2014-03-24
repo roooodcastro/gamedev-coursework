@@ -93,9 +93,27 @@ void WorldPartitioning::initializeArray() {
 }
 
 void WorldPartitioning::addPhysicalBody(PhysicalBody *body) {
-	// If it's a plane, just add it to every partition, as it would be
-	// over complicated to correctly calculate its partitions
-	if (body->getType() == PLANE) {
+	bool hasPlane = false;
+	Vector3 minBodyPos = Vector3(0, 0, 0);
+	Vector3 maxBodyPos = Vector3(0, 0, 0);
+	for (unsigned i = 0; i < body->getCollisionBodies()->size(); i++) {
+		CollisionBody *colBody = (*(body->getCollisionBodies()))[i];
+		Vector3 colBodyMin = colBody->getMinPosition();
+		Vector3 colBodyMax = colBody->getMaxPosition();
+		// Find the boundaries of all the combined collision bodies
+		minBodyPos.x = min(minBodyPos.x, colBodyMin.x);
+		minBodyPos.y = min(minBodyPos.y, colBodyMin.y);
+		minBodyPos.z = min(minBodyPos.z, colBodyMin.z);
+		maxBodyPos.x = max(maxBodyPos.x, colBodyMax.x);
+		maxBodyPos.y = max(maxBodyPos.y, colBodyMax.y);
+		maxBodyPos.z = max(maxBodyPos.z, colBodyMax.z);
+		if ((*(body->getCollisionBodies()))[i]->getType() == PLANE) {
+			hasPlane = true;
+		}
+	}
+	// If the body has at least one plane, just add it to every partition, as it would be
+	// over complicated to correctly calculate its partitions, as the plane is infinite
+	if (hasPlane) {
 		for (int i = 0; i < numPartitionsX; i++) {
 			for (int j = 0; j < numPartitionsY; j++) {
 				for (int k = 0; k < numPartitionsZ; k++) {
@@ -106,13 +124,13 @@ void WorldPartitioning::addPhysicalBody(PhysicalBody *body) {
 		return;
 	}
 	// If entity is outside the world bounds, disregard it
-	if (body->getPosition()->x - body->getRadius() < minPos->x || body->getPosition()->x + body->getRadius() > maxPos->x) {
+	if (minBodyPos.x < minPos->x || maxBodyPos.x > maxPos->x) {
 		return;
 	}
-	if (body->getPosition()->y - body->getRadius() < minPos->y || body->getPosition()->y + body->getRadius() > maxPos->y) {
+	if (minBodyPos.y < minPos->y || maxBodyPos.y > maxPos->y) {
 		return;
 	}
-	if (body->getPosition()->z - body->getRadius() < minPos->z || body->getPosition()->z + body->getRadius() > maxPos->z) {
+	if (minBodyPos.z < minPos->z || maxBodyPos.z > maxPos->z) {
 		return;
 	}
 	// Calculates the partitions of the entity
@@ -120,12 +138,12 @@ void WorldPartitioning::addPhysicalBody(PhysicalBody *body) {
 	float cellSizeY = (maxPos->y - minPos->y) / numPartitionsY;
 	float cellSizeZ = (maxPos->z - minPos->z) / numPartitionsZ;
 
-	int partitionMinX = (int) floor((body->getPosition()->x - body->getRadius()) / cellSizeX) + (numPartitionsX / 2);
-	int partitionMaxX = (int) floor((body->getPosition()->x + body->getRadius()) / cellSizeX) + (numPartitionsX / 2);
-	int partitionMinY = (int) floor((body->getPosition()->y - body->getRadius()) / cellSizeY) + (numPartitionsY / 2);
-	int partitionMaxY = (int) floor((body->getPosition()->y + body->getRadius()) / cellSizeY) + (numPartitionsY / 2);
-	int partitionMinZ = (int) floor((body->getPosition()->z - body->getRadius()) / cellSizeZ) + (numPartitionsZ / 2);
-	int partitionMaxZ = (int) floor((body->getPosition()->z + body->getRadius()) / cellSizeZ) + (numPartitionsZ / 2);
+	int partitionMinX = (int) floor(minBodyPos.x / cellSizeX) + (numPartitionsX / 2);
+	int partitionMaxX = (int) floor(maxBodyPos.x / cellSizeX) + (numPartitionsX / 2);
+	int partitionMinY = (int) floor(minBodyPos.y / cellSizeY) + (numPartitionsY / 2);
+	int partitionMaxY = (int) floor(maxBodyPos.y / cellSizeY) + (numPartitionsY / 2);
+	int partitionMinZ = (int) floor(minBodyPos.z / cellSizeZ) + (numPartitionsZ / 2);
+	int partitionMaxZ = (int) floor(maxBodyPos.z / cellSizeZ) + (numPartitionsZ / 2);
 
 	// Then put the entity in the cells
 	for (int i = partitionMinX; i <= partitionMaxX; i++) {
@@ -158,7 +176,11 @@ void WorldPartitioning::performDetection(std::vector<PhysicalBody*> *bodies, flo
 				std::vector<PhysicalBody*> *partBodies = partitionedBodies[i][j][k];
 				for (unsigned l = 0; l < partBodies->size(); l++) {
 					for (unsigned m = l + 1; m < partBodies->size(); m++) {
-						PhysicalBody::checkCollision((*partBodies)[l], (*partBodies)[m], millisElapsed);
+						PhysicalBody *body1 = (*partBodies)[l];
+						PhysicalBody *body2 = (*partBodies)[m];
+						if (body1->getCollisionGroup() != body2->getCollisionGroup()) {
+							PhysicalBody::checkCollision(body1, body2, millisElapsed / 1000.0f);
+						}
 					}
 				}
 			}

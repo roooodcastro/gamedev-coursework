@@ -85,10 +85,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="AudioManager.h" />
-    <ClInclude Include="BoundingBox.h" />
     <ClInclude Include="BroadphaseDetector.h" />
     <ClInclude Include="ButtonItem.h" />
-    <ClInclude Include="CollisionDetector.h" />
+    <ClInclude Include="CollisionBody.h" />
     <ClInclude Include="Colour.h" />
     <ClInclude Include="Common.h" />
     <ClInclude Include="ConfigurationManager.h" />
@@ -101,13 +100,16 @@
     <ClInclude Include="Keyboard.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Music.h" />
+    <ClInclude Include="NoPartitioning.h" />
     <ClInclude Include="PanelItem.h" />
     <ClInclude Include="PauseMenu.h" />
     <ClInclude Include="PhysicalBody.h" />
     <ClInclude Include="RaceLevel.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="ResourcesManager.h" />
+    <ClInclude Include="ShipBroadDetector.h" />
     <ClInclude Include="Simulation.h" />
+    <ClInclude Include="SortAndSweep.h" />
     <ClInclude Include="Sound.h" />
     <ClInclude Include="TextItem.h" />
     <ClInclude Include="Texture.h" />
@@ -128,10 +130,9 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="AudioManager.cpp" />
-    <ClCompile Include="BoundingBox.cpp" />
     <ClCompile Include="BroadphaseDetector.cpp" />
     <ClCompile Include="ButtonItem.cpp" />
-    <ClCompile Include="CollisionDetector.cpp" />
+    <ClCompile Include="CollisionBody.cpp" />
     <ClCompile Include="Colour.cpp" />
     <ClCompile Include="ConfigurationManager.cpp" />
     <ClCompile Include="Door.cpp" />
@@ -143,12 +144,15 @@
     <ClCompile Include="Keyboard.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Music.cpp" />
+    <ClCompile Include="NoPartitioning.cpp" />
     <ClCompile Include="PanelItem.cpp" />
     <ClCompile Include="PauseMenu.cpp" />
     <ClCompile Include="PhysicalBody.cpp" />
     <ClCompile Include="RaceLevel.cpp" />
     <ClCompile Include="ResourcesManager.cpp" />
+    <ClCompile Include="ShipBroadDetector.cpp" />
     <ClCompile Include="Simulation.cpp" />
+    <ClCompile Include="SortAndSweep.cpp" />
     <ClCompile Include="Sound.cpp" />
     <ClCompile Include="TextItem.cpp" />
     <ClCompile Include="Texture.cpp" />

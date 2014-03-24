@@ -9,6 +9,17 @@ Door::Door(void) : Entity() {
 	this->active = false;
 	this->doorIndex = 0;
 	this->physicalBody->setMass(10.0f);
+	this->physicalBody->setCollisionGroup(1);
+	// Create all of the collision bodies
+	// This creates a pyramid of small spheres, covering the whole door
+	for (int i = 0; i < 1; i++) {
+		// Bodies in this layer: i + 1
+		for (int j = 0; j < (i + 1); j++) {
+			float posX = (0.2f * j) - (0.1f * i);
+			float posY = 0.8f - (0.173f * i);
+			physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(posX, posY, 0), 0.1f));
+		}
+	}
 }
 
 Door::Door(DoorSet *doorSet, int index, float targetOpenness) : Entity() {
@@ -18,10 +29,24 @@ Door::Door(DoorSet *doorSet, int index, float targetOpenness) : Entity() {
 	this->active = false;
 	this->doorIndex = index;
 	this->doorSet = doorSet;
-	this->getPhysicalBody()->setRotation(Vector3(0, 90, 60.0f * index));
-	this->getPhysicalBody()->setScale(Vector3(0.193f, 0.58f, 0.58f));
+	this->getPhysicalBody()->setRotation(Vector3(0, 0, 60.0f * index));
+	this->getPhysicalBody()->setScale(Vector3(0.58f, 0.58f, 0.193f));
 	this->physicalBody->setMass(10.0f);
+	this->physicalBody->setCollisionGroup(1);
+	physicalBody->setCanMove(false);
 	setInitialDoorPosition();
+	// Create all of the collision bodies
+	// This creates a pyramid of small spheres, covering the whole door
+	for (int i = 0; i < 6; i++) {
+		// Bodies in this layer: i + 1
+		for (int j = 0; j <= i; j++) {
+			float posX = (3.6f * j) - (1.8f * i);
+			float posY = 13.6 - (3.0f * i);
+			physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(posX, posY, 0), 2.1f));
+		}
+	}
+	// Add a top collision sphere, so the ship doesn't clip the tip
+	physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(0, 16.0f, 0), 1.2f));
 }
 
 Door::Door(const Door &copy) : Entity(copy) {
@@ -31,12 +56,9 @@ Door::Door(const Door &copy) : Entity(copy) {
 	this->doorIndex = copy.doorIndex;
 }
 
-Door::~Door(void) {
-	
-}
+Door::~Door(void) {}
 
 Door &Door::operator=(const Door &other) {
-		
 	this->targetOpenness = other.targetOpenness;
 	this->openness = other.openness;
 	this->active = other.active;
@@ -49,7 +71,7 @@ void Door::update(unsigned millisElapsed) {
 	Vector3 direction = Vector3(-sin((60.0f * PI / 180) * doorIndex), cos((60.0f * PI / 180) * doorIndex), 0);
 	// Set velocity values in case door is active or not
 	if (active) {
-		physicalBody->setVelocity(direction * 15.0f, millisElapsed);
+		physicalBody->setVelocity(direction * 15.0f, (float) millisElapsed);
 	} else {
 		physicalBody->setVelocity(Vector3(0, 0, 0), millisElapsed);
 	}
@@ -60,10 +82,12 @@ void Door::update(unsigned millisElapsed) {
 	// these distances is 26
 	openness = (distance - 17.4f) / 26.0f;
 
-	if (openness <= targetOpenness) {
+	if (openness <= targetOpenness && (targetOpenness - openness) < 0.01f) {
 		openness = targetOpenness;
 		active = false;
-		physicalBody->setVelocity(Vector3(0, 0, 0), millisElapsed);
+		physicalBody->setVelocity(Vector3(0, 0, 0), (float) millisElapsed);
+	} else if (openness < targetOpenness) {
+		physicalBody->setVelocity(direction * -5.0f, (float) millisElapsed);
 	}
 	Entity::update(millisElapsed);
 }

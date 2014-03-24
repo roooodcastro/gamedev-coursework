@@ -9,6 +9,7 @@ Level::Level() {
 	cameraRotation = new Vector3(0, 0, 0);
 	dragging = false;
 	draggingRight = false;
+	mutex = SDL_CreateMutex();
 }
 
 Level::Level(const Level &copy) {
@@ -20,6 +21,7 @@ Level::Level(const Level &copy) {
 	this->lightSources = new std::vector<Light*>(*(copy.lightSources));
 	this->projectionMatrix = new Matrix4(*(copy.projectionMatrix));
 	this->userInterface = new UserInterface(*(copy.userInterface));
+	this->mutex = copy.mutex;
 }
 
 Level::Level(LevelType type) {
@@ -32,6 +34,7 @@ Level::Level(LevelType type) {
 	cameraRotation = new Vector3(0, 0, 0);
 	dragging = false;
 	draggingRight = false;
+	mutex = SDL_CreateMutex();
 }
 
 Level::Level(LevelType type, UserInterface &userInterface) {
@@ -45,6 +48,7 @@ Level::Level(LevelType type, UserInterface &userInterface) {
 	cameraRotation = new Vector3(0, 0, 0);
 	dragging = false;
 	draggingRight = false;
+	mutex = SDL_CreateMutex();
 }
 
 Level::~Level(void) {
@@ -56,6 +60,7 @@ Level::~Level(void) {
 	delete lightSources;
 	delete cameraPos;
 	delete cameraRotation;
+	SDL_DestroyMutex(mutex);
 }
 
 void Level::onMouseMoved(Vector2 &position, Vector2 &amount) {
@@ -208,6 +213,7 @@ bool Level::removeEntity(std::string name) {
 }
 
 void Level::processLevelTick(unsigned int millisElapsed) {
+	lockMutex();
 	userInterface->update(millisElapsed);
 	if (!GameApp::getInstance()->isGamePaused()) {
 		unsigned numEntities = entities->size();
@@ -220,6 +226,7 @@ void Level::processLevelTick(unsigned int millisElapsed) {
 		}
 		calculateCameraMatrix();
 	}
+	unlockMutex();
 }
 
 void Level::drawLevel(unsigned int millisElapsed) {
@@ -300,4 +307,12 @@ void Level::applyShaderLight(GLuint program) {
 	}
 	glUniform1i(glGetUniformLocation(program, "lightCount"), (int) lightCount);
 	GameApp::logOpenGLError("APPLY_SHADER_LIGHT");
+}
+
+void Level::lockMutex() {
+	SDL_mutexP(mutex);
+}
+
+void Level::unlockMutex() {
+	SDL_mutexV(mutex);
 }

@@ -5,22 +5,16 @@
 ### TODO List:
 
 * Add other types of light source
-* Create static colour textures (basically a texture colour palette)
-* Review all classes and fix them to make sure they are RAII compliant
-* Collision detection
-* Stabilize framerate and tickrate
+* Redo the collision detection to allow for bodies trees
 * Read audio files
 * Implement sound playback
 * Implement music playback and control
-* Actually building a game on top of this engine
 * Fix the mouse positioning for rotated interface items
-* Design a fiel format and parse it to store track pieces configurations
+* Design a file format and parse it to store track pieces configurations
 * Finish implementing TrackPiece
-* Implement Track
 * Add audio to door closing animation
 * Update door and track piece models to allow for UV mapping
 * Create textures for doors and track pieces
-* Implement ship physics and movement
 * Implement joystick events
 * Refactor ship's input handling to allow control via both keyboard and joystick
 * Implement configuration manager
@@ -48,3 +42,8 @@
 * Keyboard and mouse handling
 * Basic shader pipeline
 * Multiple source lighting
+* Resource manager
+* Track pieces and track partially implemented
+* Ship's basic movement completed
+* Physics engine integrated
+* Separated physics from game logic and rendering, using threads

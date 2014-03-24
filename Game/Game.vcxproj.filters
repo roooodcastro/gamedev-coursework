@@ -135,9 +135,6 @@
     <ClInclude Include="RaceLevel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="BoundingBox.h">
-      <Filter>Header Files\engine\physics</Filter>
-    </ClInclude>
     <ClInclude Include="AudioManager.h">
       <Filter>Header Files\engine\audio</Filter>
     </ClInclude>
@@ -146,9 +143,6 @@
     </ClInclude>
     <ClInclude Include="Music.h">
       <Filter>Header Files\engine\audio</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionDetector.h">
-      <Filter>Header Files\engine\physics</Filter>
     </ClInclude>
     <ClInclude Include="ConfigurationManager.h">
       <Filter>Header Files\engine\core</Filter>
@@ -185,6 +179,18 @@
     </ClInclude>
     <ClInclude Include="GameTimer.h">
       <Filter>Header Files\engine\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionBody.h">
+      <Filter>Header Files\engine\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="NoPartitioning.h">
+      <Filter>Header Files\engine\physics</Filter>
+    </ClInclude>
+    <ClInclude Include="SortAndSweep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShipBroadDetector.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -251,9 +257,6 @@
     <ClCompile Include="RaceLevel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="BoundingBox.cpp">
-      <Filter>Source Files\engine\physics</Filter>
-    </ClCompile>
     <ClCompile Include="AudioManager.cpp">
       <Filter>Source Files\engine\audio</Filter>
     </ClCompile>
@@ -262,9 +265,6 @@
     </ClCompile>
     <ClCompile Include="Music.cpp">
       <Filter>Source Files\engine\audio</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionDetector.cpp">
-      <Filter>Source Files\engine\physics</Filter>
     </ClCompile>
     <ClCompile Include="ConfigurationManager.cpp">
       <Filter>Source Files\engine\core</Filter>
@@ -298,6 +298,18 @@
     </ClCompile>
     <ClCompile Include="GameTimer.cpp">
       <Filter>Source Files\engine\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionBody.cpp">
+      <Filter>Source Files\engine\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="NoPartitioning.cpp">
+      <Filter>Source Files\engine\physics</Filter>
+    </ClCompile>
+    <ClCompile Include="SortAndSweep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ShipBroadDetector.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

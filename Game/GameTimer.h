@@ -45,6 +45,7 @@ public:
 	double getDeltaT();
 	/* Calculates the average FPS based on the last numTicksToCalc ticks duration */
 	int calculateTicksPerSecond();
+	SDL_Thread *getThread() { return thread; }
 
 protected:
 

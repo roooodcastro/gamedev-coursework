@@ -44,9 +44,11 @@ Simulation *Simulation::getInstance() {
 
 void Simulation::timerCallback(double millisElapsed) {
 	Simulation *simulation = Simulation::getInstance();
-	if (GameApp::getInstance()->getCurrentLevel() != NULL) {
+	Level *level = GameApp::getInstance()->getCurrentLevel();
+	if (level != NULL) {
 		// Only try to simulate physics if there's an active level to get the entities from
-		std::map<std::string, Entity*> *entities = GameApp::getInstance()->getCurrentLevel()->getEntities();
+		level->lockMutex();
+		std::map<std::string, Entity*> *entities = level->getEntities();
 		std::vector<PhysicalBody*> *physicalBodies = new std::vector<PhysicalBody*>();
 		// Get all physical bodies from the current level
 		unsigned numEntities = entities->size();
@@ -76,6 +78,7 @@ void Simulation::timerCallback(double millisElapsed) {
 			// Check for collisions
 			simulation->getBroadphaseDetector()->performDetection(physicalBodies, (float) millisElapsed);
 		}
+		level->unlockMutex();
 	}
 }
 
@@ -89,6 +92,7 @@ void Simulation::startSimulation() {
 void Simulation::stopSimulation() {
 	running = false;
 	timer->stopTimer();
+	SDL_WaitThread(timer->getThread(), NULL);
 }
 
 //void Simulation::addPhysicalBody(PhysicalBody *PhysicalBody) {

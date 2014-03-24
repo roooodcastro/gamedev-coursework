@@ -52,4 +52,7 @@ protected:
 	int lastPieceDeleted;
 	int lastPieceAdded;
 
+	/* The target speed for the ship */
+	float targetSpeed;
+
 };

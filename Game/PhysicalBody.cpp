@@ -2,83 +2,82 @@
 
 PhysicalBody::PhysicalBody(void) {
 	mass = 1.0f;
-	radius = 0;
 	position = new Vector3(0, 0, 0);
 	lastPosition = new Vector3(0, 0, 0);
 	rotation = new Vector3(0, 0, 0);
 	scale = new Vector3(1, 1, 1);
 	force = new Vector3(0, 0, 0);
-	normal = new Vector3(0, 0, 0);
-	type = SPHERE;
 	elasticity = 1.0f;
 	dragFactor = 0.0f;
+	collisionBodies = new std::vector<CollisionBody*>();
+	moveable = true;
+	collisionGroup = 0;
+	entity = NULL;
 }
 
 PhysicalBody::PhysicalBody(const PhysicalBody &copy) {
 	mass = copy.mass;
-	radius = copy.radius;
 	position = new Vector3(*(copy.position));
 	lastPosition = new Vector3(*(copy.lastPosition));
 	rotation = new Vector3(*(copy.rotation));
 	scale = new Vector3(*(copy.scale));
 	force = new Vector3(*(copy.force));
-	normal = new Vector3(*(copy.normal));
-	type = copy.type;
 	elasticity = copy.elasticity;
 	dragFactor = copy.dragFactor;
+	collisionBodies = new std::vector<CollisionBody*>(*(copy.collisionBodies));
+	moveable = copy.moveable;
+	collisionGroup = copy.collisionGroup;
+	entity = copy.entity;
 }
 
-PhysicalBody::PhysicalBody(float mass, float radius, Vector3 &position) {
+PhysicalBody::PhysicalBody(Entity *entity, float mass, Vector3 &position) {
 	this->mass = mass;
-	this->radius = radius;
 	this->position = new Vector3(position);
 	this->lastPosition = new Vector3(position);
 	this->rotation = new Vector3(0, 0, 0);
 	this->scale = new Vector3(1, 1, 1);
 	this->force = new Vector3(0, 0, 0);
-	this->normal = new Vector3(0, 0, 0);
-	this->type = SPHERE;
 	this->elasticity = 1.0f;
 	this->dragFactor = 0.0f;
-}
-
-PhysicalBody::PhysicalBody(Vector3 &normal, float distanceToOrigin) {
-	this->normal = new Vector3(normal.normalised());
-	// We reuse the radius attribute to store the distance to the origin
-	this->radius = distanceToOrigin;
-	this->type = PLANE;
-	// We set these up just to avoid errors, but we shouldn't never use them
-	this->mass = 1.0f;
-	this->position = new Vector3(0, 0, 0);
-	this->lastPosition = new Vector3(0, 0, 0);
-	this->rotation = new Vector3(0, 0, 0);
-	this->scale = new Vector3(1, 1, 1);
-	this->force = new Vector3(0, 0, 0);
-	this->elasticity = 1.0f;
-	this->dragFactor = 0.0f;
+	this->collisionBodies = new std::vector<CollisionBody*>();
+	this->moveable = true;
+	this->collisionGroup = 0;
+	this->entity = entity;
 }
 
 PhysicalBody::~PhysicalBody(void) {
 	delete position;
+	position = NULL;
 	delete lastPosition;
+	lastPosition = NULL;
 	delete rotation;
+	rotation = NULL;
 	delete scale;
+	scale = NULL;
 	delete force;
-	delete normal;
+	force = NULL;
+	for (unsigned i = 0; i < collisionBodies->size(); i++) {
+		delete (*collisionBodies)[i];
+	}
+	collisionBodies->clear();
+	delete collisionBodies;
+	collisionBodies = NULL;
+	entity = NULL;
 }
 
 PhysicalBody &PhysicalBody::operator=(const PhysicalBody &other) {
 	mass = other.mass;
-	radius = other.radius;
 	*position = *(other.position);
 	*lastPosition = *(other.lastPosition);
 	*rotation = *(other.rotation);
 	*scale = *(other.scale);
 	*force = *(other.force);
-	*normal = *(other.normal);
-	type = other.type;
 	elasticity = other.elasticity;
 	dragFactor = other.dragFactor;
+	*collisionBodies = *(other.collisionBodies);
+	moveable = other.moveable;
+	collisionGroup = other.collisionGroup;
+	entity = other.entity;
 	return *this;
 }
 
@@ -87,10 +86,8 @@ void PhysicalBody::update(float millisElapsed) {
 }
 
 void PhysicalBody::integrateNextFrame(float millisElapsed) {
-	if (type == SPHERE) {
-		float deltaT = (float) (millisElapsed / 1000.0f);
-		setPosition(*position + (*position - *lastPosition) + (getTotalAcceleration(deltaT * 1000.0f) * (deltaT * deltaT)));
-	}
+	float deltaT = (float) (millisElapsed / 1000.0f);
+	setPosition(*position + (*position - *lastPosition) + (getTotalAcceleration(deltaT * 1000.0f) * (deltaT * deltaT)));
 }
 
 bool PhysicalBody::isAtRest(float millisElapsed) {
@@ -140,57 +137,96 @@ Vector3 PhysicalBody::getTotalAcceleration(float millisElapsed) {
 }
 
 void PhysicalBody::checkCollision(PhysicalBody *body1, PhysicalBody *body2, float deltaT) {
-	// The elasticity is the average elasticity of the two bodies
-	float elasticity = (body1->getElasticity() + body2->getElasticity()) / 2.0f;
-	Vector3 body1Vel = body1->getVelocity(deltaT * 1000.0f);
-	Vector3 body2Vel = body2->getVelocity(deltaT * 1000.0f);
-	if (body1->type == SPHERE && body2->type == SPHERE) {
-		float distance = pow(body2->position->x - body1->position->x, 2) + pow(body2->position->y - body1->position->y, 2) + pow(body2->position->z - body1->position->z, 2);
-		if (distance < pow(body1->radius + body2->radius, 2)) {
-			// We have a collision!
-			float penetration = sqrt(pow(body1->radius + body2->radius, 2) - distance);
-			Vector3 normal = Vector3(*(body1->position) - *(body2->position)).normalised();
-			float normalDot = Vector3::dot(normal, normal);
-			Vector3 combinedVel = (body1Vel - body2Vel);
-			// Calculate the impulse and the resulting velocity
-			float impulse = Vector3::dot(combinedVel, (normal)) * (-1.0f * (1 + elasticity)) / (normalDot * ((1.0f / body1->mass) + (1.0f / body2->mass)));
-			Vector3 vel1 = body1Vel + (normal * (impulse / body1->mass));
-			Vector3 vel2 = body2Vel - (normal * (impulse / body2->mass));
-			
-			// Correct the inconsistency moving the spheres away from each other, then apply final velocity
-			body1->setPosition((*(body1->position) + ((vel1 + (normal * (1.0f + (penetration / 2.0f)))) * (float) deltaT)));
-			body2->setPosition((*(body2->position) + ((vel2 - (normal * (1.0f + (penetration / 2.0f)))) * (float) deltaT)));
-			body1->setVelocity(vel1, deltaT * 1000.0f);
-			body2->setVelocity(vel2, deltaT * 1000.0f);
-		}
-	} else if ((body1->type == SPHERE && body2->type == PLANE) || (body1->type == PLANE && body2->type == SPHERE)) {
-		if (body2->type == SPHERE) {
-			// We just change the order to calculate correctly
-			PhysicalBody *swap = body1;
-			body1 = body2;
-			body2 = swap;
-		}
-		// Body1 is the SPHERE, and Body2 is the PLANE
-		float distancePlaneToSphere = Vector3::dot(*(body2->normal), *(body1->position)) + body2->radius;
-		if (distancePlaneToSphere < body1->radius) {
-			// We have a collision!
-			float penetration = body1->radius - distancePlaneToSphere;
-			float normalDot = Vector3::dot(*(body2->normal), *(body2->normal));
-			// Calculate the impulse and the resulting velocity
-			float impulse = Vector3::dot(body1Vel, *(body2->normal)) * (-1.0f * (1 + elasticity)) / (normalDot * (1.0f / body1->mass));
-			Vector3 finalVel = body1Vel + (*(body2->normal) * (impulse / body1->mass));
-
-			// Move sphere out of the plane and apply final velocity
-			body1->setPosition((*(body1->position) + (finalVel * (float) deltaT)));
-			body1->setVelocity(finalVel, deltaT * 1000.0f);
-
-			// Recalculate the distance, because the sphere can still be inside the plane
-			distancePlaneToSphere = Vector3::dot(*(body2->normal), *(body1->position)) + body2->radius;
-			if (distancePlaneToSphere < body1->radius) {
-				float penetration = body1->radius - distancePlaneToSphere;
-				body1->setPosition((*(body1->position) + (*(body2->normal) * penetration)));
-				body1->setVelocity(finalVel, deltaT * 1000.0f);
+	for (unsigned i = 0; i < body1->collisionBodies->size(); i++) {
+		CollisionBody *colBody1 = (*(body1->collisionBodies))[i];
+		for (unsigned j = 0; j < body2->collisionBodies->size(); j++) {
+			CollisionBody *colBody2 = (*(body2->collisionBodies))[j];
+			PhysicalBody *swappedBody1 = NULL;
+			PhysicalBody *swappedBody2 = NULL;
+			if (colBody1->getType() != SPHERE) {
+				// We always test collision between a sphere and something else
+				// If after the swap, colBody1 still isn't a sphere, the collision
+				// will just be ignored, as it's not currently supported
+				CollisionBody *swap = colBody1;
+				colBody1 = colBody2;
+				colBody2 = swap;
+				swappedBody1 = body2;
+				swappedBody2 = body1;
+			} else {
+				swappedBody1 = body1;
+				swappedBody2 = body2;
 			}
+			CollisionResult result = colBody1->checkIfCollide(colBody2, deltaT);
+			if (result.isColliding()) {
+				// Calculate some more collision parameters
+				float elasticity = (swappedBody1->getElasticity() + swappedBody2->getElasticity()) / 2.0f;
+				Vector3 body1Vel = swappedBody1->getVelocity(deltaT * 1000.0f);
+				Vector3 body2Vel = swappedBody2->getVelocity(deltaT * 1000.0f);
+				float normalDot = Vector3::dot(result.normal, result.normal);
+				Vector3 combinedVel = (body1Vel - body2Vel);
+				// Calculate the impulse and the resulting velocity
+				float impulse = 0.0f;
+				Vector3 vel1 = Vector3(0, 0, 0);
+				Vector3 vel2 = Vector3(0, 0, 0);
+				if (swappedBody2->canMove()) {
+					impulse = Vector3::dot(combinedVel, (result.normal)) * (-1.0f * (1 + elasticity)) / (normalDot * ((1.0f / swappedBody1->mass) + (1.0f / swappedBody2->mass)));
+					vel1 = body1Vel + (result.normal * (impulse / swappedBody1->mass));
+					vel2 = body2Vel - (result.normal * (impulse / swappedBody2->mass));
+					// Correct the inconsistency moving the bodies away from each other, then apply final velocity
+					swappedBody1->setPosition((*(swappedBody1->position) + ((vel1 + (result.normal * (1.0f + (result.penetration / 2.0f)))) * (float) deltaT)));
+					swappedBody2->setPosition((*(swappedBody2->position) + ((vel2 - (result.normal * (1.0f + (result.penetration / 2.0f)))) * (float) deltaT)));
+					swappedBody1->setVelocity(vel1, deltaT * 1000.0f);
+					swappedBody2->setVelocity(vel2, deltaT * 1000.0f);
+				} else {
+					impulse = Vector3::dot(body1Vel, result.normal) * (-1.0f * (1 + elasticity)) / (normalDot * (1.0f / swappedBody1->mass));
+					vel1 = (result.normal * (impulse / swappedBody1->mass));
+					// Correct the inconsistency moving the sphere away from the other static body
+					swappedBody1->setPosition((*(swappedBody1->position) + (vel1 * (float) deltaT)));
+					swappedBody1->setVelocity(body1Vel + vel1, deltaT * 1000.0f);
+				}
+			}
+		}
+	}
+}
+
+void PhysicalBody::addCollisionBody(CollisionBody *colBody) {
+	collisionBodies->emplace_back(colBody);
+	Matrix4 rotMatrix = Matrix4::Rotation(rotation->x, Vector3(1, 0, 0)) * Matrix4::Rotation(rotation->y, Vector3(0, 1, 0)) * Matrix4::Rotation(rotation->z, Vector3(0, 0, 1));
+	Matrix4 transform = Matrix4::Translation(getAbsolutePosition()) * rotMatrix;
+	colBody->setAbsolutePosition((transform * Matrix4::Translation(*(colBody->getPosition())) * Vector3(0, 0, 0)));
+}
+
+void PhysicalBody::removeCollisionBody(CollisionBody *colBody) {
+	collisionBodies->erase(std::remove(collisionBodies->begin(), collisionBodies->end(), colBody), collisionBodies->end());
+}
+
+Vector3 PhysicalBody::getAbsolutePosition() {
+	Vector3 absPos = Vector3(*position);
+	if (entity != NULL && entity->getParent() != NULL) {
+		absPos += entity->getParent()->getPhysicalBody()->getAbsolutePosition();
+	}
+	return absPos;
+}
+
+Vector3 PhysicalBody::getAbsoluteScale() {
+	Vector3 absScale = Vector3(*scale);
+	if (entity != NULL && entity->getParent() != NULL) {
+		absScale += entity->getParent()->getPhysicalBody()->getAbsoluteScale();
+	}
+	return absScale;
+}
+
+void PhysicalBody::setPosition(Vector3 &position) {
+	*(this->lastPosition) = *(this->position);
+	*(this->position) = position;
+	if (collisionBodies->size() > 0) {
+		// If we have collision bodies, calculate their absolute position
+		// This is done here to speed up collision detection later
+		Matrix4 rotMatrix = Matrix4::Rotation(rotation->x, Vector3(1, 0, 0)) * Matrix4::Rotation(rotation->y, Vector3(0, 1, 0)) * Matrix4::Rotation(rotation->z, Vector3(0, 0, 1));
+		Matrix4 transform = Matrix4::Translation(getAbsolutePosition()) * rotMatrix;
+		for (unsigned i = 0; i < collisionBodies->size(); i++) {
+			CollisionBody *colBody = (*collisionBodies)[i];
+			colBody->setAbsolutePosition((transform * Matrix4::Translation(*(colBody->getPosition())) * Vector3(0, 0, 0)));
 		}
 	}
 }

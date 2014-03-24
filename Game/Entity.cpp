@@ -2,7 +2,7 @@
 
 Entity::Entity(void) {
 	this->childEntities = new std::vector<Entity*>();
-	physicalBody = new PhysicalBody();
+	physicalBody = new PhysicalBody(this, 0, Vector3());
 	modelMatrix = new Matrix4();
 	customShader = NULL;
 	model = NULL;
@@ -21,7 +21,7 @@ Entity::Entity(const Entity &copy) {
 
 Entity::Entity(Vector3 &position, Vector3 &velocity, Vector3 &rotation, Vector3 &scale) {
 	this->childEntities = new std::vector<Entity*>();
-	physicalBody = new PhysicalBody(0, 0, position);
+	physicalBody = new PhysicalBody(this, 0, position);
 	physicalBody->setRotation(rotation);
 	physicalBody->setScale(scale);
 	modelMatrix = new Matrix4();
@@ -32,10 +32,17 @@ Entity::Entity(Vector3 &position, Vector3 &velocity, Vector3 &rotation, Vector3 
 }
 
 Entity::~Entity(void) {
+	if (parent != NULL) {
+		parent->removeChild(this);
+	}
 	delete modelMatrix;
+	modelMatrix = NULL;
 	delete childEntities;
+	childEntities = NULL;
 	delete customShader;
+	customShader = NULL;
 	delete physicalBody;
+	physicalBody = NULL;
 }
 
 Entity &Entity::operator=(const Entity &other) {
@@ -149,7 +156,7 @@ void Entity::calculateModelMatrix() {
 	 */
 	if (parent != NULL) {
 		calcPos = calcPos + *(parent->getPhysicalBody()->getPosition());
-		calcRot = calcRot + *(parent->getPhysicalBody()->getRotation());
+		//calcRot = calcRot + *(parent->getPhysicalBody()->getRotation());
 		calcSiz = calcSiz * *(parent->getPhysicalBody()->getScale());
 	}
 
@@ -194,6 +201,29 @@ void Entity::draw(unsigned millisElapsed) {
 	for (std::vector<Entity*>::iterator it = childEntities->begin(); it != childEntities->end(); ++it) {
 		(*it)->draw(millisElapsed);
 	}
+
+	// If debug mode enabled, draw the collision spheres to track their position and check if collisions are correct
+	bool debug = false;
+	if (debug) {
+		GLuint program = GameApp::getInstance()->getDefaultShader()->getShaderProgram();
+		Model *sphere = (Model*) Model::getOrCreate("SPHERE_MESH", "resources/models/sphere.mdl");
+		if (sphere != NULL) {
+			std::vector<CollisionBody*> *colBodies = physicalBody->getCollisionBodies();
+			for (unsigned i = 0; i < min(colBodies->size(), 2); i++) {
+				CollisionBody *colBody = (*colBodies)[i];
+				if (colBody->getType() == BodyType::SPHERE) {
+					Vector3 calcPos = Vector3(*(colBody->getAbsolutePosition()));
+					Vector3 calcSiz = Vector3(colBody->getRadius(), colBody->getRadius(), colBody->getRadius());
+
+					// Now that we calculated the final attributes, build the matrix
+					Matrix4 colModelMatrix = Matrix4::Translation(calcPos) * Matrix4::Scale(calcSiz);
+					glUniformMatrix4fv(glGetUniformLocation(program, "modelMatrix"), 1, false, (float*) &colModelMatrix);
+					sphere->draw();
+				}
+			}
+		}
+	}
+
 }
 
 void Entity::addChild(Entity *child) {
@@ -240,9 +270,12 @@ void Entity::setPhysicalBody(PhysicalBody &body) {
 std::vector<Entity*> Entity::getAllChildren(Entity *entity) {
 	std::vector<Entity*> children = std::vector<Entity*>();
 	children.emplace_back(entity);
-	for (unsigned i = 0; i < entity->childEntities->size(); i++) {
-		std::vector<Entity*> grandChildren = Entity::getAllChildren((*(entity->childEntities))[i]);
-		children.insert(children.end(), grandChildren.begin(), grandChildren.end());
+	unsigned size = entity->childEntities->size();
+	for (unsigned i = 0; i < size; i++) {
+		if ((unsigned) entity->childEntities != 0xcdcdcd01 && (unsigned) entity->childEntities != 0xfeeefeee) {
+			std::vector<Entity*> grandChildren = Entity::getAllChildren((*(entity->childEntities))[i]);
+			children.insert(children.end(), grandChildren.begin(), grandChildren.end());
+		}
 	}
 	return children;
 }

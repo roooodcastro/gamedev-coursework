@@ -14,6 +14,7 @@
 #include "RaceLevel.h"
 #include "Ship.h"
 #include "TrackPiece.h"
+#include "ShipBroadDetector.h"
 
 using namespace std;
 
@@ -25,6 +26,7 @@ int main(int argc, char* argv[]) {
 	UserInterface gameInterface = UserInterface();
 	gameInterface.setShowFpsCounter(true);
 	Simulation::getInstance()->setGravity(Simulation::GRAVITY_ZERO);
+	Simulation::getInstance()->setBroadphaseDetector(new ShipBroadDetector());
 
 	// Testing grounds
 	// Put test lines below here

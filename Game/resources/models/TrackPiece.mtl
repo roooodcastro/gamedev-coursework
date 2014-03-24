@@ -2,10 +2,11 @@
 # Material Count: 1
 
 newmtl TrackPieceMaterial
-Ns 194.117647
+Ns 190.196078
 Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.379305 0.159095
+Kd 0.512000 0.303444 0.127276
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Kd resources/models/textures/TrackPiece.png

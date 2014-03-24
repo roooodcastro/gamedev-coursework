@@ -4,11 +4,18 @@ RaceLevel::RaceLevel(void) : Level(LEVEL_GAME, UserInterface()) {
 	userInterface->addItem(new PauseMenu(), "PauseMenu");
 	int windowWidth = GameApp::getInstance()->getWindowWidth();
 	int windowHeight = GameApp::getInstance()->getWindowHeight();
-	TextItem *speedometer = new TextItem(Vector2(windowWidth - 160, windowHeight - 60), 0, "000 km/h", 32);
+	TextItem *speedometer = new TextItem(Vector2(windowWidth - 160.0f, windowHeight - 60.0f), 0, "000 km/h", 32);
 	speedometer->setColour(Colour(0, 0, 0, 255));
 	userInterface->addItem(speedometer, "Speedometer");
-	addLightSource(*(new Light(Vector3(0, 52, 0), 30, Vector3(1.0f, 1.0f, 1.0f))));
-	addLightSource(*(new Light(Vector3(0, -52, 0), 30, Vector3(1.0f, 1.0f, 1.0f))));
+
+	// Lights!
+	Vector3 lightColour = Vector3(0.6f, 0.6f, 0.6f);
+	addLightSource(*(new Light(Vector3(100, 0, 0), 20, lightColour)));
+	addLightSource(*(new Light(Vector3(-100, 0, 0), 20, lightColour)));
+	addLightSource(*(new Light(Vector3(0, 100, 0), 20, lightColour)));
+	addLightSource(*(new Light(Vector3(0, -100, 0), 20, lightColour)));
+	addLightSource(*(new Light(Vector3(0, 0, 0), 10, Vector3(0.3f, 0.0f, 0.6f))));
+
 	setProjectionMatrix(Matrix4::Perspective(1.0f, -100.0f, 1280.0f / 720.0f, 45.0f));
 	setCameraMatrix(Matrix4::Translation(Vector3(0, 0, -10.0f)));
 	*cameraPos = Vector3(0.0f, 0.0f, -20.0f);
@@ -32,6 +39,7 @@ void RaceLevel::onStart() {
 		lastPieceAdded = i;
 		addEntity((*pieces)[i], to_string((long long) lastPieceAdded));
 	}
+	targetSpeed = 100.0f;
 }
 
 void RaceLevel::onPause() {
@@ -94,13 +102,22 @@ void RaceLevel::onKeyUp(SDL_Keysym key) {
 
 void RaceLevel::processLevelTick(unsigned int millisElapsed) {
 	Level::processLevelTick(millisElapsed);
+	lockMutex();
 	Entity *ship = getEntity("Ship");
 	Vector3 shipPos = Vector3(*(ship->getPhysicalBody()->getPosition()));
+	Vector3 shipVel = ship->getPhysicalBody()->getVelocity(5.0f);
+	Vector3 shipAccel = ship->getPhysicalBody()->getAcceleration();
+	// Update ship
+	ship->getPhysicalBody()->setAcceleration(Vector3(shipAccel.x, shipAccel.y, (targetSpeed * (1.0f + ship->getPhysicalBody()->getdragFactor())) - shipVel.z));
+	if (lastPieceAdded % (int) (10.0f + sqrt((float) lastPieceAdded)) == 0) {
+		targetSpeed = 100.5f + (lastPieceAdded * 2.0f);
+	}
+
+	// Update race track
 	TrackPiece *newPiece = track->generateNextPiece(shipPos);
 	if (newPiece != NULL) {
 		lastPieceAdded++;
 		addEntity(newPiece, to_string((long long) lastPieceAdded));
-		std::cout << entities->size() << std::endl;
 	}
 	TrackPiece *deletedPiece = track->deleteOldPiece(shipPos);
 	if (deletedPiece != NULL) {
@@ -109,11 +126,11 @@ void RaceLevel::processLevelTick(unsigned int millisElapsed) {
 		removeEntity(to_string((long long) lastPieceDeleted));
 		delete removed;
 	}
-	Vector3 shipVel = ship->getPhysicalBody()->getVelocity(5.0f);
 	TextItem *speedometer = (TextItem*) userInterface->getItem("Speedometer");
 	char buffer[50];
 	sprintf(buffer, "%03d km/h", (int) (shipVel.z));
 	speedometer->setText(buffer);
+	unlockMutex();
 }
 
 void RaceLevel::calculateCameraMatrix() {

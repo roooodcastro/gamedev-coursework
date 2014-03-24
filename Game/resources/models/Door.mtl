@@ -2,10 +2,11 @@
 # Material Count: 1
 
 newmtl DoorMaterial
-Ns 96.078431
+Ns 90.196078
 Ka 0.000000 0.000000 0.000000
-Kd 0.640000 0.207129 0.149946
+Kd 0.409600 0.132562 0.095966
 Ks 0.500000 0.500000 0.500000
 Ni 1.000000
 d 1.000000
 illum 2
+map_Kd resources/models/textures/Door.png

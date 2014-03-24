@@ -1,31 +1,31 @@
 /*
  * Author: Rodrigo Castro Azevedo
  *
- * Description: This class represents the physical body of the sphere, or of the plane. Ideally, it should be an abstract class
- * with different child classes for spheres and planes, but for this coursework this will serve just fine. It contains the different
- * attributes that a physical object can have, except for velocity and acceleration. Because I'm using Verlet integration, the velocity
- * can easily be calculated using the actual and previous position of the body, and the acceleration can also be calculated using the
- * forces acting on the body and its mass.
+ * Description: This class represents the physical body of the object. It contains the different attributes that a physical
+ * object can have, except for velocity and acceleration. Because I'm using Verlet integration, the velocity
+ * can easily be calculated using the actual and previous position of the body, and the acceleration can also be calculated
+ * using the forces acting on the body and its mass.
  *
- * The collision method is also on this class, it checks for collisions between spheres and between spheres and plances
+ * To manage collisions, a physical body may have zero, one or more than one collision bodies. If a physical body has no
+ * collision bodies, it will not collide with anything and the collision algorithm will ignore it. If it has one or more,
+ * collisions will be calculated for each of the bodies and summed and averaged up to respond to it.
  */
 
 #pragma once
 
+#include <vector>
 #include "Vector3.h"
 #include "Simulation.h"
+#include "CollisionBody.h"
 
-enum BodyType {
-	SPHERE,
-	PLANE,
-};
+class CollisionBody;
+class Entity;
 
 class PhysicalBody {
 public:
 	PhysicalBody(void);
 	PhysicalBody(const PhysicalBody &copy);
-	PhysicalBody(float mass, float radius, Vector3 &position);
-	PhysicalBody(Vector3 &normal, float distanceToOrigin);
+	PhysicalBody(Entity *entity, float mass, Vector3 &position);
 	~PhysicalBody(void);
 
 	PhysicalBody &operator=(const PhysicalBody &other);
@@ -54,25 +54,25 @@ public:
 	bool isAtRest(float millisElapsed);
 
 	/* General getters and setters */
-	void setPosition(Vector3 &position) { *(this->lastPosition) = *(this->position); *(this->position) = position; }
+	void setPosition(Vector3 &position);
 	Vector3 *getPosition() { return position; }
+	/* Returns the position of this body relative to the world, not to its parent */
+	Vector3 getAbsolutePosition();
 	void setLastPosition(Vector3 &lastPosition) { *(this->lastPosition) = lastPosition; }
 	Vector3 *getLastPosition() { return lastPosition; }
 	void setRotation(Vector3 &rotation) { *(this->rotation) = rotation; }
 	Vector3 *getRotation() { return rotation; }
 	void setScale(Vector3 &scale) { *(this->scale) = scale; }
 	Vector3 *getScale() { return scale; }
+	/* Returns the scale of this body relative to the world, not to its parent */
+	Vector3 getAbsoluteScale();
 	void setForce(Vector3 &force) { *(this->force) = force; }
 	void addForce(Vector3 &force) { *(this->force) += force; }
 	Vector3 *getForce() { return force; }
 	void setMass(float mass) { this->mass = mass; }
 	float getMass() { return mass; }
-	void setRadius(float radius) { this->radius = radius; }
-	float getRadius() { return radius; }
 	/* Returns true of the body has moved since the last frame, false otherwise */
 	bool hasMoved() { return *lastPosition != *position; }
-	void setType(BodyType type) { this->type = type; }
-	BodyType getType() { return type; }
 	void setElasticity(float elasticity) { this->elasticity = elasticity; }
 	float getElasticity() { return elasticity; }
 	void setDragFactor(float dragFactor) { this->dragFactor = dragFactor; }
@@ -84,6 +84,18 @@ public:
 	void setAcceleration(Vector3 &acceleration);
 	Vector3 getAcceleration(); // Acceleration of the external forces
 	Vector3 getTotalAcceleration(float millisElapsed); // Acceleration of the external forces AND gravity and drag
+	void setCanMove(bool canMove) { this->moveable = canMove; }
+	bool canMove() { return moveable; }
+	std::vector<CollisionBody*> *getCollisionBodies() { return collisionBodies; }
+	void addCollisionBody(CollisionBody *colBody);
+	void removeCollisionBody(CollisionBody *colBody);
+	void setCollisionGroup(int collisionGroup) { this->collisionGroup = collisionGroup; }
+	int getCollisionGroup() { return collisionGroup; }
+	void setEntity(Entity *entity) { this->entity = entity; }
+	Entity *getEntity() { return entity; }
+
+	/* Checks if this physical body has any collision bodies */
+	bool isCollideable();
 
 	/*
 	 * Checks whether 2 bodies collided and respond to that collision.
@@ -108,17 +120,19 @@ protected:
 	Vector3 *scale;
 	// Sum of external forces applied to the body. Defaults to (0, 0, 0)
 	Vector3 *force;
-	// If the body is a plane, this stores its normal. Defaults to (0, 0, 0)
-	Vector3 *normal;
-	// The type of this body. Defaults to SPHERE
-	BodyType type;
 
 	// The mass of the body, defaults to 1.0
 	float mass;
-	// The radius of the body, if it's a sphere. If it's a plane, this is the distance to the origin. Defaults to 0
-	float radius;
 	// The elasticity of the body, defaults to 1.0
 	float elasticity;
 	// The drag factor of the body, 0 being totally aerodynamic, 1 being full drag. Defaults to 0.
 	float dragFactor;
+	/* Indicates if the body can have acceleration or velocity */
+	bool moveable;
+	/* The collision group of this body. The body will NOT collide with other bodies of the same group */
+	int collisionGroup;
+	/* The vector of all collision bodies acting on this physical body*/
+	std::vector<CollisionBody*> *collisionBodies;
+	/* The entity that represents this physical body */
+	Entity *entity;
 };

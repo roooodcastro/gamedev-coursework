@@ -1,6 +1,6 @@
 #include "Ship.h"
 
-const float Ship::MAX_SIDE_SPEED = 80.0f;
+const float Ship::MAX_SIDE_SPEED = 40.0f;
 
 Ship::Ship(void) : Entity() {
 	model = Model::getOrCreate("SHIP_MESH", "resources/models/testShip.mdl");
@@ -9,6 +9,12 @@ Ship::Ship(void) : Entity() {
 	yaw = 0;
 	physicalBody->setMass(10.0f);
 	physicalBody->setDragFactor(0.3f);
+	physicalBody->setElasticity(0.0f);
+	physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(-1.2f, 0.2f, -1.0f), 0.7f));
+	physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(0.0f, 0.2f, -1.0f), 0.7f));
+	physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(1.2f, 0.2f, -1.0f), 0.7f));
+	physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(0.0f, 0.6f, 0.5f), 0.7f));
+	physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(0.0f, 0.5f, 2.0f), 0.7f));
 }
 
 Ship::Ship(const Ship &copy) : Entity(copy) {
@@ -24,6 +30,12 @@ Ship::Ship(Vector3 &position, Vector3 &velocity, Vector3 &rotation) : Entity(pos
 	yaw = 0;
 	physicalBody->setMass(10.0f);
 	physicalBody->setDragFactor(0.3f);
+	physicalBody->setElasticity(0.0f);
+	physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(-1.2f, 0.2f, -1.0f), 0.7f));
+	physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(0.0f, 0.2f, -1.0f), 0.7f));
+	physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(1.2f, 0.2f, -1.0f), 0.7f));
+	physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(0.0f, 0.6f, 0.5f), 0.7f));
+	physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(0.0f, 0.2f, 2.0f), 0.7f));
 }
 
 Ship::~Ship(void) {}
@@ -46,25 +58,25 @@ void Ship::update(unsigned millisElapsed) {
 	if (keyboard->isKeyPressed(SDLK_a)) {
 		yaw += 1.0f;
 		if (yaw > 10) yaw = 10;
-		force->x = (currentVel.x <= MAX_SIDE_SPEED) ? 250.0f : 0.0f;
+		physicalBody->setAcceleration(Vector3((MAX_SIDE_SPEED * (1.0f + physicalBody->getdragFactor())) - currentVel.x, 0, 0));
 	} else if (keyboard->isKeyPressed(SDLK_d)) {
 		yaw -= 1.0f;
 		if (yaw < -10) yaw = -10;
-		force->x = (currentVel.x >= -MAX_SIDE_SPEED) ? -250.0f : 0.0f;
+		physicalBody->setAcceleration(Vector3((-MAX_SIDE_SPEED * (1.0f + physicalBody->getdragFactor())) - currentVel.x, 0, 0));
 	} else {
 		yaw = (abs(yaw) > 0.1f) ? (yaw / 1.1f) : 0;
-		force->x = -currentVel.x * 10.0f;
+		physicalBody->setAcceleration(Vector3(currentVel.x * -1.0f, 0, 0));
 	}
 
 	// Controls pitch (up-down movement)
 	if (keyboard->isKeyPressed(SDLK_w)) {
 		pitch += 1.0f;
 		if (pitch > 10) pitch = 10;
-		force->y = (currentVel.y >= -MAX_SIDE_SPEED) ? -250.0f : 0.0f;
+		force->y = (currentVel.y >= -MAX_SIDE_SPEED) ? -500.0f : 0.0f;
 	} else if (keyboard->isKeyPressed(SDLK_s)) {
 		pitch -= 1.0f;
 		if (pitch < -10) pitch = -10;
-		force->y = (currentVel.y <= MAX_SIDE_SPEED) ? 250.0f : 0.0f;
+		force->y = (currentVel.y <= MAX_SIDE_SPEED) ? 500.0f : 0.0f;
 	} else {
 		pitch = (abs(pitch) > 0.1f) ? (pitch / 1.1f) : 0;
 		force->y = -currentVel.y * 10.0f;
@@ -81,12 +93,13 @@ void Ship::update(unsigned millisElapsed) {
 		roll = (abs(roll) > 0.1f) ? (roll / 1.1f) : 0;
 	}
 
-	if (keyboard->isKeyPressed(SDLK_UP)) {
-		force->z = (currentVel.z <= 200) ? 500.0f : 0.0f;
-	} else if (keyboard->isKeyPressed(SDLK_DOWN)) {
-		force->z = (currentVel.z >= -200) ? -500.0f : 0.0f;
-	} else {
-		force->z = 0;
+	Vector3 distanceFromCenter = *(physicalBody->getPosition()) - Vector3(0, 0, physicalBody->getPosition()->z);
+	if (distanceFromCenter.getLength() > 24.0f) {
+		Vector3 correction = ((distanceFromCenter - (distanceFromCenter.normalised() * 23.0f)) * -1.0f);
+		Vector3 correction2 = ((distanceFromCenter - (distanceFromCenter.normalised() * 24.0f)) * -1.0f);
+		correction.x = pow(correction.x, 3);
+		correction.y = pow(correction.y, 3);
+		//physicalBody->setAcceleration(correction);
 	}
 
 	this->getPhysicalBody()->setRotation(Vector3(pitch, yaw, roll));
