@@ -29,14 +29,14 @@ void main(void) {
 		vec3 halfDir = normalize(incident + viewDir);
 
 		float dist = length(lightPos[i] - IN.worldPos);
-		float atten = 1.0 - clamp(dist / (lightRadius[i] * lightRadius[i]), 0.0, 1.0);
+		float atten = 0.8 - clamp(dist / (lightRadius[i] * lightRadius[i]), 0.0, 1.0);
 
 		float lambert = max(0.0, dot(incident, IN.normal));
 
 		float rFactor = max(0.0, dot(halfDir, IN.normal));
-		float sFactor = pow(rFactor, 2.0) * 0.5;
+		float sFactor = pow(rFactor, 2.0) * 0.3;
 
-		vec3 ambient = texCol.rgb * lightColour[i] * 0.02;
+		vec3 ambient = texCol.rgb * lightColour[i] * 0.05;
 		vec3 diffuse = texCol.rgb * lightColour[i] * lambert * atten;
 		vec3 specular = lightColour[i] * sFactor * atten;
 		

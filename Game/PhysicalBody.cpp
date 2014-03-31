@@ -181,7 +181,7 @@ void PhysicalBody::checkCollision(PhysicalBody *body1, PhysicalBody *body2, floa
 					impulse = Vector3::dot(body1Vel, result.normal) * (-1.0f * (1 + elasticity)) / (normalDot * (1.0f / swappedBody1->mass));
 					vel1 = (result.normal * (impulse / swappedBody1->mass));
 					// Correct the inconsistency moving the sphere away from the other static body
-					swappedBody1->setPosition((*(swappedBody1->position) + (vel1 * (float) deltaT)));
+					swappedBody1->setPosition((*(swappedBody1->position) + ((vel1 + (result.normal * (1.0f - (result.penetration / 2.0f)))) * (float) deltaT)));
 					swappedBody1->setVelocity(body1Vel + vel1, deltaT * 1000.0f);
 				}
 			}

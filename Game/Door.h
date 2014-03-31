@@ -36,9 +36,12 @@ public:
 	void setActive(bool active) { this->active = active; }
 	void setDoorSet(DoorSet *doorSet) { this->doorSet = doorSet; }
 	bool isActive() { return active; }
+	/* Changes the closing speed for all doors */
+	static void setClosingSpeed(float speed) { Door::closingSpeed = speed; }
+	static float getClosingSpeed() { return Door::closingSpeed; }
 
-	// The total time a door should spend from fully opened to fully closed
-	static const float CLOSING_TIME;
+	// The speed the a door should move when closing
+	static float closingSpeed;
 
 protected:
 

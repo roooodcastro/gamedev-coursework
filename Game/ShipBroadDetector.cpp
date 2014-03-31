@@ -17,7 +17,7 @@ void ShipBroadDetector::performDetection(std::vector<PhysicalBody*> *bodies, flo
 	std::map<std::string, Entity*> *entities = gameLevel->getEntities();
 	for (unsigned i = 0; i < bodies->size(); i++) {
 		PhysicalBody *body = (*bodies)[i];
-		float minBodyPosZ = 9999999999;
+		float minBodyPosZ = 9999999999.9f;
 		float maxBodyPosZ = 0;
 		for (unsigned j = 0; j < body->getCollisionBodies()->size(); j++) {
 			CollisionBody *colBody = (*(body->getCollisionBodies()))[j];
@@ -38,7 +38,7 @@ void ShipBroadDetector::performDetection(std::vector<PhysicalBody*> *bodies, flo
 }
 
 Vector3 ShipBroadDetector::getMinColPos(PhysicalBody *body) {
-	Vector3 minBodyPos = Vector3(9999999999, 9999999999, 9999999999);
+	Vector3 minBodyPos = Vector3(9999999999.9f, 9999999999.9f, 9999999999.9f);
 	for (unsigned i = 0; i < body->getCollisionBodies()->size(); i++) {
 		CollisionBody *colBody = (*(body->getCollisionBodies()))[i];
 		Vector3 colBodyMin = colBody->getMinPosition();

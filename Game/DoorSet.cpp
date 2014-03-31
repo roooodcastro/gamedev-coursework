@@ -16,11 +16,10 @@ DoorSet::DoorSet(TrackPiece *trackPiece, float position) {
 	doors = new std::vector<Door*>();
 	this->trackPiece = trackPiece;
 	this->position = position;
-	this->createDoors("");
 }
 
 DoorSet::~DoorSet(void) {
-	for (unsigned i = 0; i < 6; i++) {
+	for (unsigned i = 0; i < doors->size(); i++) {
 		(*doors)[i]->setDoorSet(NULL);
 		delete (*doors)[i];
 	}

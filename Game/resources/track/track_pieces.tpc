@@ -1,0 +1,106 @@
+# This file specifies the track piece configurations that will appear on the game.
+# This file's format is described below:
+# Lines starting with # are commentary lines.
+# Lines starting with 'n' indicate a new track piece setting, followed by an integer indicating the difficulty of the current track piece, on a scale from 0 to 10.
+# Lines starting with 's' indicate a new doorset for the current piece, and will be followed by a number, that should be in the range of -90 to +90 and indicates the relative position of the new doorset on the current piece
+# Lines starting with 'o' will be followed by 6 numbers ranging from 0 to 100, separated by spaces, to indicate the door openness for each door of the current doorset, where 0 is fully closed and 100 fully opened
+# Empty lines or lines starting with any other character may be ignored, or may generate errors
+# Each doorset may have only one declaration of door openness values, if a second one is found, the first will be overridden
+# Each time a line for a new doorset or track piece appear, the current doorset/piece will be added to the track piece/track and will not be able to recieve any further modifications
+# Difficulty 0 is a special value and should only be used for pieces that have no doorsets
+
+# Below are the easy track pieces:
+
+n 0
+
+n 1
+s 0
+o 0.0 1.0 1.0 0.0 1.0 1.0
+
+n 1
+s 0
+o 1.0 1.0 0.0 0.0 0.0 1.0
+
+n 1
+s 0
+o 0.0 0.0 1.0 1.0 1.0 0.0
+
+n 2
+s -20
+o 0.0 0.0 1.0 1.0 1.0 0.0
+s 20
+o 0.0 0.0 1.0 1.0 1.0 0.0
+
+n 2
+s -20
+o 1.0 1.0 0.0 0.0 0.0 1.0
+s 20
+o 1.0 1.0 0.0 0.0 0.0 1.0
+
+n 2
+s -50
+o 1.0 1.0 1.0 0.0 0.0 1.0
+s 0
+o 1.0 1.0 1.0 1.0 0.0 0.0
+s 50
+o 0.0 1.0 1.0 1.0 1.0 0.0
+
+n 3
+s 0
+o 1.0 1.0 0.0 0.0 0.0 0.0
+
+n 3
+s 0
+o 0.0 1.0 1.0 0.0 0.0 0.0
+
+n 3
+s 0
+o 0.0 0.0 1.0 1.0 0.0 0.0
+
+n 3
+s 0
+o 0.0 0.0 0.0 1.0 1.0 0.0
+
+n 3
+s 0
+o 0.0 0.0 0.0 0.0 1.0 1.0
+
+n 3
+s 0
+o 1.0 0.0 0.0 0.0 0.0 1.0
+
+n 4
+s 0
+o 1.0 0.0 0.0 0.0 0.0 0.0
+
+n 4
+s 0
+o 0.0 1.0 0.0 0.0 0.0 0.0
+
+n 4
+s 0
+o 0.0 0.0 1.0 0.0 0.0 0.0
+
+n 4
+s 0
+o 0.0 0.0 0.0 1.0 0.0 0.0
+
+n 4
+s 0
+o 0.0 0.0 0.0 0.0 1.0 0.0
+
+n 4
+s 0
+o 0.0 0.0 0.0 0.0 0.0 1.0
+
+n 5
+s -60
+o 0.0 0.0 1.0 1.0 1.0 1.0
+s -30
+o 1.0 0.0 0.0 1.0 1.0 1.0
+s 0
+o 1.0 1.0 0.0 0.0 1.0 1.0
+s 30
+o 1.0 1.0 1.0 0.0 0.0 1.0
+s 60
+o 1.0 1.0 1.0 1.0 0.0 0.0

@@ -1,6 +1,6 @@
 #include "Door.h"
 
-const float Door::CLOSING_TIME = 2000.0f;
+float Door::closingSpeed = 15.0f;
 
 Door::Door(void) : Entity() {
 	this->model = Model::getOrCreate("TRACK_DOOR_MESH", "resources/models/Door.mdl");
@@ -37,11 +37,11 @@ Door::Door(DoorSet *doorSet, int index, float targetOpenness) : Entity() {
 	setInitialDoorPosition();
 	// Create all of the collision bodies
 	// This creates a pyramid of small spheres, covering the whole door
-	for (int i = 0; i < 6; i++) {
+	for (int i = 0; i < 7; i++) {
 		// Bodies in this layer: i + 1
 		for (int j = 0; j <= i; j++) {
 			float posX = (3.6f * j) - (1.8f * i);
-			float posY = 13.6 - (3.0f * i);
+			float posY = 13.6f - (3.0f * i);
 			physicalBody->addCollisionBody(new CollisionBody(physicalBody, Vector3(posX, posY, 0), 2.1f));
 		}
 	}
@@ -71,9 +71,9 @@ void Door::update(unsigned millisElapsed) {
 	Vector3 direction = Vector3(-sin((60.0f * PI / 180) * doorIndex), cos((60.0f * PI / 180) * doorIndex), 0);
 	// Set velocity values in case door is active or not
 	if (active) {
-		physicalBody->setVelocity(direction * 15.0f, (float) millisElapsed);
+		physicalBody->setVelocity(direction * closingSpeed, (float) millisElapsed);
 	} else {
-		physicalBody->setVelocity(Vector3(0, 0, 0), millisElapsed);
+		physicalBody->setVelocity(Vector3(0, 0, 0), (float) millisElapsed);
 	}
 	// The distance from the door to the center of the doorset
 	float distance = sqrt((pow(physicalBody->getPosition()->x, 2)) + (pow(physicalBody->getPosition()->y, 2)));
@@ -105,6 +105,6 @@ void Door::onKeyUp(SDL_Keysym key) {
 void Door::setInitialDoorPosition() {
 	float sinX = sin((60.0f * PI / 180) * doorIndex);
 	float cosY = cos((60.0f * PI / 180) * doorIndex);
-	physicalBody->setPosition(Vector3(43.4f * sinX, -43.4f * cosY, -45.0f + doorSet->getPosition()));
+	physicalBody->setPosition(Vector3(43.6f * sinX, -43.6f * cosY, -45.0f + doorSet->getPosition()));
 	physicalBody->setVelocity(Vector3(0, 0, 0), 1);
 }

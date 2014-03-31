@@ -14,6 +14,7 @@
 #pragma once
 
 #include <vector>
+#include "Track.h"
 #include "DoorSet.h"
 #include "Entity.h"
 #include "ResourcesManager.h"
@@ -26,6 +27,7 @@ public:
 	TrackPiece(void);
 	TrackPiece(const TrackPiece &copy);
 	TrackPiece(Vector3 &position);
+	TrackPiece(Vector3 &position, TrackPieceConfiguration *configuration);
 	virtual ~TrackPiece(void);
 
 	TrackPiece &operator=(const TrackPiece &other);

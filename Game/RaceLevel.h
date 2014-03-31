@@ -54,5 +54,9 @@ protected:
 
 	/* The target speed for the ship */
 	float targetSpeed;
+	/* The total time that the ship has been flying */
+	unsigned timeRunning;
+	/* The total distance travelled */
+	float distanceTravelled;
 
 };

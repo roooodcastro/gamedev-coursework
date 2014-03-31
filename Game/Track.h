@@ -11,7 +11,25 @@
 #pragma once
 
 #include <vector>
+
+/* Struct to store doorset configuration for the track pieces */
+struct DoorsetConfiguration {
+	float position;
+	float openness[6];
+	DoorsetConfiguration(float position) : position(position) {}
+};
+
+/* Struct to hold track piece configurations to be added randomly to the track */
+struct TrackPieceConfiguration {
+	int difficulty;
+	std::vector<DoorsetConfiguration*> doorsets;
+	TrackPieceConfiguration(int difficulty) : difficulty(difficulty) {}
+};
+
 #include "TrackPiece.h"
+#include "Vector3.h"
+
+class TrackPiece;
 
 class Track {
 public:
@@ -42,7 +60,15 @@ public:
 	 */
 	void generateStarterPieces();
 
+	/*
+	 * Reads a .tpc (TrackPieCe) file to load all the track piece configurations that waill be used in the game.
+	 * Doing this when track pieces are already loaded will append the new pieces to the list, even if they are duplicates
+	 */
+	void loadTrackPiecesFromFile(const char *fileName);
+
 protected:
 
 	std::vector<TrackPiece*> *pieces;
+
+	std::vector<TrackPieceConfiguration*> *loadedConfigurations;
 };

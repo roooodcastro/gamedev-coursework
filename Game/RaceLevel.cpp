@@ -9,12 +9,12 @@ RaceLevel::RaceLevel(void) : Level(LEVEL_GAME, UserInterface()) {
 	userInterface->addItem(speedometer, "Speedometer");
 
 	// Lights!
-	Vector3 lightColour = Vector3(0.6f, 0.6f, 0.6f);
-	addLightSource(*(new Light(Vector3(100, 0, 0), 20, lightColour)));
-	addLightSource(*(new Light(Vector3(-100, 0, 0), 20, lightColour)));
-	addLightSource(*(new Light(Vector3(0, 100, 0), 20, lightColour)));
-	addLightSource(*(new Light(Vector3(0, -100, 0), 20, lightColour)));
-	addLightSource(*(new Light(Vector3(0, 0, 0), 10, Vector3(0.3f, 0.0f, 0.6f))));
+	Vector3 lightColour = Vector3(0.5f, 0.5f, 0.5f);
+	addLightSource(*(new Light(Vector3(100, 0, 0), 25, lightColour)));
+	addLightSource(*(new Light(Vector3(-100, 0, 0), 25, lightColour)));
+	addLightSource(*(new Light(Vector3(0, 100, 0), 25, lightColour)));
+	addLightSource(*(new Light(Vector3(0, -100, 0), 25, lightColour)));
+	addLightSource(*(new Light(Vector3(0, 0, 0), 10, Vector3(0.5f, 0.3f, 0.7f))));
 
 	setProjectionMatrix(Matrix4::Perspective(1.0f, -100.0f, 1280.0f / 720.0f, 45.0f));
 	setCameraMatrix(Matrix4::Translation(Vector3(0, 0, -10.0f)));
@@ -23,23 +23,32 @@ RaceLevel::RaceLevel(void) : Level(LEVEL_GAME, UserInterface()) {
 	track = new Track();
 	lastPieceDeleted = -1;
 	lastPieceAdded = -1;
-}
 
-RaceLevel::~RaceLevel(void) {
-}
-
-void RaceLevel::onStart() {
 	// Load the ship
 	Ship *ship = new Ship(Vector3(0, 0, -20.0f), Vector3(0, 0, 0.0f), Vector3(0, 0, 0));
 	addEntity(ship, "Ship");
 
+	// Load track pieces
 	track->generateStarterPieces();
 	std::vector<TrackPiece*> *pieces = track->getTrackPieces();
 	for (unsigned i = 0; i < pieces->size(); i++) {
 		lastPieceAdded = i;
 		addEntity((*pieces)[i], to_string((long long) lastPieceAdded));
 	}
-	targetSpeed = 100.0f;
+	track->loadTrackPiecesFromFile("resources/track/track_pieces.tpc");
+	targetSpeed = 500.0f;
+}
+
+RaceLevel::~RaceLevel(void) {
+}
+
+void RaceLevel::onStart() {
+	lockMutex();
+	Entity *ship = getEntity("Ship");
+	ship->getPhysicalBody()->setVelocity(Vector3(0, 0, 0.0f), 1);
+	unlockMutex();
+	timeRunning = 0;
+	distanceTravelled = 0;
 }
 
 void RaceLevel::onPause() {
@@ -103,15 +112,27 @@ void RaceLevel::onKeyUp(SDL_Keysym key) {
 void RaceLevel::processLevelTick(unsigned int millisElapsed) {
 	Level::processLevelTick(millisElapsed);
 	lockMutex();
+	timeRunning += millisElapsed;
 	Entity *ship = getEntity("Ship");
 	Vector3 shipPos = Vector3(*(ship->getPhysicalBody()->getPosition()));
 	Vector3 shipVel = ship->getPhysicalBody()->getVelocity(5.0f);
 	Vector3 shipAccel = ship->getPhysicalBody()->getAcceleration();
 	// Update ship
-	ship->getPhysicalBody()->setAcceleration(Vector3(shipAccel.x, shipAccel.y, (targetSpeed * (1.0f + ship->getPhysicalBody()->getdragFactor())) - shipVel.z));
-	if (lastPieceAdded % (int) (10.0f + sqrt((float) lastPieceAdded)) == 0) {
-		targetSpeed = 100.5f + (lastPieceAdded * 2.0f);
+	float dragMod = (1.0f + ship->getPhysicalBody()->getdragFactor());
+	float accel = min((targetSpeed - shipVel.z) * dragMod, 10.0f);
+	ship->getPhysicalBody()->setAcceleration(Vector3(shipAccel.x, shipAccel.y, accel));
+	if ((timeRunning % 15000) <= millisElapsed) {
+		// Each 15 seconds increase the ship's speed and also the door closing speed, so the ship will not outrun the doors
+		std::cout << millisElapsed << std::endl;
+		std::cout << (int) (timeRunning / 15000) << std::endl;
+		int speedChangeCount = (int) (timeRunning / 15000.0f);
+		targetSpeed = 500.0f + (25.0f * speedChangeCount);
+		Ship::setSideSpeed(50.0f + (5.0f * speedChangeCount));
+		Door::setClosingSpeed(15.0f + (0.75f * speedChangeCount));
+
 	}
+	distanceTravelled += (targetSpeed * (millisElapsed / 1000.0f));
+	//std::cout << distanceTravelled << std::endl;
 
 	// Update race track
 	TrackPiece *newPiece = track->generateNextPiece(shipPos);

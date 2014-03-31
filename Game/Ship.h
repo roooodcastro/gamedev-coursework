@@ -28,7 +28,11 @@ public:
 	virtual void onKeyDown(SDL_Keysym key); // Will fire in every tick that a key is down
 	virtual void onKeyUp(SDL_Keysym key); // Will fire every time a key is released
 
-	static const float MAX_SIDE_SPEED;
+	static void setSideSpeed(float speed) { Ship::maxSideSpeed = speed; }
+	static float getSideSpeed() { return Ship::maxSideSpeed; }
+
+	/* The speed in which the ship will be able to move left, right, up and down */
+	static float maxSideSpeed;
 
 protected:
 
