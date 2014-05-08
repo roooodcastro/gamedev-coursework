@@ -13,6 +13,7 @@ PhysicalBody::PhysicalBody(void) {
 	moveable = true;
 	collisionGroup = 0;
 	entity = NULL;
+	unprocessedCollisions = 0;
 }
 
 PhysicalBody::PhysicalBody(const PhysicalBody &copy) {
@@ -28,6 +29,7 @@ PhysicalBody::PhysicalBody(const PhysicalBody &copy) {
 	moveable = copy.moveable;
 	collisionGroup = copy.collisionGroup;
 	entity = copy.entity;
+	unprocessedCollisions = copy.unprocessedCollisions;
 }
 
 PhysicalBody::PhysicalBody(Entity *entity, float mass, Vector3 &position) {
@@ -43,6 +45,7 @@ PhysicalBody::PhysicalBody(Entity *entity, float mass, Vector3 &position) {
 	this->moveable = true;
 	this->collisionGroup = 0;
 	this->entity = entity;
+	unprocessedCollisions = 0;
 }
 
 PhysicalBody::~PhysicalBody(void) {
@@ -78,6 +81,7 @@ PhysicalBody &PhysicalBody::operator=(const PhysicalBody &other) {
 	moveable = other.moveable;
 	collisionGroup = other.collisionGroup;
 	entity = other.entity;
+	unprocessedCollisions = other.unprocessedCollisions;
 	return *this;
 }
 
@@ -178,6 +182,9 @@ void PhysicalBody::checkCollision(PhysicalBody *body1, PhysicalBody *body2, floa
 					swappedBody1->setVelocity(vel1, deltaT * 1000.0f);
 					swappedBody2->setVelocity(vel2, deltaT * 1000.0f);
 				} else {
+					if (swappedBody2->getCollisionGroup() == 1) {
+						body1->unprocessedCollisions++;
+					}
 					impulse = Vector3::dot(body1Vel, result.normal) * (-1.0f * (1 + elasticity)) / (normalDot * (1.0f / swappedBody1->mass));
 					vel1 = (result.normal * (impulse / swappedBody1->mass));
 					// Correct the inconsistency moving the sphere away from the other static body

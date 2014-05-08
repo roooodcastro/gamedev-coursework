@@ -56,6 +56,11 @@ public:
 	 */
 	static void terminate();
 
+	/*
+	 * Returns the number of resources currently allocated
+	 */
+	static int getResourcesCount() { return resources->size(); }
+
 
 protected:
 

@@ -63,6 +63,8 @@ public:
 	int getTextureHeight() { return texHeight; }
 	bool isTextureValid() { return textureId >= 0 && textureId < 4000000 && loaded; }
 
+	void setColour(Colour &colour);
+
 	/*
 	 * Log an SDL error with some error message to the output stream of our choice
 	 * @param os The output stream to write the message to

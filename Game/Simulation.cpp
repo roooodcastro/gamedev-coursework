@@ -92,7 +92,7 @@ void Simulation::startSimulation() {
 void Simulation::stopSimulation() {
 	running = false;
 	timer->stopTimer();
-	SDL_WaitThread(timer->getThread(), NULL);
+	//SDL_WaitThread(timer->getThread(), NULL);
 }
 
 //void Simulation::addPhysicalBody(PhysicalBody *PhysicalBody) {

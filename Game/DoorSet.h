@@ -27,6 +27,8 @@ public:
 	void setPosition(float position) { this->position = position; }
 	float getPosition() { return position; }
 	std::vector<Door*> *getDoors() { return doors; }
+	/* Return true if all doors are fully opened */
+	bool areAllDoorsOpened();
 
 	/* Causes the doors in this doorset to start closing, is they are opened */
 	void closeDoors();

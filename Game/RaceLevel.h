@@ -9,8 +9,14 @@
 
 #include "Level.h"
 #include "PauseMenu.h"
+#include "GameOverOverlay.h"
 #include "Track.h"
 #include "Ship.h"
+#include "ShipBroadDetector.h"
+#include "Music.h"
+#include "Leaderboard.h"
+
+class PauseMenu;
 
 class RaceLevel : public Level {
 public:
@@ -54,9 +60,15 @@ protected:
 
 	/* The target speed for the ship */
 	float targetSpeed;
-	/* The total time that the ship has been flying */
+	/* The total time that the level has been running */
 	unsigned timeRunning;
-	/* The total distance travelled */
+	/* This variable used to store the total distance travelled, but now stores the score of the player */
 	float distanceTravelled;
+	/* If the player can control the ship or not */
+	bool canControl;
+	/* The timestamp of when the level started */
+	double startTime;
+	/* The absolute position of the last doorset that the player passed throught */
+	int lastDoorset;
 
 };

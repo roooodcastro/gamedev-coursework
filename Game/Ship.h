@@ -31,6 +31,13 @@ public:
 	static void setSideSpeed(float speed) { Ship::maxSideSpeed = speed; }
 	static float getSideSpeed() { return Ship::maxSideSpeed; }
 
+	float getRoll() { return roll; }
+	void setRoll(float roll) { this->roll = roll; }
+	float getPitch() { return pitch; }
+	void setPitch(float pitch) { this->pitch = pitch; }
+	float getYaw() { return yaw; }
+	void setYaw(float yaw) { this->yaw = yaw; }
+
 	/* The speed in which the ship will be able to move left, right, up and down */
 	static float maxSideSpeed;
 

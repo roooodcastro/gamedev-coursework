@@ -93,6 +93,7 @@ public:
 	int getCollisionGroup() { return collisionGroup; }
 	void setEntity(Entity *entity) { this->entity = entity; }
 	Entity *getEntity() { return entity; }
+	int getUnprocessedCollisions() { return unprocessedCollisions; }
 
 	/* Checks if this physical body has any collision bodies */
 	bool isCollideable();
@@ -135,4 +136,6 @@ protected:
 	std::vector<CollisionBody*> *collisionBodies;
 	/* The entity that represents this physical body */
 	Entity *entity;
+	/* The number of collisions that weren't processed yet */
+	int unprocessedCollisions;
 };

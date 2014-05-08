@@ -19,6 +19,8 @@ GameApp::GameApp() {
 	}
 	joystick = NULL;
 	currentLevel = NULL;
+	nextLevel = NULL;
+	showDebug = false;
 }
 
 GameApp::~GameApp() {
@@ -68,6 +70,9 @@ GameApp *GameApp::initializeContext(const char *gameTitle, const int windowWidth
 	if ((IMG_Init(IMG_INIT_PNG) & IMG_INIT_PNG) != IMG_INIT_PNG){
 		logSDLError(std::cout, "IMG_INIT");
 	}
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0) {
+        logSDLError(std::cout, "MIXER_INIT");
+    }
 	glewExperimental = GL_TRUE;
 	if (glewInit() != GLEW_OK) {
 		std::cout << "OGLRenderer::OGLRenderer(): Cannot initialise GLEW!" << std::endl;
@@ -105,8 +110,6 @@ void GameApp::runGame() {
 	startTime = SDL_GetTicks();
 	// Start game timers
 	installTimers();
-	// Start simulation
-	Simulation::getInstance()->startSimulation();
 	while(gameRunning) {
 		handleUserEvents();
 		SDL_Delay(1); // Just to not overload the processor. We shouldn't need more than 1000 input checks every second anyway
@@ -115,11 +118,25 @@ void GameApp::runGame() {
 	if (joystick != NULL) {
 		SDL_JoystickClose(joystick);
 	}
+	Mix_Quit();
+	IMG_Quit();
 	SDL_Quit();
 }
 
 void GameApp::processGameTick(Uint32 millisElapsed) {
 	Uint32 tickStart = SDL_GetTicks();
+	// Switch levels if requested
+	if (nextLevel) {
+		if (currentLevel) {
+			currentLevel->onFinish();
+			delete currentLevel;
+		}
+		this->currentLevel = nextLevel;
+		if (currentLevel) {
+			this->currentLevel->onStart();
+		}
+		nextLevel = NULL;
+	}
 	if (currentLevel) {
 		currentLevel->processLevelTick(tickStart - lastTickTime);
 	}
@@ -292,11 +309,5 @@ void GameApp::setGamePaused(bool paused) {
 }
 
 void GameApp::setCurrentLevel(Level *level) {
-	if (currentLevel) {
-		this->currentLevel->onFinish();
-	}
-	this->currentLevel = level;
-	if (currentLevel) {
-		this->currentLevel->onStart();
-	}
+	nextLevel = level;
 }

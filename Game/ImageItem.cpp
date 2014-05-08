@@ -4,8 +4,8 @@ ImageItem::ImageItem(void) : InterfaceItem(ITEM_IMAGE) {
 
 }
 
-ImageItem::ImageItem(Vector2 &position, float rotation, Vector2 &size) : InterfaceItem(ITEM_IMAGE, position, rotation, size) {
-	
+ImageItem::ImageItem(Vector2 &position, float rotation, Vector2 &size, Texture *image) : InterfaceItem(ITEM_IMAGE, position, rotation, size) {
+	texture = image;
 }
 
 ImageItem::~ImageItem() {
@@ -42,3 +42,4 @@ void ImageItem::onKeyDown(SDL_Keysym key) {
 
 void ImageItem::onKeyUp(SDL_Keysym key) {
 }
+

@@ -44,3 +44,14 @@ void DoorSet::closeDoors() {
 		}
 	}
 }
+
+bool DoorSet::areAllDoorsOpened() {
+	bool haveDoorClosed = false;
+	for (unsigned i = 0; i < doors->size(); i++) {
+		Door *door = (*doors)[i];
+		if (door->getTargetOpenness() < 100) {
+			haveDoorClosed = true;
+		}
+	}
+	return haveDoorClosed;
+}

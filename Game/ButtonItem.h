@@ -2,6 +2,7 @@
 
 #include "InterfaceItem.h"
 #include "GameApp.h"
+#include "Sound.h"
 
 enum ButtonState {
 	BUTTON_NORMAL,
@@ -41,6 +42,7 @@ public:
 	bool isNormal() { return state == BUTTON_NORMAL; }
 	bool isHovered() { return state == BUTTON_HOVERED; }
 	bool isPressed() { return state == BUTTON_PRESSED; }
+	void setPressed(bool pressed) { state = pressed ? BUTTON_PRESSED : BUTTON_NORMAL; }
 	virtual void setTexture(Texture *texture);
 
 protected:

@@ -2,11 +2,13 @@
 
 #include "InterfaceItem.h"
 
+class Texture;
+
 class ImageItem : public InterfaceItem {
 
 public:
 	ImageItem(void);
-	ImageItem(Vector2 &position, float rotation, Vector2 &size);
+	ImageItem(Vector2 &position, float rotation, Vector2 &size, Texture *image);
 	virtual ~ImageItem(void);
 
 	/* Mouse events */

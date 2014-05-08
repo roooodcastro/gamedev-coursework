@@ -6,7 +6,7 @@ TrackPiece::TrackPiece(void) : Entity() {
 	this->getPhysicalBody()->setScale(Vector3(30, 30, 90));
 	physicalBody->setCanMove(false);
 	physicalBody->setElasticity(0.0f);
-	this->physicalBody->setCollisionGroup(1);
+	this->physicalBody->setCollisionGroup(2);
 	this->getPhysicalBody()->addCollisionBody(new CollisionBody(physicalBody, Vector3(0, 0, 0), 23.0f, 90.0f, Vector3(0, 0, 1)));
 	this->doorSets = new std::vector<DoorSet*>();
 	this->generateDoorSets();
@@ -20,7 +20,7 @@ TrackPiece::TrackPiece(Vector3 &position) : Entity() {
 	this->getPhysicalBody()->setVelocity(Vector3(0, 0, 0), 1);
 	physicalBody->setCanMove(false);
 	physicalBody->setElasticity(0.0f);
-	this->physicalBody->setCollisionGroup(1);
+	this->physicalBody->setCollisionGroup(2);
 	this->getPhysicalBody()->addCollisionBody(new CollisionBody(physicalBody, Vector3(0, 0, 0), 23.0f, 90.0f, Vector3(0, 0, 1)));
 	this->doorSets = new std::vector<DoorSet*>();
 	this->generateDoorSets();
@@ -34,7 +34,7 @@ TrackPiece::TrackPiece(Vector3 &position, TrackPieceConfiguration *configuration
 	this->getPhysicalBody()->setVelocity(Vector3(0, 0, 0), 1);
 	physicalBody->setCanMove(false);
 	physicalBody->setElasticity(0.0f);
-	this->physicalBody->setCollisionGroup(1);
+	this->physicalBody->setCollisionGroup(2);
 	this->getPhysicalBody()->addCollisionBody(new CollisionBody(physicalBody, Vector3(0, 0, 0), 23.0f, 90.0f, Vector3(0, 0, 1)));
 	this->doorSets = new std::vector<DoorSet*>();
 	for (unsigned i = 0; i < configuration->doorsets.size(); i++) {

@@ -116,6 +116,8 @@ void Texture::load() {
 void Texture::unload() {
 	if (loaded) {
 		glDeleteTextures(1, &textureId);
+		textureId = 0;
+		loaded = false;
 	}
 }
 
@@ -237,4 +239,12 @@ Texture *Texture::getColourGreen() {
 
 Texture *Texture::getColourBlue() {
 	return getOrCreate(Texture::texColNameBlue, Colour(0xFF0000FF));
+}
+
+void Texture::setColour(Colour &colour) {
+	if (this->colour) {
+		*(this->colour) = colour;
+	} else {
+		this->colour = new Colour(colour);
+	}
 }

@@ -6,6 +6,7 @@
 #include "InterfaceItem.h"
 
 class InterfaceItem;
+class ImageItem;
 class Shader;
 
 class UserInterface {
@@ -35,11 +36,17 @@ public:
 	bool removeItem(InterfaceItem *item, std::string name);
 	InterfaceItem *getItem(std::string name);
 	std::map<std::string, InterfaceItem*> *getItems() { return items; }
-	void setShowFpsCounter(bool showFps);
-	bool isShowFpsCounter() { return showFpsCounter; }
 	Shader *getInterfaceShader() { return interfaceShader; }
 	/* Returns true if a named item has been added to this interface */
 	bool isItemInInterface(std::string name);
+
+	/* Start a fadeIn effect from black, for the specified duration */
+	void startFadeIn(int millis);
+	/* Start a fadeOut effect to black, for the specified duration */
+	void startFadeOut(int millis);
+
+	/* Checks if the interface is fading, no matter in which direction. */
+	bool isFading() { return fadeControl > 0; }
 
 	UserInterface &operator=(const UserInterface &other);
 
@@ -50,8 +57,20 @@ protected:
 	 */
 	std::map<std::string, InterfaceItem*> *items;
 
-	/* Debug tool to show fps counter on the top left corner of screen */
-	bool showFpsCounter;
-	InterfaceItem *fpsCounter;
+	/* Debug and profiling tools */
+	InterfaceItem *fpsCounter; // Average FPS
+	InterfaceItem *resourcesCounter; // Number of resources allocated
+	InterfaceItem *entitiesCounter; // Number of entities in the current level
+	InterfaceItem *mousePosDisplay; // Current mouse position
+	Vector2 mousePos; // Stores the mouse pos for debugging
+
 	Shader *interfaceShader; // The default shader to be used on the interface. Plain simple shader.
+	/* Describes if the interface is fading in (1), fading out (2), or not fading (0). Defaults to 0. */
+	int fadeControl;
+	/* The black overlay used to fade the screen */
+	InterfaceItem *fadeOverlay;
+	/* Internal variable used to control the fading effect */
+	int fadeStep;
+	/* Internal variable used to control the fading effect */
+	int fadeDuration;
 };

@@ -262,7 +262,7 @@ void Level::drawLevel(unsigned int millisElapsed) {
 		program = userInterface->getInterfaceShader()->getShaderProgram();
 		glUseProgram(program);
 		glUniformMatrix4fv(glGetUniformLocation(program, "viewMatrix"), 1, false, (float*) &(Matrix4::Translation(Vector3(0, 0, 1.0f))));
-		glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, false, (float*) &(Matrix4::Orthographic(-1, 1, 1280.0f, 0, 720, 0)));
+		glUniformMatrix4fv(glGetUniformLocation(program, "projMatrix"), 1, false, (float*) &(Matrix4::Orthographic(-1, 1, 1920.0f, 0, 1080, 0)));
 		userInterface->draw(millisElapsed);
 	}
 }

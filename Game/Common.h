@@ -12,6 +12,10 @@ _-_-_-_-_-_-_-""  ""
 
 #pragma once
 
+#include <vector>
+#include <string>
+#include <sstream>
+
 //It's pi(ish)...
 static const float		PI = 3.14159265358979323846f;	
 
@@ -39,3 +43,18 @@ static inline float generateRandom(float min, float max) {
 #define clamp(a,b,c) (a < b ? b : (a > c ? c : a))
 
 typedef unsigned int uint;
+
+static inline std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+static inline std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
+}

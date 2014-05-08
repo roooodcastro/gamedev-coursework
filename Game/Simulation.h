@@ -26,6 +26,9 @@ public:
 
 	static Simulation *getInstance();
 
+	/* Resets the simulation, deleting it */
+	static void resetSimulation() { delete instance; instance = NULL; }
+
 	/* Starts the simulation */
 	void startSimulation();
 	/* Stops the simulation */

@@ -43,6 +43,21 @@ public:
 
 	virtual TextItem &operator=(const TextItem &other);
 
+	/* Gameloop funcions */
+	virtual void update(unsigned millisElapsed);
+
+	/*
+	 * Start a fadeIn effect from transparent to colour, for the specified duration.
+	 * Will set the TextItem colour to whatever colour is provided. If the TextItem
+	 * is hidden, it will become visible.
+	 */
+	void startFadeIn(Colour toColour, int millis);
+	/* Start a fadeOut effect to transparent, for the specified duration. Will hide the TextItem after finished */
+	void startFadeOut(int millis);
+
+	/* Checks if the interface is fading, no matter in which direction. */
+	bool isFading() { return fadeControl > 0; }
+
 protected:
 
 	/*
@@ -56,5 +71,13 @@ protected:
 	string font; // The text font filename (including the path)
 	int fontSize; // The font size, in points
 	Colour *colour; // The colour of the text. If a background colour is needed, an ImageItem should be put behind this text with the colour
+	/* Describes if the textItem is fading in (1), fading out (2), or not fading (0). Defaults to 0. */
+	int fadeControl;
+	/* Internal variable used to control the fading effect */
+	int fadeStep;
+	/* Internal variable used to control the fading effect */
+	int fadeDuration;
+	/* Stores the colour that the FadeIn is supposed to achieve */
+	Colour fadeColour;
 
 };

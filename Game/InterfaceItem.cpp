@@ -42,7 +42,7 @@ InterfaceItem::InterfaceItem(InterfaceItemType type, Vector2 &position, float ro
 	}
 	this->rotation = rotation;
 	if (&size != nullptr) {
-		this->size = &size;
+		*(this->size) = size;
 	}
 	this->type = type;
 	this->innerItems = new std::vector<InterfaceItem*>();
@@ -59,8 +59,17 @@ InterfaceItem::~InterfaceItem(void) {
 }
 
 bool InterfaceItem::isMouseHovering(Vector2 &mousePos) {
-	if (mousePos.x >= position->x && mousePos.x <= (position->x + getRealSize().x)) {
-		return mousePos.y >= position->y && mousePos.y <= (position->y + getRealSize().y);
+	Vector2 realSize = getRealSize();
+	Vector2 realPos = Vector2(*position);
+	GameApp *gameApp = GameApp::getInstance();
+	if (realPos.x == POSITION_CENTERED) {
+		realPos.x = (gameApp->getWindowWidth() / 2.0f) - (realSize.x / 2.0f);
+	}
+	if (realPos.y == POSITION_CENTERED) {
+		realPos.y = (gameApp->getWindowHeight() / 2.0f) - (realSize.y / 2.0f);
+	}
+	if (mousePos.x >= realPos.x && mousePos.x <= (realPos.x + realSize.x)) {
+		return mousePos.y >= realPos.y && mousePos.y <= (realPos.y + realSize.y);
 	}
 	return false;
 }

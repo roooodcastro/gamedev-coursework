@@ -9,6 +9,7 @@
 #include <SDL_opengl.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
+#include <SDL_mixer.h>
 #include "Vector2.h"
 #include "Level.h"
 #include "Texture.h"
@@ -61,6 +62,8 @@ public:
 	Uint32 getFramesCount() { return numberOfFrames; }
 	void setGamePaused(bool paused);
 	bool isGamePaused() { return gamePaused; }
+	bool isDebugOn() { return showDebug; }
+	void setDebug(bool debug) { showDebug = debug; }
 
 	/*
 	 * Log an SDL error with some error message to the output stream of our choice
@@ -84,6 +87,12 @@ public:
 	 * This method will only return when the player quits the game or when SDL crashes and shit hits the fan.
 	 */
 	void runGame();
+
+	/*
+	 * This method will tell the game app to stop the game execution and quit. Everything should have time to
+	 * unload before the application exits.
+	 */
+	void exitGame() { gameRunning = false; }
 
 	/*
 	 * Function that will be called to handle special events input, like the player exiting the game, the timer firing the processing methods,
@@ -130,7 +139,8 @@ protected:
 	int windowHeight; // Window height. Defaults to 768, but will be read from config file
 	bool fullscreen; // If the game is running on fullscreen or not. Defaults to false, again, will be read from file
 	bool gameRunning; // Self-explanatory, I guess
-	bool gamePaused; // Indicated if the game is paused, in which case it should not process any logic
+	bool gamePaused; // Indicates if the game is paused, in which case it should not process any logic
+	bool showDebug; // Flag to turn profiling on and off. Defaults to false
 	SDL_Window *window; // The actual desktop window in which SDL and OpenGL will draw to
 	SDL_Renderer *renderer; // The SDL renderer, which will be used to interface with OpenGL and draw some sexy pixels
 	SDL_GLContext glContext; // The OpenGL Context that will be used to do pretty much everything OpenGL related
@@ -149,5 +159,6 @@ protected:
 	Uint32 frameIntervalSum; // The sum of the last 60 frames intervals
 	map<string, Level> levels; // A map containing the levels loaded for the game
 	Level *currentLevel; // A pointer indicating the current Level that is being played
+	Level *nextLevel; // A pointer indicating the next level to be played. This will be switched on the beginning of the next frame
 	Shader *defaultShader; // A default shader to be applied to entities
 };

@@ -93,12 +93,13 @@ void Door::update(unsigned millisElapsed) {
 }
 
 void Door::onKeyUp(SDL_Keysym key) {
+	// Only for debug purposes
 	if (key.sym == SDLK_o) {
-		active = true;
+		//active = true;
 	}
 	if (key.sym == SDLK_r) {
-		openness = 1.0;
-		setInitialDoorPosition();
+		//openness = 1.0;
+		//setInitialDoorPosition();
 	}
 }
 

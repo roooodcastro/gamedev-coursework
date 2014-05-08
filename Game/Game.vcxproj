@@ -39,13 +39,13 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>..\SDL2_ttf-2.0.12\include;..\glew-1.10.0\include;..\SDL2-2.0.1\include;..\SDL2_image-2.0.0\include;$(IncludePath)</IncludePath>
-    <LibraryPath>..\SDL2_ttf-2.0.12\lib\x86;..\glew-1.10.0\lib\Release\Win32;..\SDL2-2.0.1\lib\x86;..\SDL2_image-2.0.0\lib\x86;$(LibraryPath)</LibraryPath>
+    <IncludePath>..\SDL2_ttf-2.0.12\include;..\glew-1.10.0\include;..\SDL2-2.0.1\include;..\SDL2_image-2.0.0\include;..\SDL2_mixer-2.0.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\SDL2_ttf-2.0.12\lib\x86;..\glew-1.10.0\lib\Release\Win32;..\SDL2-2.0.1\lib\x86;..\SDL2_image-2.0.0\lib\x86;..\SDL2_mixer-2.0.0\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>..\SDL2-2.0.1\include;..\GLEW\include;..\SOIL;$(IncludePath)</IncludePath>
-    <LibraryPath>..\GLEW\lib\$(Configuration);H:\Visual Studio 2010\Projects\GameDev\SDL2-2.0.1\lib\x86;..\SDL2-2.0.1\lib\$(Configuration);..\SOIL\$(Configuration);$(LibraryPath)</LibraryPath>
+    <IncludePath>..\SDL2_ttf-2.0.12\include;..\glew-1.10.0\include;..\SDL2-2.0.1\include;..\SDL2_image-2.0.0\include;..\SDL2_mixer-2.0.0\include;$(IncludePath)</IncludePath>
+    <LibraryPath>..\SDL2_ttf-2.0.12\lib\x86;..\glew-1.10.0\lib\Release\Win32;..\SDL2-2.0.1\lib\x86;..\SDL2_image-2.0.0\lib\x86;..\SDL2_mixer-2.0.0\lib\x86;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -59,7 +59,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>glew32s.lib;glu32.lib;opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>glew32s.lib;glu32.lib;opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalOptions>/ignore:4204 %(AdditionalOptions)</AdditionalOptions>
     </Link>
   </ItemDefinitionGroup>
@@ -71,20 +71,20 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <AdditionalIncludeDirectories>..\SDL2-2.0.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN32;GLEW_STATIC;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>../;./</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalLibraryDirectories>..\SDL2-2.0.1\lib\x64;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
+      <AdditionalDependencies>glew32s.lib;glu32.lib;opengl32.lib;SDL2.lib;SDL2main.lib;SDL2_image.lib;SDL2_ttf.lib;SDL2_mixer.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="AudioManager.h" />
     <ClInclude Include="BroadphaseDetector.h" />
     <ClInclude Include="ButtonItem.h" />
     <ClInclude Include="CollisionBody.h" />
@@ -95,9 +95,14 @@
     <ClInclude Include="DoorSet.h" />
     <ClInclude Include="Entity.h" />
     <ClInclude Include="GameApp.h" />
+    <ClInclude Include="GameMenu.h" />
+    <ClInclude Include="GameOverOverlay.h" />
     <ClInclude Include="GameTimer.h" />
+    <ClInclude Include="HelpScreen.h" />
     <ClInclude Include="ImageItem.h" />
     <ClInclude Include="Keyboard.h" />
+    <ClInclude Include="Leaderboard.h" />
+    <ClInclude Include="LeaderboardScreen.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="Music.h" />
     <ClInclude Include="NoPartitioning.h" />
@@ -106,11 +111,13 @@
     <ClInclude Include="PhysicalBody.h" />
     <ClInclude Include="RaceLevel.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="resource1.h" />
     <ClInclude Include="ResourcesManager.h" />
     <ClInclude Include="ShipBroadDetector.h" />
     <ClInclude Include="Simulation.h" />
     <ClInclude Include="SortAndSweep.h" />
     <ClInclude Include="Sound.h" />
+    <ClInclude Include="SplashScreen.h" />
     <ClInclude Include="TextItem.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="InterfaceItem.h" />
@@ -129,7 +136,6 @@
     <ClInclude Include="WorldPartitioning.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="AudioManager.cpp" />
     <ClCompile Include="BroadphaseDetector.cpp" />
     <ClCompile Include="ButtonItem.cpp" />
     <ClCompile Include="CollisionBody.cpp" />
@@ -139,9 +145,14 @@
     <ClCompile Include="DoorSet.cpp" />
     <ClCompile Include="Entity.cpp" />
     <ClCompile Include="GameApp.cpp" />
+    <ClCompile Include="GameMenu.cpp" />
+    <ClCompile Include="GameOverOverlay.cpp" />
     <ClCompile Include="GameTimer.cpp" />
+    <ClCompile Include="HelpScreen.cpp" />
     <ClCompile Include="ImageItem.cpp" />
     <ClCompile Include="Keyboard.cpp" />
+    <ClCompile Include="Leaderboard.cpp" />
+    <ClCompile Include="LeaderboardScreen.cpp" />
     <ClCompile Include="Material.cpp" />
     <ClCompile Include="Music.cpp" />
     <ClCompile Include="NoPartitioning.cpp" />
@@ -154,6 +165,7 @@
     <ClCompile Include="Simulation.cpp" />
     <ClCompile Include="SortAndSweep.cpp" />
     <ClCompile Include="Sound.cpp" />
+    <ClCompile Include="SplashScreen.cpp" />
     <ClCompile Include="TextItem.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="InterfaceItem.cpp" />
@@ -168,6 +180,12 @@
     <ClCompile Include="TrackPiece.cpp" />
     <ClCompile Include="UserInterface.cpp" />
     <ClCompile Include="WorldPartitioning.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Game.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="resources\images\icon.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
