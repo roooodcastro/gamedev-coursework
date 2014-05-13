@@ -4,45 +4,35 @@
 
 ### TODO List:
 
-* Add other types of light source
-* Read audio files
-* Implement sound playback
-* Implement music playback and control
 * Fix the mouse positioning for rotated interface items
-* Design a file format and parse it to store track pieces configurations
-* Finish implementing TrackPiece
-* Add audio to door closing animation
-* Create textures for doors and track pieces
 * Implement joystick events
 * Refactor ship's input handling to allow control via both keyboard and joystick
-* Implement configuration manager
-* Create a main menu screen
 * Create a configuration screen
-* Create a pause menu
-* Create a credits screen
-* Create a end game screen
-* Create a tutorial/controls screen
 * Implement upgrades or powerups
+* Refactor all interface positioning and scaling to allow multiple screen resolutions
 
 
 ### Done:
 
 * SDL Integration with OpenGL
-* Basic framerate and tickrate control
-* Level class
-* User Interface class
-* Some interface items
-* Rendering of text
-* Rendering of 2D elements (interface)
-* Basic debug info (fps counter)
-* Material file (.mtl) loader
-* Wavefront file (.obj) loader
+* Separate framerate control for rendering and logic
+* State (Level) driven game flow
+* 2D User Interface class
+* Interface items: Image, Panel, Button, Text
+* Basic profiling: FPS, entities, resources counter and mouse position
+* Wavefront object file (.obj) loader
 * Keyboard and mouse handling
 * Basic shader pipeline
-* Multiple source lighting
-* Resource manager
-* Track pieces and track partially implemented
-* Ship's basic movement completed
-* Physics engine integrated
-* Separated physics from game logic and rendering, using threads
-* Collision detection model
+* Multiple sources lighting model
+* Generic resource manager
+* Resources being managed: Models, Textures, Sound
+* Physics engine with Verlet integration
+* Collision model using World Partitioning broadphase detector
+* Sound effects loader and player, supports .wav files
+* Music loader and player, supports most mainstream audio file formats
+* Configuration manager to save and load game configurations from the disk
+* Track loading from fixed templates saved on disk
+* Ship smooth movement with WASD keys
+* Splash, Menu, Leaderboard and Help screens
+* Pause Menu and Game Over menu
+* Complete game
